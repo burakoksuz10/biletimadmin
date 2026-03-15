@@ -41,10 +41,9 @@ import { mockUsers } from "@/lib/mock-data/users";
 import type { UserListItem, UserRole, UserStatus } from "@/types/user.types";
 
 const roleVariantMap: Record<UserRole, "success" | "info" | "neutral"> = {
-  super_admin: "success",
-  admin: "info",
-  organizer: "neutral",
-  attendee: "neutral",
+  SUPER_ADMIN: "success",
+  ORG_ADMIN: "info",
+  CO_ADMIN: "neutral",
 };
 
 const statusVariantMap: Record<UserStatus, "success" | "warning" | "danger"> = {
@@ -54,10 +53,9 @@ const statusVariantMap: Record<UserStatus, "success" | "warning" | "danger"> = {
 };
 
 const roleLabels: Record<UserRole, string> = {
-  super_admin: "Süper Admin",
-  admin: "Admin",
-  organizer: "Organizatör",
-  attendee: "Katılımcı",
+  SUPER_ADMIN: "Süper Admin",
+  ORG_ADMIN: "Organizasyon Admini",
+  CO_ADMIN: "Co-Admin",
 };
 
 const statusLabels: Record<UserStatus, string> = {
@@ -291,7 +289,7 @@ export default function UsersPage() {
   });
 
   const roleCounts = useMemo(() => {
-    const counts = { all: mockUsers.length, super_admin: 0, admin: 0, organizer: 0, attendee: 0 };
+    const counts = { all: mockUsers.length, SUPER_ADMIN: 0, ORG_ADMIN: 0, CO_ADMIN: 0 };
     mockUsers.forEach((u) => {
       counts[u.role]++;
     });
@@ -376,9 +374,9 @@ export default function UsersPage() {
                 <Crown className="w-6 h-6 text-[#df1c41]" />
               </div>
               <div>
-                <p className="text-[12px] text-[#666d80]">Organizatörler</p>
+                <p className="text-[12px] text-[#666d80]">Org. Adminler</p>
                 <p className="text-[20px] font-semibold text-[#0d0d12]">
-                  {roleCounts.organizer}
+                  {roleCounts.ORG_ADMIN}
                 </p>
               </div>
             </div>
@@ -388,7 +386,7 @@ export default function UsersPage() {
 
       {/* Role Tabs */}
       <div className="flex items-center gap-2 border-b border-[#e5e7eb]">
-        {(["all", "super_admin", "admin", "organizer", "attendee"] as const).map(
+        {(["all", "SUPER_ADMIN", "ORG_ADMIN", "CO_ADMIN"] as const).map(
           (role) => (
             <button
               key={role}
@@ -399,13 +397,11 @@ export default function UsersPage() {
                   : "border-transparent text-[#666d80] hover:text-[#0d0d12]"
               }`}
             >
-              {role === "super_admin"
+              {role === "SUPER_ADMIN"
                 ? "Süper Adminler"
-                : role === "admin"
-                ? "Adminler"
-                : role === "organizer"
-                ? "Organizatörler"
-                : "Katılımcılar"}
+                : role === "ORG_ADMIN"
+                ? "Org. Adminler"
+                : "Co-Adminler"}
               <span className="ml-2 text-[12px] text-[#818898]">
                 ({roleCounts[role]})
               </span>

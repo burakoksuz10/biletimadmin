@@ -36,7 +36,13 @@ export default function RegisterPage() {
   const onSubmit = async (data: RegisterFormValues) => {
     setIsLoading(true);
     try {
-      await registerUser(data);
+      // Transform form data to match API expectations
+      await registerUser({
+        name: data.name,
+        email: data.email,
+        password: data.password,
+        password_confirmation: data.confirmPassword,
+      });
       router.push("/");
     } catch (error) {
       console.error("Registration failed:", error);
