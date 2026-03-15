@@ -1,26 +1,155 @@
 @import "tailwindcss";
 
+/* Figma Design Tokens - Biletim Admin Panel */
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  /* Primary Colors */
+  --color-primary: #09724a;
+  --color-primary-dark: #066d41;
+  --color-primary-light: #0d9762;
+  --color-primary-accent: #00fb90;
+
+  /* Neutral Colors */
+  --color-neutral-900: #0d0d12;
+  --color-neutral-800: #0f1613;
+  --color-neutral-700: #1f1f21;
+  --color-neutral-600: #000000;
+  --color-neutral-500: #666d80;
+  --color-neutral-400: #818898;
+  --color-neutral-300: #e5e7eb;
+  --color-neutral-200: #f7f7f7;
+  --color-neutral-100: #ffffff;
+
+  /* Status Colors */
+  --color-success: #09724a;
+  --color-success-bg: #effefa;
+  --color-warning: #d39c3d;
+  --color-warning-bg: #fff8f0;
+  --color-danger: #df1c41;
+  --color-danger-bg: #fff0f3;
+  --color-info: #f0fbff;
+
+  /* Border Radius */
+  --radius-sm: 4px;
+  --radius-md: 6px;
+  --radius-lg: 8px;
+  --radius-xl: 10px;
+  --radius-2xl: 16px;
+  --radius-3xl: 20px;
+  --radius-full: 9999px;
+
+  /* Spacing */
+  --spacing-sidebar: 300px;
+  --spacing-header: 72px;
+  --spacing-content: 16px;
 }
 
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  /* Colors */
+  --color-primary: var(--color-primary);
+  --color-primary-dark: var(--color-primary-dark);
+  --color-primary-light: var(--color-primary-light);
+  --color-primary-accent: var(--color-primary-accent);
+
+  --color-neutral-900: var(--color-neutral-900);
+  --color-neutral-800: var(--color-neutral-800);
+  --color-neutral-700: var(--color-neutral-700);
+  --color-neutral-600: var(--color-neutral-600);
+  --color-neutral-500: var(--color-neutral-500);
+  --color-neutral-400: var(--color-neutral-400);
+  --color-neutral-300: var(--color-neutral-300);
+  --color-neutral-200: var(--color-neutral-200);
+  --color-neutral-100: var(--color-neutral-100);
+
+  --color-success: var(--color-success);
+  --color-success-bg: var(--color-success-bg);
+  --color-warning: var(--color-warning);
+  --color-warning-bg: var(--color-warning-bg);
+  --color-danger: var(--color-danger);
+  --color-danger-bg: var(--color-danger-bg);
+  --color-info: var(--color-info);
+
+  /* Semantic color mappings */
+  --color-background: var(--color-neutral-100);
+  --color-foreground: var(--color-neutral-900);
+  --color-border: var(--color-neutral-300);
+  --color-input: var(--color-neutral-200);
+  --color-ring: var(--color-primary);
+
+  /* Typography */
+  --font-sans: var(--font-manrope);
+  --font-display: var(--font-manrope);
+
+  /* Border Radius */
+  --radius-sm: var(--radius-sm);
+  --radius-md: var(--radius-md);
+  --radius-lg: var(--radius-lg);
+  --radius-xl: var(--radius-xl);
+  --radius-2xl: var(--radius-2xl);
+  --radius-3xl: var(--radius-3xl);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+/* Base Styles */
+* {
+  border-color: var(--color-neutral-300);
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: var(--color-neutral-200);
+  color: var(--color-neutral-900);
+  font-family: var(--font-manrope), Arial, Helvetica, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Custom Utilities */
+@utility sidebar-width {
+  width: var(--spacing-sidebar);
+}
+
+@utility header-height {
+  height: var(--spacing-header);
+}
+
+/* Animation utilities */
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slide-in-from-top {
+  from {
+    transform: translateY(-10px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+@keyframes slide-in-from-bottom {
+  from {
+    transform: translateY(10px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.animate-fade-in {
+  animation: fade-in 0.3s ease-out;
+}
+
+.animate-slide-in-top {
+  animation: slide-in-from-top 0.3s ease-out;
+}
+
+.animate-slide-in-bottom {
+  animation: slide-in-from-bottom 0.3s ease-out;
 }
