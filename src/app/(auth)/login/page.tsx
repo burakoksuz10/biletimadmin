@@ -58,11 +58,11 @@ export default function LoginPage() {
     <div className="min-h-screen w-full bg-white flex relative overflow-hidden">
       {/* Decorative Background Elements */}
       <div className="fixed top-0 left-0 w-[1192px] h-[670px] rounded-full bg-[#09724a] opacity-100 -translate-x-1/2 -translate-y-1/2 pointer-events-none"
-           style={{ left: '50%', top: '-200px' }} />
-      <div className="fixed w-[778px] h-[604px] rounded-full bg-[#09724a] opacity-80 pointer-events-none"
-           style={{ left: '50%', top: '150px' }} />
-      <div className="fixed bottom-0 left-0 w-[824px] h-[325px] rounded-full bg-[#09724a] opacity-80 -translate-x-1/2 pointer-events-none"
-           style={{ left: '50%', bottom: '-100px' }} />
+           style={{ left: '20%', top: '-200px' }} />
+      <div className="fixed w-[778px] h-[604px] rounded-full bg-[#09724a] opacity-70 pointer-events-none"
+           style={{ left: '15%', top: '200px' }} />
+      <div className="fixed bottom-0 left-0 w-[824px] h-[325px] rounded-full bg-[#09724a] opacity-60 -translate-x-1/2 pointer-events-none"
+           style={{ left: '25%', bottom: '-150px' }} />
 
       {/* Main Content */}
       <div className="relative z-10 w-full min-h-screen flex flex-col lg:flex-row">
