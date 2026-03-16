@@ -33,7 +33,7 @@ class CustomersService {
     console.log("🔍 [CUSTOMERS SERVICE] API çağrısı yapılıyor: /api/v1/users/by-role/customers", filters);
     
     try {
-      const response = await apiClient.get<any>("/api/v1/users/by-role/customers", {
+      const response = await apiClient.get<any>("/users/by-role/customers", {
         params: filters
       });
 
@@ -133,7 +133,7 @@ class CustomersService {
    */
   async getById(id: number): Promise<Customer> {
     const response = await apiClient.get<any>(
-      `/api/v1/users/${id}`
+      `/users/${id}`
     );
 
     console.log("Müşteri detay API yanıtı:", response);
@@ -162,7 +162,7 @@ class CustomersService {
    */
   async update(id: number, data: UpdateCustomerRequest): Promise<Customer> {
     const response = await apiClient.put<any>(
-      `/api/v1/users/${id}`,
+      `/users/${id}`,
       data
     );
 
@@ -191,7 +191,7 @@ class CustomersService {
    * Uses /api/v1/users/{id} endpoint
    */
   async delete(id: number): Promise<void> {
-    await apiClient.delete(`/api/v1/users/${id}`);
+    await apiClient.delete(`/users/${id}`);
   }
 
   /**
@@ -215,7 +215,7 @@ class CustomersService {
     };
   }> {
     const response = await apiClient.get<any>(
-      `/api/v1/users/${id}/orders`,
+      `/users/${id}/orders`,
       { params }
     );
 
@@ -293,7 +293,7 @@ class CustomersService {
       last_page: number;
     };
   }> {
-    const response = await apiClient.get<any>(`/api/v1/users/${id}/tickets`, { params });
+    const response = await apiClient.get<any>(`/users/${id}/tickets`, { params });
 
     console.log("Müşteri biletleri API yanıtı:", response);
 
@@ -347,7 +347,7 @@ class CustomersService {
    */
   async getStats(id: number): Promise<CustomerDetailedStats> {
     const response = await apiClient.get<any>(
-      `/api/v1/users/${id}/stats`
+      `/users/${id}/stats`
     );
 
     console.log("Müşteri istatistikleri API yanıtı:", response);
@@ -405,7 +405,7 @@ class CustomersService {
     };
   }> {
     const response = await apiClient.get<any>(
-      `/api/v1/users/${id}/activity`,
+      `/users/${id}/activity`,
       { params }
     );
 
@@ -469,7 +469,7 @@ class CustomersService {
    */
   async getGeneralStats(): Promise<CustomerStats> {
     const response = await apiClient.get<any>(
-      "/api/v1/users/by-role/customers/stats"
+      "/users/by-role/customers/stats"
     );
 
     console.log("Genel müşteri istatistikleri API yanıtı:", response);
@@ -493,7 +493,7 @@ class CustomersService {
    */
   async getTopSpenders(limit?: number): Promise<TopCustomer[]> {
     const response = await apiClient.get<any>(
-      "/api/v1/users/by-role/customers/top-spenders",
+      "/users/by-role/customers/top-spenders",
       { params: { limit } }
     );
 
@@ -523,7 +523,7 @@ class CustomersService {
    */
   async getSegmentation(): Promise<CustomerSegmentation> {
     const response = await apiClient.get<any>(
-      "/api/v1/users/by-role/customers/segments"
+      "/users/by-role/customers/segments"
     );
 
     console.log("Müşteri segmentasyonu API yanıtı:", response);
@@ -549,7 +549,7 @@ class CustomersService {
     format: "csv" | "excel",
     filters?: CustomerFilters
   ): Promise<Blob> {
-    const response = await apiClient.get<Blob>("/api/v1/users/by-role/customers/export", {
+    const response = await apiClient.get<Blob>("/users/by-role/customers/export", {
       params: {
         ...filters,
         format
@@ -572,7 +572,7 @@ class CustomersService {
     const response = await apiClient.post<{
       success: boolean;
       message: string;
-    }>("/api/v1/users/bulk-action", {
+    }>("/users/bulk-action", {
       action,
       user_ids: customerIds,
       data,
