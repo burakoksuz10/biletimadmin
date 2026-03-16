@@ -15,6 +15,7 @@ import {
   ChevronRight,
   Building2,
   MapPin,
+  UserCheck,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -43,6 +44,11 @@ const menuItems = [
     title: "Etkinlikler",
     href: "/events",
     icon: Calendar,
+  },
+  {
+    title: "Müşteriler",
+    href: "/customers",
+    icon: UserCheck,
   },
   {
     title: "Kullanıcılar",

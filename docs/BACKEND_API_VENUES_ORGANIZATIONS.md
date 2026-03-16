@@ -356,12 +356,11 @@ Authorization: Bearer {token}
 
 **GET** `/venues`
 
-Kullanıcının yetkisine göre mekanları listeler.
+Tüm mekanları listeler. Mekanlar organizasyonlardan bağımsızdır.
 
 **Query Parameters**:
 ```typescript
 {
-  organization_id?: number;  // Belirli bir organizasyonun mekanları
   city?: string;            // Şehre göre filtre
   country?: string;         // Ülkeye göre filtre
   status?: "active" | "inactive" | "maintenance";
@@ -373,7 +372,7 @@ Kullanıcının yetkisine göre mekanları listeler.
 
 **Request Example**:
 ```bash
-GET /venues?organization_id=1&city=İstanbul&status=active&page=1
+GET /venues?city=İstanbul&status=active&page=1
 Authorization: Bearer {token}
 ```
 
@@ -384,12 +383,6 @@ Authorization: Bearer {token}
   "data": [
     {
       "id": 1,
-      "organization_id": 1,
-      "organization": {
-        "id": 1,
-        "name": "BKM",
-        "slug": "bkm"
-      },
       "name": "Harbiye Açık Hava Tiyatrosu",
       "slug": "harbiye-acik-hava-tiyatrosu",
       "address": "Harbiye Mahallesi, Şükrü Sina Güzel Sokak",
@@ -437,12 +430,6 @@ Authorization: Bearer {token}
   "success": true,
   "data": {
     "id": 1,
-    "organization_id": 1,
-    "organization": {
-      "id": 1,
-      "name": "BKM",
-      "slug": "bkm"
-    },
     "name": "Harbiye Açık Hava Tiyatrosu",
     "slug": "harbiye-acik-hava-tiyatrosu",
     "address": "Harbiye Mahallesi, Şükrü Sina Güzel Sokak",
@@ -470,12 +457,11 @@ Authorization: Bearer {token}
 
 **POST** `/venues`
 
-Yeni bir mekan oluşturur.
+Yeni bir mekan oluşturur. Mekanlar organizasyonlardan bağımsızdır.
 
 **Request Body**:
 ```json
 {
-  "organization_id": 1,
   "name": "Yeni Konser Salonu",
   "address": "Kadıköy Mahallesi, Söğütlüçeşme Caddesi No: 120",
   "city": "İstanbul",
@@ -488,7 +474,6 @@ Yeni bir mekan oluşturur.
 ```
 
 **Validation Rules**:
-- `organization_id` (required, integer, exists): Organizasyon ID (kullanıcının yetkili olduğu)
 - `name` (required, string, min: 2, max: 255): Mekan adı
 - `address` (required, string, max: 500): Adres
 - `city` (required, string, max: 100): Şehir
@@ -505,7 +490,6 @@ Authorization: Bearer {token}
 Content-Type: application/json
 
 {
-  "organization_id": 1,
   "name": "Yeni Konser Salonu",
   "address": "Kadıköy Mahallesi, İstanbul",
   "city": "İstanbul",
@@ -520,12 +504,6 @@ Content-Type: application/json
   "success": true,
   "data": {
     "id": 15,
-    "organization_id": 1,
-    "organization": {
-      "id": 1,
-      "name": "BKM",
-      "slug": "bkm"
-    },
     "name": "Yeni Konser Salonu",
     "slug": "yeni-konser-salonu",
     "address": "Kadıköy Mahallesi, İstanbul",
@@ -546,7 +524,7 @@ Content-Type: application/json
 
 **Error Responses**:
 - `422 Unprocessable Entity`: Validation hataları
-- `403 Forbidden`: Bu organizasyon için mekan oluşturma yetkiniz yok
+- `403 Forbidden`: Mekan oluşturma yetkiniz yok
 - `409 Conflict`: Bu isimde bir mekan zaten var
 
 ---
@@ -576,7 +554,6 @@ Mevcut bir mekanı günceller.
 ```
 
 **Validation Rules**: (Oluşturma ile aynı, hepsi opsiyonel)
-- `organization_id` güncelleme sırasında değiştirilemez
 - `status` (optional, enum): "active", "inactive", "maintenance"
 
 **Request Example**:
@@ -597,12 +574,6 @@ Content-Type: application/json
   "success": true,
   "data": {
     "id": 1,
-    "organization_id": 1,
-    "organization": {
-      "id": 1,
-      "name": "BKM",
-      "slug": "bkm"
-    },
     "name": "Harbiye Açık Hava Tiyatrosu",
     "slug": "harbiye-acik-hava-tiyatrosu",
     "address": "Harbiye Mahallesi, Şükrü Sina Güzel Sokak",
@@ -660,11 +631,11 @@ Authorization: Bearer {token}
 
 ---
 
-### 12. Organizasyona Göre Mekanları Listele
+### 12. Organizasyona Göre Etkinlikleri Listele
 
-**GET** `/organizations/{organization_id}/venues`
+**GET** `/organizations/{organization_id}/events`
 
-Belirli bir organizasyonun tüm mekanlarını listeler.
+Belirli bir organizasyonun tüm etkinliklerini listeler.
 
 **Path Parameters**:
 - `organization_id` (integer, required): Organizasyon ID
@@ -672,7 +643,8 @@ Belirli bir organizasyonun tüm mekanlarını listeler.
 **Query Parameters**:
 ```typescript
 {
-  status?: "active" | "inactive" | "maintenance";
+  venue_id?: number;        // Belirli bir mekan için
+  status?: "draft" | "published" | "cancelled" | "completed" | "ongoing";
   page?: number;
   per_page?: number;
 }
@@ -680,7 +652,7 @@ Belirli bir organizasyonun tüm mekanlarını listeler.
 
 **Request Example**:
 ```bash
-GET /organizations/1/venues?status=active
+GET /organizations/1/events?status=published
 Authorization: Bearer {token}
 ```
 
@@ -692,20 +664,18 @@ Authorization: Bearer {token}
     {
       "id": 1,
       "organization_id": 1,
-      "name": "Harbiye Açık Hava Tiyatrosu",
-      "slug": "harbiye-acik-hava-tiyatrosu",
-      "city": "İstanbul",
-      "capacity": 7000,
-      "status": "active"
+      "venue_id": 1,
+      "title": "Sezen Aksu Konseri",
+      "start_date": "2024-06-15T20:00:00Z",
+      "status": "published"
     },
     {
       "id": 2,
       "organization_id": 1,
-      "name": "İstanbul Lütfi Kırdar Kongre Merkezi",
-      "slug": "istanbul-lutfi-kirdar-kongre-merkezi",
-      "city": "İstanbul",
-      "capacity": 3500,
-      "status": "active"
+      "venue_id": 2,
+      "title": "Cem Yılmaz Stand-Up",
+      "start_date": "2024-07-01T21:00:00Z",
+      "status": "published"
     }
   ]
 }
@@ -722,11 +692,11 @@ Authorization: Bearer {token}
 | POST /organizations | ✅ | ❌ | ❌ |
 | PUT /organizations/{id} | ✅ | Kendi org. | ❌ |
 | DELETE /organizations/{id} | ✅ | ❌ | ❌ |
-| GET /venues | Tüm mekan | Kendi org. mekanları | Atandığı org. mekanları |
-| GET /venues/{id} | ✅ | Kendi org. mekanı | Atandığı org. mekanı |
-| POST /venues | ✅ | Kendi org. için | ❌ |
-| PUT /venues/{id} | ✅ | Kendi org. mekanı | ❌ |
-| DELETE /venues/{id} | ✅ | Kendi org. mekanı | ❌ |
+| GET /venues | Tüm mekan | Tüm mekan | Tüm mekan |
+| GET /venues/{id} | ✅ | ✅ | ✅ |
+| POST /venues | ✅ | ✅ | ❌ |
+| PUT /venues/{id} | ✅ | ✅ | ❌ |
+| DELETE /venues/{id} | ✅ | ✅ | ❌ |
 
 ---
 
@@ -783,12 +753,16 @@ Authorization: Bearer {token}
 6. ✅ Aynı isimde organizasyon oluşturulamaz
 
 ### Mekan Testleri
-1. ✅ ORG_ADMIN kendi organizasyonuna mekan ekleyebilir
-2. ✅ ORG_ADMIN başka organizasyona mekan ekleyemez
-3. ✅ CO_ADMIN mekan oluşturamaz
-4. ✅ Mekan silinmeye çalışıldığında bağlı etkinlikler kontrol edilir
-5. ✅ Kapasite negatif olamaz
-6. ✅ Enlem/Boylam değerleri geçerli aralıkta olmalı
+1. ✅ SUPER_ADMIN tüm mekanları görebilir
+2. ✅ ORG_ADMIN tüm mekanları görebilir
+3. ✅ CO_ADMIN tüm mekanları görebilir
+4. ✅ SUPER_ADMIN mekan oluşturabilir
+5. ✅ ORG_ADMIN mekan oluşturabilir
+6. ✅ CO_ADMIN mekan oluşturamaz
+7. ✅ Mekan silinmeye çalışıldığında bağlı etkinlikler kontrol edilir
+8. ✅ Kapasite negatif olamaz
+9. ✅ Enlem/Boylam değerleri geçerli aralıkta olmalı
+10. ✅ Aynı mekan birden fazla organizatör tarafından kullanılabilir
 
 ---
 
