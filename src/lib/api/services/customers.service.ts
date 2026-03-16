@@ -30,13 +30,36 @@ class CustomersService {
       last_page: number;
     };
   }> {
+    console.log("API çağrısı yapılıyor: /api/v1/users/by-role/customers", filters);
+    
     const response = await apiClient.get<any>("/api/v1/users/by-role/customers", {
       params: filters
     });
 
-    // Backend'den gelen yanıtı kontrol et ve düzgün formata dönüştür
-    // Eğer yanıt doğrudan bir array ise
+    console.log("Ham API yanıtı:", response);
+
+    // Backend API formatı: { success: true, message: "...", data: [...], pagination: {...} }
+    // Axios response.data ile geldiği için response.data.data erişmemiz gerekiyor
+    if (response.data && response.data.data && Array.isArray(response.data.data)) {
+      console.log("Yanıt data.data içinde array, uzunluk:", response.data.data.length);
+      
+      const customers = response.data.data;
+      const pagination = response.data.pagination;
+      
+      return {
+        data: customers,
+        meta: {
+          current_page: pagination?.current_page || 1,
+          per_page: pagination?.per_page || customers.length,
+          total: pagination?.total || customers.length,
+          last_page: pagination?.last_page || 1
+        }
+      };
+    }
+
+    // Eğer yanıt doğrudan bir array ise (fallback)
     if (Array.isArray(response)) {
+      console.log("Yanıt doğrudan array, uzunluk:", response.length);
       return {
         data: response,
         meta: {
@@ -48,9 +71,18 @@ class CustomersService {
       };
     }
 
-    // Eğer yanıt zaten doğru formatta ise
+    // Eğer yanıt response.data içinde array ise (fallback)
     if (response.data && Array.isArray(response.data)) {
-      return response;
+      console.log("Yanıt response.data içinde array, uzunluk:", response.data.length);
+      return {
+        data: response.data,
+        meta: {
+          current_page: 1,
+          per_page: response.data.length,
+          total: response.data.length,
+          last_page: 1
+        }
+      };
     }
 
     // Hiçbir durum uymazsa boş array dön
