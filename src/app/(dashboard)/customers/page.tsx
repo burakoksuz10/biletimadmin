@@ -31,7 +31,7 @@ import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
 import { formatDate } from "@/lib/utils";
-import { mockCustomers } from "@/lib/mock-data/customers";
+import { customersService } from "@/lib/api/services";
 import type { CustomerListItem, CustomerStatus, CustomerSegment } from "@/types/customer.types";
 
 const statusVariantMap: Record<CustomerStatus, "success" | "warning" | "danger"> = {
@@ -80,13 +80,11 @@ export default function CustomersPage() {
     const loadCustomers = async () => {
       try {
         setIsLoading(true);
-        // Simulate loading
-        setTimeout(() => {
-          setCustomers(mockCustomers);
-          setIsLoading(false);
-        }, 500);
+        const response = await customersService.getAll();
+        setCustomers(response.data);
       } catch (error) {
-        console.error("Failed to load customers:", error);
+        console.error("Müşteriler yüklenirken hata:", error);
+      } finally {
         setIsLoading(false);
       }
     };

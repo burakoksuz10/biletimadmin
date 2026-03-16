@@ -28,8 +28,8 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { formatDate, formatCurrency } from "@/lib/utils";
-import { mockCustomerDetail, mockCustomerOrders, mockCustomerActivity, mockCustomerDetailedStats } from "@/lib/mock-data/customers";
-import type { Customer, CustomerOrder, CustomerActivity } from "@/types/customer.types";
+import { customersService } from "@/lib/api/services";
+import type { Customer, CustomerOrder, CustomerActivity, CustomerDetailedStats } from "@/types/customer.types";
 
 type TabType = "overview" | "orders" | "tickets" | "activity" | "notes";
 
@@ -39,7 +39,7 @@ export default function CustomerDetailPage() {
   const [customer, setCustomer] = useState<Customer | null>(null);
   const [orders, setOrders] = useState<CustomerOrder[]>([]);
   const [activity, setActivity] = useState<CustomerActivity[]>([]);
-  const [stats, setStats] = useState(mockCustomerDetailedStats);
+  const [stats, setStats] = useState<CustomerDetailedStats | null>(null);
   const [activeTab, setActiveTab] = useState<TabType>("overview");
   const [isLoading, setIsLoading] = useState(true);
 
@@ -47,15 +47,23 @@ export default function CustomerDetailPage() {
     const loadCustomer = async () => {
       try {
         setIsLoading(true);
-        // Simulate loading
-        setTimeout(() => {
-          setCustomer(mockCustomerDetail);
-          setOrders(mockCustomerOrders);
-          setActivity(mockCustomerActivity);
-          setIsLoading(false);
-        }, 500);
+        const customerId = parseInt(params.id as string);
+        
+        // Paralel olarak müşteri verilerini çek
+        const [customerData, ordersData, activityData, statsData] = await Promise.all([
+          customersService.getById(customerId),
+          customersService.getOrders(customerId),
+          customersService.getActivity(customerId),
+          customersService.getStats(customerId)
+        ]);
+        
+        setCustomer(customerData);
+        setOrders(ordersData.data);
+        setActivity(activityData.data);
+        setStats(statsData);
       } catch (error) {
-        console.error("Failed to load customer:", error);
+        console.error("Müşteri yüklenirken hata:", error);
+      } finally {
         setIsLoading(false);
       }
     };
