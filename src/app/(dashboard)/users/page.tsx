@@ -2,7 +2,7 @@
 
 export const dynamic = 'force-dynamic';
 
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import Link from "next/link";
 import {
   useReactTable,
@@ -37,7 +37,8 @@ import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
 import { formatDate } from "@/lib/utils";
-import { mockUsers } from "@/lib/mock-data/users";
+import { usersService } from "@/lib/api/services";
+import type { BackendUser } from "@/lib/api/types/biletleme.types";
 import type { UserListItem, UserRole, UserStatus } from "@/types/user.types";
 
 const roleVariantMap: Record<UserRole, "success" | "info" | "neutral"> = {
@@ -69,17 +70,36 @@ export default function UsersPage() {
   const [globalFilter, setGlobalFilter] = useState("");
   const [roleFilter, setRoleFilter] = useState<UserRole | "all">("all");
   const [statusFilter, setStatusFilter] = useState<UserStatus | "all">("all");
-  const [showActionsId, setShowActionsId] = useState<string | null>(null);
+  const [showActionsId, setShowActionsId] = useState<number | null>(null);
+  const [users, setUsers] = useState<BackendUser[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+
+  // Load users
+  useEffect(() => {
+    const loadUsers = async () => {
+      try {
+        setIsLoading(true);
+        const response = await usersService.getAdminUsers();
+        setUsers(response.data);
+      } catch (error) {
+        console.error("Kullanıcılar yüklenirken hata:", error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    loadUsers();
+  }, []);
 
   const filteredData = useMemo(() => {
-    return mockUsers.filter((user) => {
+    return users.filter((user) => {
       const matchesRole = roleFilter === "all" || user.role === roleFilter;
       const matchesStatus = statusFilter === "all" || user.status === statusFilter;
       return matchesRole && matchesStatus;
     });
-  }, [roleFilter, statusFilter]);
+  }, [users, roleFilter, statusFilter]);
 
-  const columns = useMemo<ColumnDef<UserListItem>[]>(
+  const columns = useMemo<ColumnDef<BackendUser>[]>(
     () => [
       {
         accessorKey: "name",
@@ -119,7 +139,7 @@ export default function UsersPage() {
         cell: ({ row }) => (
           <div className="flex items-center gap-2">
             <Phone className="w-4 h-4 text-[#818898]" />
-            <p className="text-[14px] text-[#666d80]">{row.original.phone}</p>
+            <p className="text-[14px] text-[#666d80]">{row.original.phone || "-"}</p>
           </div>
         ),
       },
@@ -136,7 +156,7 @@ export default function UsersPage() {
         ),
         cell: ({ row }) => (
           <Badge variant={roleVariantMap[row.original.role]} dot={false}>
-            {roleLabels[row.original.role]}
+            {row.original.role_label || roleLabels[row.original.role]}
           </Badge>
         ),
       },
@@ -152,13 +172,13 @@ export default function UsersPage() {
           </button>
         ),
         cell: ({ row }) => (
-          <Badge variant={statusVariantMap[row.original.status]}>
-            {statusLabels[row.original.status]}
+          <Badge variant={statusVariantMap[row.original.status || "active"]}>
+            {statusLabels[row.original.status || "active"]}
           </Badge>
         ),
       },
       {
-        accessorKey: "joinedDate",
+        accessorKey: "created_at",
         header: ({ column }) => (
           <button
             className="flex items-center gap-1 text-[12px] font-medium text-[#818898] uppercase tracking-wider"
@@ -172,35 +192,9 @@ export default function UsersPage() {
           <div className="flex items-center gap-2">
             <Calendar className="w-4 h-4 text-[#818898]" />
             <p className="text-[14px] text-[#666d80]">
-              {formatDate(row.original.joinedDate)}
+              {formatDate(row.original.created_at)}
             </p>
           </div>
-        ),
-      },
-      {
-        accessorKey: "eventsCreated",
-        header: () => (
-          <span className="text-[12px] font-medium text-[#818898] uppercase tracking-wider">
-            Etkinlikler
-          </span>
-        ),
-        cell: ({ row }) => (
-          <p className="text-[14px] font-medium text-[#0d0d12]">
-            {row.original.eventsCreated || 0}
-          </p>
-        ),
-      },
-      {
-        accessorKey: "ticketsPurchased",
-        header: () => (
-          <span className="text-[12px] font-medium text-[#818898] uppercase tracking-wider">
-            Biletler
-          </span>
-        ),
-        cell: ({ row }) => (
-          <p className="text-[14px] font-medium text-[#0d0d12]">
-            {row.original.ticketsPurchased || 0}
-          </p>
         ),
       },
       {
@@ -289,20 +283,24 @@ export default function UsersPage() {
   });
 
   const roleCounts = useMemo(() => {
-    const counts = { all: mockUsers.length, super_admin: 0, org_admin: 0, co_admin: 0 };
-    mockUsers.forEach((u) => {
-      counts[u.role]++;
+    const counts = { all: users.length, super_admin: 0, org_admin: 0, co_admin: 0 };
+    users.forEach((u) => {
+      if (u.role) {
+        counts[u.role]++;
+      }
     });
     return counts;
-  }, []);
+  }, [users]);
 
   const statusCounts = useMemo(() => {
-    const counts = { all: mockUsers.length, active: 0, suspended: 0, banned: 0 };
-    mockUsers.forEach((u) => {
-      counts[u.status]++;
+    const counts = { all: users.length, active: 0, suspended: 0, banned: 0 };
+    users.forEach((u) => {
+      if (u.status) {
+        counts[u.status]++;
+      }
     });
     return counts;
-  }, []);
+  }, [users]);
 
   return (
     <div className="space-y-6">
@@ -331,7 +329,7 @@ export default function UsersPage() {
               <div>
                 <p className="text-[12px] text-[#666d80] dark:text-[#9ca3af]">Toplam Kullanıcı</p>
                 <p className="text-[20px] font-semibold text-[#0d0d12] dark:text-[#f9fafb]">
-                  {mockUsers.length}
+                  {users.length}
                 </p>
               </div>
             </div>
@@ -476,7 +474,16 @@ export default function UsersPage() {
                 ))}
               </thead>
               <tbody>
-                {table.getRowModel().rows.length === 0 ? (
+                {isLoading ? (
+                  <tr>
+                    <td
+                      colSpan={columns.length}
+                      className="text-center py-12 text-[14px] text-[#666d80] dark:text-[#9ca3af]"
+                    >
+                      Yükleniyor...
+                    </td>
+                  </tr>
+                ) : table.getRowModel().rows.length === 0 ? (
                   <tr>
                     <td
                       colSpan={columns.length}
