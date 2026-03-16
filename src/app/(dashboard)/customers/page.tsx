@@ -14,7 +14,6 @@ import {
   Filter,
   Mail,
   Phone,
-  Calendar,
   User,
   Users,
   Crown,
@@ -44,24 +43,6 @@ const statusLabels: Record<CustomerStatus, string> = {
   active: "Aktif",
   suspended: "Askıya Alındı",
   banned: "Yasaklandı",
-};
-
-const segmentVariantMap: Record<CustomerSegment, "success" | "info" | "neutral" | "warning" | "danger"> = {
-  vip: "success",
-  regular: "info",
-  new: "neutral",
-  at_risk: "warning",
-  lost: "danger",
-  one_time: "neutral",
-};
-
-const segmentLabels: Record<CustomerSegment, string> = {
-  vip: "VIP",
-  regular: "Normal",
-  new: "Yeni",
-  at_risk: "Riskli",
-  lost: "Kayıp",
-  one_time: "Tek Seferlik",
 };
 
 export default function CustomersPage() {
@@ -493,34 +474,7 @@ export default function CustomersPage() {
                     </div>
                   </th>
                   <th className="text-left py-3 px-4 text-[#0d0d12] dark:text-[#f9fafb]">İletişim</th>
-                  <th
-                    className="text-left py-3 px-4 cursor-pointer hover:bg-[#e5e7eb] dark:hover:bg-[#374151]"
-                    onClick={() => handleSort("total_spent")}
-                  >
-                    <div className="flex items-center gap-1">
-                      <span className="text-[#0d0d12] dark:text-[#f9fafb]">Harcama</span>
-                      <ArrowUpDown className="w-3 h-3 text-[#818898] dark:text-[#9ca3af]" />
-                    </div>
-                  </th>
-                  <th className="text-left py-3 px-4 text-[#0d0d12] dark:text-[#f9fafb]">Segment</th>
-                  <th
-                    className="text-left py-3 px-4 cursor-pointer hover:bg-[#e5e7eb] dark:hover:bg-[#374151]"
-                    onClick={() => handleSort("total_spent")}
-                  >
-                    <div className="flex items-center gap-1">
-                      <span className="text-[#0d0d12] dark:text-[#f9fafb]">Siparişler</span>
-                      <ArrowUpDown className="w-3 h-3 text-[#818898] dark:text-[#9ca3af]" />
-                    </div>
-                  </th>
-                  <th
-                    className="text-left py-3 px-4 cursor-pointer hover:bg-[#e5e7eb] dark:hover:bg-[#374151]"
-                    onClick={() => handleSort("last_order")}
-                  >
-                    <div className="flex items-center gap-1">
-                      <span className="text-[#0d0d12] dark:text-[#f9fafb]">Son Sipariş</span>
-                      <ArrowUpDown className="w-3 h-3 text-[#818898] dark:text-[#9ca3af]" />
-                    </div>
-                  </th>
+                  <th className="text-left py-3 px-4 text-[#0d0d12] dark:text-[#f9fafb]">Müşteri Grubu</th>
                   <th className="text-left py-3 px-4 text-[#0d0d12] dark:text-[#f9fafb]">Durum</th>
                   <th className="text-right py-3 px-4 text-[#0d0d12] dark:text-[#f9fafb]">İşlemler</th>
                 </tr>
@@ -529,7 +483,7 @@ export default function CustomersPage() {
                 {isLoading ? (
                   <tr>
                     <td
-                      colSpan={9}
+                      colSpan={6}
                       className="py-12 text-center text-[14px] text-[#666d80] dark:text-[#9ca3af]"
                     >
                       Yükleniyor...
@@ -538,7 +492,7 @@ export default function CustomersPage() {
                 ) : filteredCustomers.length === 0 ? (
                   <tr>
                     <td
-                      colSpan={9}
+                      colSpan={6}
                       className="py-12 text-center text-[14px] text-[#666d80] dark:text-[#9ca3af]"
                     >
                       Müşteri bulunamadı
@@ -591,31 +545,11 @@ export default function CustomersPage() {
                         </div>
                       </td>
                       <td className="py-3 px-4">
-                        <p className="text-[14px] font-medium text-[#0d0d12] dark:text-[#f9fafb]">
-                          {(customer.total_spent || 0).toLocaleString()} ₺
-                        </p>
-                      </td>
-                      <td className="py-3 px-4">
-                        {customer.customer_segment && (
-                          <Badge variant={segmentVariantMap[customer.customer_segment]}>
-                            {segmentLabels[customer.customer_segment]}
+                        {customer.user_group_label && (
+                          <Badge variant="info">
+                            {customer.user_group_label}
                           </Badge>
                         )}
-                      </td>
-                      <td className="py-3 px-4">
-                        <p className="text-[14px] text-[#0d0d12] dark:text-[#f9fafb]">
-                          {customer.total_orders} sipariş
-                        </p>
-                      </td>
-                      <td className="py-3 px-4">
-                        <div className="flex items-center gap-2">
-                          <Calendar className="w-4 h-4 text-[#818898] dark:text-[#9ca3af]" />
-                          <p className="text-[14px] text-[#666d80] dark:text-[#9ca3af]">
-                            {customer.last_order_date
-                              ? formatDate(customer.last_order_date)
-                              : "-"}
-                          </p>
-                        </div>
                       </td>
                       <td className="py-3 px-4">
                         <Badge variant={statusVariantMap[customer.status]}>
