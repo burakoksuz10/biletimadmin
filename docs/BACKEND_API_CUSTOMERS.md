@@ -4,10 +4,12 @@
 
 Bu doküman, Biletim Admin Paneli için Müşteriler (Customers) modülünün backend API spesifikasyonunu içerir.
 
-**Önemli Not:** Müşteriler ve Kullanıcılar (Admin kullanıcıları) tek bir endpoint'ten (`/users`) gelir. Müşteriler için `role=customer` filtresi kullanılır.
+**Önemli Not:** Müşteriler için özel endpoint yapısı kullanılır:
+- Müşteriler: `/api/v1/users/by-role/customers`
+- Admin kullanıcıları: `/api/v1/users/by-role/customers?exclude_roles[]=customer`
 
-**Base URL:** `https://api.biletim.com/v1`
-**API Version:** `1.0.0`
+**Base URL:** `https://api.biletim.com`
+**API Version:** `v1`
 **Content-Type:** `application/json`
 
 ## Response Format
@@ -43,15 +45,14 @@ Bu doküman, Biletim Admin Paneli için Müşteriler (Customers) modülünün ba
 
 ### 1. Tüm Müşterileri Listele
 
-**Endpoint:** `GET /users`
+**Endpoint:** `GET /api/v1/users/by-role/customers`
 
-**Açıklama:** Tüm kullanıcıları listeler, `role=customer` parametresi ile sadece müşteriler filtrelenir.
+**Açıklama:** Tüm müşterileri sayfalama, filtreleme ve sıralama ile listeler.
 
 **Query Parameters:**
 
 | Parametre | Tip | Zorunlu | Açıklama |
 |-----------|-----|---------|----------|
-| role | string | Evet | "customer" (sadece müşteriler için) |
 | page | integer | Hayır | Sayfa numarası (default: 1) |
 | per_page | integer | Hayır | Sayfa başına kayıt (default: 20, max: 100) |
 | search | string | Hayır | İsim, e-posta veya telefon ile arama |
@@ -107,7 +108,7 @@ Bu doküman, Biletim Admin Paneli için Müşteriler (Customers) modülünün ba
 
 ### 2. Müşteri Detayı Getir
 
-**Endpoint:** `GET /users/{id}`
+**Endpoint:** `GET /api/v1/users/{id}`
 
 **Açıklama:** Belirli bir kullanıcının detaylı bilgilerini getirir. Müşteri için kullanılır.
 
@@ -172,7 +173,7 @@ Bu doküman, Biletim Admin Paneli için Müşteriler (Customers) modülünün ba
 
 ### 3. Müşteri Güncelle
 
-**Endpoint:** `PUT /users/{id}`
+**Endpoint:** `PUT /api/v1/users/{id}`
 
 **Açıklama:** Müşteri bilgilerini günceller.
 
@@ -244,7 +245,7 @@ Bu doküman, Biletim Admin Paneli için Müşteriler (Customers) modülünün ba
 
 ### 4. Müşteri Sil
 
-**Endpoint:** `DELETE /users/{id}`
+**Endpoint:** `DELETE /api/v1/users/{id}`
 
 **Açıklama:** Müşteriyi soft delete ile siler (isActive = false).
 
@@ -267,7 +268,7 @@ Bu doküman, Biletim Admin Paneli için Müşteriler (Customers) modülünün ba
 
 ### 5. Müşteri Siparişlerini Getir
 
-**Endpoint:** `GET /users/{id}/orders`
+**Endpoint:** `GET /api/v1/users/{id}/orders`
 
 **Açıklama:** Belirli bir müşterinin siparişlerini listeler.
 
@@ -323,7 +324,7 @@ Bu doküman, Biletim Admin Paneli için Müşteriler (Customers) modülünün ba
 
 ### 6. Müşteri Biletlerini Getir
 
-**Endpoint:** `GET /users/{id}/tickets`
+**Endpoint:** `GET /api/v1/users/{id}/tickets`
 
 **Açıklama:** Belirli bir müşterinin biletlerini listeler.
 
@@ -382,7 +383,7 @@ Bu doküman, Biletim Admin Paneli için Müşteriler (Customers) modülünün ba
 
 ### 7. Müşteri Aktivitesini Getir
 
-**Endpoint:** `GET /users/{id}/activity`
+**Endpoint:** `GET /api/v1/users/{id}/activity`
 
 **Açıklama:** Belirli bir müşterinin aktivite geçmişini listeler.
 
@@ -443,7 +444,7 @@ Bu doküman, Biletim Admin Paneli için Müşteriler (Customers) modülünün ba
 
 ### 8. Müşteri İstatistiklerini Getir
 
-**Endpoint:** `GET /users/{id}/stats`
+**Endpoint:** `GET /api/v1/users/{id}/stats`
 
 **Açıklama:** Belirli bir müşterinin detaylı istatistiklerini getirir.
 
@@ -504,7 +505,7 @@ Bu doküman, Biletim Admin Paneli için Müşteriler (Customers) modülünün ba
 
 ### 9. Genel Müşteri İstatistikleri
 
-**Endpoint:** `GET /users/stats/general`
+**Endpoint:** `GET /api/v1/users/by-role/customers/stats`
 
 **Açıklama:** Tüm müşteriler için genel istatistikleri getirir.
 
@@ -512,7 +513,6 @@ Bu doküman, Biletim Admin Paneli için Müşteriler (Customers) modülünün ba
 
 | Parametre | Tip | Zorunlu | Açıklama |
 |-----------|-----|---------|----------|
-| role | string | Evet | "customer" (sadece müşteriler için) |
 | date_from | string | Hayır | Başlangıç tarihi (YYYY-MM-DD) |
 | date_to | string | Hayır | Bitiş tarihi (YYYY-MM-DD) |
 
@@ -557,7 +557,7 @@ Bu doküman, Biletim Admin Paneli için Müşteriler (Customers) modülünün ba
 
 ### 10. En Çok Harcama Yapan Müşteriler
 
-**Endpoint:** `GET /users/stats/top-spenders`
+**Endpoint:** `GET /api/v1/users/by-role/customers/top-spenders`
 
 **Açıklama:** En çok harcama yapan müşterileri listeler.
 
@@ -565,7 +565,6 @@ Bu doküman, Biletim Admin Paneli için Müşteriler (Customers) modülünün ba
 
 | Parametre | Tip | Zorunlu | Açıklama |
 |-----------|-----|---------|----------|
-| role | string | Evet | "customer" (sadece müşteriler için) |
 | limit | integer | Hayır | Kayıt sayısı (default: 10, max: 50) |
 | date_from | string | Hayır | Başlangıç tarihi (YYYY-MM-DD) |
 | date_to | string | Hayır | Bitiş tarihi (YYYY-MM-DD) |
@@ -595,7 +594,7 @@ Bu doküman, Biletim Admin Paneli için Müşteriler (Customers) modülünün ba
 
 ### 11. Müşteri Segmentasyonu
 
-**Endpoint:** `GET /users/stats/segmentation`
+**Endpoint:** `GET /api/v1/users/by-role/customers/segments`
 
 **Açıklama:** Müşteri segmentasyon dağılımını getirir.
 
@@ -603,7 +602,6 @@ Bu doküman, Biletim Admin Paneli için Müşteriler (Customers) modülünün ba
 
 | Parametre | Tip | Zorunlu | Açıklama |
 |-----------|-----|---------|----------|
-| role | string | Evet | "customer" (sadece müşteriler için) |
 | date_from | string | Hayır | Başlangıç tarihi (YYYY-MM-DD) |
 | date_to | string | Hayır | Bitiş tarihi (YYYY-MM-DD) |
 
@@ -637,7 +635,7 @@ Bu doküman, Biletim Admin Paneli için Müşteriler (Customers) modülünün ba
 
 ### 12. Müşteri Dışa Aktar
 
-**Endpoint:** `GET /users/export`
+**Endpoint:** `GET /api/v1/users/by-role/customers/export`
 
 **Açıklama:** Müşteri listesini CSV veya Excel formatında dışa aktarır.
 
@@ -645,7 +643,6 @@ Bu doküman, Biletim Admin Paneli için Müşteriler (Customers) modülünün ba
 
 | Parametre | Tip | Zorunlu | Açıklama |
 |-----------|-----|---------|----------|
-| role | string | Evet | "customer" (sadece müşteriler için) |
 | format | string | Hayır | Dosya formatı: csv, xlsx (default: csv) |
 | filters | object | Hayır | Filtre objesi (liste endpointi ile aynı) |
 
@@ -657,7 +654,7 @@ CSV veya Excel dosyası olarak download.
 
 ### 13. Toplu İşlem (Bulk Action)
 
-**Endpoint:** `POST /users/bulk`
+**Endpoint:** `POST /api/v1/users/bulk-action`
 
 **Açıklama:** Seçili müşteriler üzerinde toplu işlem yapar.
 
@@ -707,17 +704,17 @@ CSV veya Excel dosyası olarak download.
 
 | Endpoint | Super Admin | Org Admin | Co-Admin |
 |----------|-------------|-----------|----------|
-| GET /users?role=customer | ✅ | ✅ | ✅ |
-| GET /users/{id} | ✅ | ✅ | ✅ |
-| PUT /users/{id} | ✅ | ❌ | ❌ |
-| DELETE /users/{id} | ✅ | ❌ | ❌ |
-| GET /users/{id}/orders | ✅ | ✅ | ✅ |
-| GET /users/{id}/tickets | ✅ | ✅ | ✅ |
-| GET /users/{id}/activity | ✅ | ✅ | ✅ |
-| GET /users/{id}/stats | ✅ | ✅ | ✅ |
-| GET /users/stats/* | ✅ | ✅ | ✅ |
-| GET /users/export | ✅ | ✅ | ❌ |
-| POST /users/bulk | ✅ | ❌ | ❌ |
+| GET /api/v1/users/by-role/customers | ✅ | ✅ | ✅ |
+| GET /api/v1/users/{id} | ✅ | ✅ | ✅ |
+| PUT /api/v1/users/{id} | ✅ | ❌ | ❌ |
+| DELETE /api/v1/users/{id} | ✅ | ❌ | ❌ |
+| GET /api/v1/users/{id}/orders | ✅ | ✅ | ✅ |
+| GET /api/v1/users/{id}/tickets | ✅ | ✅ | ✅ |
+| GET /api/v1/users/{id}/activity | ✅ | ✅ | ✅ |
+| GET /api/v1/users/{id}/stats | ✅ | ✅ | ✅ |
+| GET /api/v1/users/by-role/customers/stats | ✅ | ✅ | ✅ |
+| GET /api/v1/users/by-role/customers/export | ✅ | ✅ | ❌ |
+| POST /api/v1/users/bulk-action | ✅ | ❌ | ❌ |
 
 ---
 
@@ -822,7 +819,7 @@ Log içeriği:
 
 **Request:**
 ```http
-GET /users?role=customer&page=1&per_page=20&status=active&sort_by=total_spent&sort_order=desc
+GET /api/v1/users/by-role/customers?page=1&per_page=20&status=active&sort_by=total_spent&sort_order=desc
 ```
 
 **Expected Response:** 200 OK with active customers sorted by total spent
@@ -831,7 +828,7 @@ GET /users?role=customer&page=1&per_page=20&status=active&sort_by=total_spent&so
 
 **Request:**
 ```http
-GET /users/1
+GET /api/v1/users/1
 ```
 
 **Expected Response:** 200 OK with customer details
@@ -840,7 +837,7 @@ GET /users/1
 
 **Request:**
 ```http
-PUT /users/1
+PUT /api/v1/users/1
 Content-Type: application/json
 
 {
@@ -857,7 +854,7 @@ Content-Type: application/json
 
 **Request:**
 ```http
-PUT /users/1
+PUT /api/v1/users/1
 Content-Type: application/json
 
 {
@@ -883,7 +880,7 @@ Content-Type: application/json
 
 **Request:**
 ```http
-DELETE /users/1
+DELETE /api/v1/users/1
 ```
 (As Org Admin)
 
@@ -902,7 +899,7 @@ DELETE /users/1
 
 **Request:**
 ```http
-GET /users/999999
+GET /api/v1/users/999999
 ```
 
 **Expected Response:**
