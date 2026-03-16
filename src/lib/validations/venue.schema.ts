@@ -5,7 +5,7 @@ import { z } from "zod";
 export const venueSchema = z.object({
   organization_id: z
     .number()
-    .min(1, "Organizasyon seçimi zorunludur"),
+    .min(1, "Organizatör seçimi zorunludur"),
   name: z
     .string()
     .min(2, "Mekan adı en az 2 karakter olmalıdır")

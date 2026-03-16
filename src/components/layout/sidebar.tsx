@@ -31,7 +31,7 @@ const menuItems = [
     icon: LayoutDashboard,
   },
   {
-    title: "Organizasyonlar",
+    title: "Organizatörler",
     href: "/organizations",
     icon: Building2,
   },

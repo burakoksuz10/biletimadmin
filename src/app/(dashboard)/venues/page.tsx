@@ -350,7 +350,7 @@ export default function VenuesPage() {
                     Mekan
                   </th>
                   <th className="text-left py-3 px-4 text-[14px] font-medium text-[#0d0d12]">
-                    Organizasyon
+                    Organizatör
                   </th>
                   <th className="text-left py-3 px-4 text-[14px] font-medium text-[#0d0d12]">
                     Konum

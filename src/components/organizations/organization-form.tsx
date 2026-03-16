@@ -90,7 +90,7 @@ export function OrganizationForm({
           name="name"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Organizasyon Adı</FormLabel>
+              <FormLabel>Organizatör Adı</FormLabel>
               <FormControl>
                 <Input
                   placeholder="Örn: BKM"
@@ -112,7 +112,7 @@ export function OrganizationForm({
               <FormLabel>Açıklama (Opsiyonel)</FormLabel>
               <FormControl>
                 <Textarea
-                  placeholder="Organizasyon hakkında açıklama"
+                  placeholder="Organizatör hakkında açıklama"
                   className="min-h-[100px]"
                   error={!!form.formState.errors.description}
                   {...field}
@@ -133,7 +133,7 @@ export function OrganizationForm({
               <FormLabel>Adres (Opsiyonel)</FormLabel>
               <FormControl>
                 <Input
-                  placeholder="Organizasyon adresi"
+                  placeholder="Organizatör adresi"
                   error={!!form.formState.errors.address}
                   {...field}
                   value={field.value ?? ""}
@@ -274,7 +274,7 @@ export function OrganizationForm({
             ) : (
               <>
                 <Building2 className="mr-2 h-4 w-4" />
-                {isEditing ? "Organizasyonu Güncelle" : "Organizasyon Oluştur"}
+                {isEditing ? "Organizatörü Güncelle" : "Organizatör Oluştur"}
               </>
             )}
           </Button>

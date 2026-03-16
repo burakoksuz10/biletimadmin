@@ -110,7 +110,7 @@ export function VenueForm({ venue, onSuccess, onCancel }: VenueFormProps) {
           name="organization_id"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Organizasyon</FormLabel>
+              <FormLabel>Organizatör</FormLabel>
               <Select
                 disabled={isLoadingOrgs || isEditing}
                 onValueChange={(value) => field.onChange(Number(value))}
@@ -118,7 +118,7 @@ export function VenueForm({ venue, onSuccess, onCancel }: VenueFormProps) {
               >
                 <FormControl>
                   <SelectTrigger error={!!form.formState.errors.organization_id}>
-                    <SelectValue placeholder="Organizasyon seçin" />
+                    <SelectValue placeholder="Organizatör seçin" />
                   </SelectTrigger>
                 </FormControl>
                 <SelectContent>

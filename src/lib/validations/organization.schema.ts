@@ -5,8 +5,8 @@ import { z } from "zod";
 export const organizationSchema = z.object({
   name: z
     .string()
-    .min(2, "Organizasyon adı en az 2 karakter olmalıdır")
-    .max(255, "Organizasyon adı en fazla 255 karakter olabilir"),
+    .min(2, "Organizatör adı en az 2 karakter olmalıdır")
+    .max(255, "Organizatör adı en fazla 255 karakter olabilir"),
   description: z
     .string()
     .max(1000, "Açıklama en fazla 1000 karakter olabilir")

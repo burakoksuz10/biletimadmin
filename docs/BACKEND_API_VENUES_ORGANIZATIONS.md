@@ -1,8 +1,8 @@
-# Backend API Documentation - Mekanlar ve Organizasyonlar
+# Backend API Documentation - Mekanlar ve Organizatörler
 
 ## Genel Bilgiler
 
-Bu doküman, Biletim Admin panelindeki Mekanlar ve Organizasyonlar yönetimi için gerekli backend API endpoint'lerini detaylandırır.
+Bu doküman, Biletim Admin panelindeki Mekanlar ve Organizatörler yönetimi için gerekli backend API endpoint'lerini detaylandırır.
 
 **Base URL**: `https://api.biletleme.com/api/v1`
 
@@ -38,9 +38,9 @@ Tüm API response'ları aşağıdaki formatta olmalıdır:
 }
 ```
 
-## Organizasyonlar API Endpoints
+## Organizatörler API Endpoints
 
-### 1. Tüm Organizasyonları Listele
+### 1. Tüm Organizatörleri Listele
 
 **GET** `/organizations`
 
@@ -52,7 +52,7 @@ Kullanıcının yetkisine göre organizasyonları listeler:
 **Query Parameters**:
 ```typescript
 {
-  search?: string;        // Organizasyon adı veya açıklamada arama
+  search?: string;        // Organizatör adı veya açıklamada arama
   status?: "active" | "inactive" | "suspended";
   page?: number;          // Default: 1
   per_page?: number;      // Default: 20
@@ -137,12 +137,12 @@ Authorization: Bearer {token}
 ```
 
 **Error Responses**:
-- `404 Not Found`: Organizasyon bulunamadı
-- `403 Forbidden`: Bu organizasyonu görüntüleme yetkiniz yok
+- `404 Not Found`: Organizatör bulunamadı
+- `403 Forbidden`: Bu organizatörü görüntüleme yetkiniz yok
 
 ---
 
-### 3. Yeni Organizasyon Oluştur
+### 3. Yeni Organizatör Oluştur
 
 **POST** `/organizations`
 
@@ -163,7 +163,7 @@ Yeni bir organizasyon oluşturur. **Sadece SUPER_ADMIN yetkisi gereklidir.**
 ```
 
 **Validation Rules**:
-- `name` (required, string, min: 2, max: 255): Organizasyon adı
+- `name` (required, string, min: 2, max: 255): Organizatör adı
 - `description` (optional, string, max: 1000): Açıklama
 - `address` (optional, string, max: 500): Adres
 - `phone` (optional, string, max: 20): Telefon numarası
@@ -206,7 +206,7 @@ Content-Type: application/json
     "created_at": "2024-03-16T13:52:00Z",
     "updated_at": "2024-03-16T13:52:00Z"
   },
-  "message": "Organizasyon başarıyla oluşturuldu"
+  "message": "Organizatör başarıyla oluşturuldu"
 }
 ```
 
@@ -229,7 +229,7 @@ Mevcut bir organizasyonu günceller.
 **Request Body**: (Tüm alanlar opsiyonel)
 ```json
 {
-  "name": "BKM Organizasyon",
+  "name": "BKM",
   "description": "Güncellenmiş açıklama",
   "address": "Yeni adres",
   "phone": "+90 212 123 4567",
@@ -276,12 +276,12 @@ Content-Type: application/json
     "created_at": "2024-01-01T00:00:00Z",
     "updated_at": "2024-03-16T13:55:00Z"
   },
-  "message": "Organizasyon başarıyla güncellendi"
+  "message": "Organizatör başarıyla güncellendi"
 }
 ```
 
 **Error Responses**:
-- `404 Not Found`: Organizasyon bulunamadı
+- `404 Not Found`: Organizatör bulunamadı
 - `422 Unprocessable Entity`: Validation hataları
 - `403 Forbidden`: Bu organizasyonu güncelleme yetkiniz yok
 
@@ -306,7 +306,7 @@ Authorization: Bearer {token}
 ```json
 {
   "success": true,
-  "message": "Organizasyon başarıyla silindi"
+  "message": "Organizatör başarıyla silindi"
 }
 ```
 
@@ -705,10 +705,10 @@ Authorization: Bearer {token}
 ### 1. Slug Oluşturma
 - Her organizasyon ve mekan için benzersiz bir slug otomatik oluşturulmalıdır
 - Slug, name alanından türetilir (küçük harf, boşluklar tire ile değiştirilir, Türkçe karakterler dönüştürülür)
-- Örnek: "BKM Organizasyon" → "bkm-organizasyon"
+- Örnek: "BKM" → "bkm"
 
 ### 2. Cascade Silme Kontrolü
-- Organizasyon silinmeden önce bağlı mekanlar kontrol edilmeli
+- Organizatör silinmeden önce bağlı mekanlar kontrol edilmeli
 - Mekan silinmeden önce bağlı etkinlikler kontrol edilmeli
 - Aktif bağlantılar varsa silme işlemi `409 Conflict` hatası ile reddedilmeli
 

@@ -54,7 +54,7 @@ const statusVariantMap: Record<UserStatus, "success" | "warning" | "danger"> = {
 
 const roleLabels: Record<UserRole, string> = {
   super_admin: "Süper Admin",
-  org_admin: "Organizasyon Admini",
+  org_admin: "Organizatör Admini",
   co_admin: "Co-Admin",
 };
 

@@ -199,10 +199,10 @@ export default function OrganizationsPage() {
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-[24px] font-semibold text-[#0d0d12]">
-            Organizasyonlar
+            Organizatörler
           </h1>
           <p className="text-[14px] text-[#666d80] mt-1">
-            Organizasyonları yönetin ve görüntüleyin
+            Organizatörleri yönetin ve görüntüleyin
           </p>
         </div>
         <Button
@@ -210,7 +210,7 @@ export default function OrganizationsPage() {
           onClick={() => setIsCreateDialogOpen(true)}
         >
           <Plus className="w-4 h-4 mr-2" />
-          Yeni Organizasyon
+          Yeni Organizatör
         </Button>
       </div>
 
@@ -286,7 +286,7 @@ export default function OrganizationsPage() {
         <div className="relative flex-1 max-w-sm">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#666d80]" />
           <Input
-            placeholder="Organizasyon ara..."
+            placeholder="Organizatör ara..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             className="pl-10 h-10 border-[#e5e7eb]"
@@ -324,7 +324,7 @@ export default function OrganizationsPage() {
               <thead>
                 <tr className="border-b border-[#e5e7eb]">
                   <th className="text-left py-3 px-4 text-[14px] font-medium text-[#0d0d12]">
-                    Organizasyon
+                    Organizatör
                   </th>
                   <th className="text-left py-3 px-4 text-[14px] font-medium text-[#0d0d12]">
                     Konum
@@ -356,7 +356,7 @@ export default function OrganizationsPage() {
                       colSpan={5}
                       className="py-8 text-center text-[#666d80]"
                     >
-                      Organizasyon bulunamadı
+                      Organizatör bulunamadı
                     </td>
                   </tr>
                 ) : (
@@ -439,9 +439,9 @@ export default function OrganizationsPage() {
       >
         <DialogContent className="sm:max-w-[600px] max-h-[90vh] overflow-y-auto">
           <DialogHeader>
-            <DialogTitle>Yeni Organizasyon Ekle</DialogTitle>
+            <DialogTitle>Yeni Organizatör Ekle</DialogTitle>
             <DialogDescription>
-              Yeni bir organizasyon oluşturun. Zorunlu alanları doldurun.
+              Yeni bir organizatör oluşturun. Zorunlu alanları doldurun.
             </DialogDescription>
           </DialogHeader>
           <OrganizationForm
@@ -458,9 +458,9 @@ export default function OrganizationsPage() {
       >
         <DialogContent className="sm:max-w-[600px] max-h-[90vh] overflow-y-auto">
           <DialogHeader>
-            <DialogTitle>Organizasyonu Düzenle</DialogTitle>
+            <DialogTitle>Organizatörü Düzenle</DialogTitle>
             <DialogDescription>
-              {editingOrganization?.name} organizasyonunun bilgilerini
+              {editingOrganization?.name} organizatörünün bilgilerini
               güncelleyin.
             </DialogDescription>
           </DialogHeader>
@@ -481,11 +481,11 @@ export default function OrganizationsPage() {
       >
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>Organizasyonu Sil</AlertDialogTitle>
+            <AlertDialogTitle>Organizatörü Sil</AlertDialogTitle>
             <AlertDialogDescription>
-              <strong>{deletingOrganization?.name}</strong> organizasyonunu
+              <strong>{deletingOrganization?.name}</strong> organizatörünü
               silmek istediğinize emin misiniz? Bu işlem geri alınamaz.
-              Organizasyona bağlı mekanlar veya etkinlikler varsa silme işlemi
+              Organizatöre bağlı mekanlar veya etkinlikler varsa silme işlemi
               başarısız olabilir.
             </AlertDialogDescription>
           </AlertDialogHeader>
