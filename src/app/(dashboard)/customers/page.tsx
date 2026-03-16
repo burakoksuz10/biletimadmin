@@ -85,10 +85,15 @@ export default function CustomersPage() {
         console.log("API yanıtı:", response);
         setCustomers(response.data);
         console.log("Müşteriler yüklendi:", response.data.length);
-      } catch (error) {
+      } catch (error: any) {
         console.error("Müşteriler yüklenirken hata:", error);
         // Hata mesajını göster
         console.error("Hata detayları:", JSON.stringify(error, null, 2));
+        
+        // 401 hatası için özel mesaj
+        if (error.status === 401) {
+          console.error("Oturum süreniz doldu. Lütfen tekrar giriş yapın.");
+        }
       } finally {
         setIsLoading(false);
       }

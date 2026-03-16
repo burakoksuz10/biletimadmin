@@ -30,72 +30,101 @@ class CustomersService {
       last_page: number;
     };
   }> {
-    console.log("API çağrısı yapılıyor: /api/v1/users/by-role/customers", filters);
+    console.log("🔍 [CUSTOMERS SERVICE] API çağrısı yapılıyor: /api/v1/users/by-role/customers", filters);
     
-    const response = await apiClient.get<any>("/api/v1/users/by-role/customers", {
-      params: filters
-    });
+    try {
+      const response = await apiClient.get<any>("/api/v1/users/by-role/customers", {
+        params: filters
+      });
 
-    console.log("Ham API yanıtı:", response);
+      console.log("📦 [CUSTOMERS SERVICE] Ham API yanıtı:", response);
+      console.log("📦 [CUSTOMERS SERVICE] Response tipi:", typeof response);
+      console.log("📦 [CUSTOMERS SERVICE] Response anahtarları:", response ? Object.keys(response) : "response null/undefined");
 
-    // Backend API formatı: { success: true, message: "...", data: [...], pagination: {...} }
-    // Axios response.data ile geldiği için response.data.data erişmemiz gerekiyor
-    if (response.data && response.data.data && Array.isArray(response.data.data)) {
-      console.log("Yanıt data.data içinde array, uzunluk:", response.data.data.length);
-      
-      const customers = response.data.data;
-      const pagination = response.data.pagination;
-      
-      return {
-        data: customers,
-        meta: {
-          current_page: pagination?.current_page || 1,
-          per_page: pagination?.per_page || customers.length,
-          total: pagination?.total || customers.length,
-          last_page: pagination?.last_page || 1
-        }
-      };
-    }
-
-    // Eğer yanıt doğrudan bir array ise (fallback)
-    if (Array.isArray(response)) {
-      console.log("Yanıt doğrudan array, uzunluk:", response.length);
-      return {
-        data: response,
-        meta: {
-          current_page: 1,
-          per_page: response.length,
-          total: response.length,
-          last_page: 1
-        }
-      };
-    }
-
-    // Eğer yanıt response.data içinde array ise (fallback)
-    if (response.data && Array.isArray(response.data)) {
-      console.log("Yanıt response.data içinde array, uzunluk:", response.data.length);
-      return {
-        data: response.data,
-        meta: {
-          current_page: 1,
-          per_page: response.data.length,
-          total: response.data.length,
-          last_page: 1
-        }
-      };
-    }
-
-    // Hiçbir durum uymazsa boş array dön
-    console.warn("Beklenmeyen API yanıt formatı:", response);
-    return {
-      data: [],
-      meta: {
-        current_page: 1,
-        per_page: 0,
-        total: 0,
-        last_page: 1
+      // Backend API formatı: { success: true, data: { customers: [...], pagination: {...} } }
+      // Axios response.data ile geldiği için response.data.data.customers erişmemiz gerekiyor
+      if (response.data && response.data.data && response.data.data.customers && Array.isArray(response.data.data.customers)) {
+        console.log("✅ [CUSTOMERS SERVICE] Yanıt data.data.customers içinde array, uzunluk:", response.data.data.customers.length);
+        
+        const customers = response.data.data.customers;
+        const pagination = response.data.data.pagination;
+        
+        return {
+          data: customers,
+          meta: {
+            current_page: pagination?.current_page || 1,
+            per_page: pagination?.per_page || customers.length,
+            total: pagination?.total || customers.length,
+            last_page: pagination?.total_pages || 1
+          }
+        };
       }
-    };
+
+      // Eski format için fallback: { success: true, data: [...], pagination: {...} }
+      if (response.data && response.data.data && Array.isArray(response.data.data)) {
+        console.log("✅ [CUSTOMERS SERVICE] Yanıt data.data içinde array (eski format), uzunluk:", response.data.data.length);
+        
+        const customers = response.data.data;
+        const pagination = response.data.pagination;
+        
+        return {
+          data: customers,
+          meta: {
+            current_page: pagination?.current_page || 1,
+            per_page: pagination?.per_page || customers.length,
+            total: pagination?.total || customers.length,
+            last_page: pagination?.last_page || 1
+          }
+        };
+      }
+
+      // Eğer yanıt doğrudan bir array ise (fallback)
+      if (Array.isArray(response)) {
+        console.log("✅ [CUSTOMERS SERVICE] Yanıt doğrudan array, uzunluk:", response.length);
+        return {
+          data: response,
+          meta: {
+            current_page: 1,
+            per_page: response.length,
+            total: response.length,
+            last_page: 1
+          }
+        };
+      }
+
+      // Eğer yanıt response.data içinde array ise (fallback)
+      if (response.data && Array.isArray(response.data)) {
+        console.log("✅ [CUSTOMERS SERVICE] Yanıt response.data içinde array, uzunluk:", response.data.length);
+        return {
+          data: response.data,
+          meta: {
+            current_page: 1,
+            per_page: response.data.length,
+            total: response.data.length,
+            last_page: 1
+          }
+        };
+      }
+
+      // Hiçbir durum uymazsa boş array dön
+      console.warn("⚠️ [CUSTOMERS SERVICE] Beklenmeyen API yanıt formatı:", response);
+      console.warn("⚠️ [CUSTOMERS SERVICE] response.data:", response.data);
+      console.warn("⚠️ [CUSTOMERS SERVICE] response.data?.data:", response.data?.data);
+      return {
+        data: [],
+        meta: {
+          current_page: 1,
+          per_page: 0,
+          total: 0,
+          last_page: 1
+        }
+      };
+    } catch (error: any) {
+      console.error("❌ [CUSTOMERS SERVICE] API çağrısı hatası:", error);
+      console.error("❌ [CUSTOMERS SERVICE] Hata status:", error.status);
+      console.error("❌ [CUSTOMERS SERVICE] Hata mesajı:", error.message);
+      throw error;
+    }
   }
 
   /**
@@ -107,14 +136,21 @@ class CustomersService {
       `/api/v1/users/${id}`
     );
 
-    // Eğer yanıt doğrudan müşteri nesnesi ise
-    if (response.id) {
-      return response;
+    console.log("Müşteri detay API yanıtı:", response);
+
+    // Backend API formatı: { success: true, data: { ...customer } }
+    if (response.data && response.data.data && response.data.data.id) {
+      return response.data.data;
     }
 
-    // Eğer yanıt data içinde ise
+    // Eğer yanıt data içinde ise (fallback)
     if (response.data && response.data.id) {
       return response.data;
+    }
+
+    // Eğer yanıt doğrudan müşteri nesnesi ise (fallback)
+    if (response.id) {
+      return response;
     }
 
     throw new Error("Müşteri bulunamadı");
@@ -130,14 +166,21 @@ class CustomersService {
       data
     );
 
-    // Eğer yanıt doğrudan müşteri nesnesi ise
-    if (response.id) {
-      return response;
+    console.log("Müşteri güncelleme API yanıtı:", response);
+
+    // Backend API formatı: { success: true, data: { ...customer }, message: "..." }
+    if (response.data && response.data.data && response.data.data.id) {
+      return response.data.data;
     }
 
-    // Eğer yanıt data içinde ise
+    // Eğer yanıt data içinde ise (fallback)
     if (response.data && response.data.id) {
       return response.data;
+    }
+
+    // Eğer yanıt doğrudan müşteri nesnesi ise (fallback)
+    if (response.id) {
+      return response;
     }
 
     throw new Error("Müşteri güncellenemedi");
@@ -176,7 +219,23 @@ class CustomersService {
       { params }
     );
 
-    // Eğer yanıt doğrudan bir array ise
+    console.log("Müşteri siparişleri API yanıtı:", response);
+
+    // Backend API formatı: { success: true, data: { orders: [...], pagination: {...} } }
+    if (response.data && response.data.data && response.data.data.orders && Array.isArray(response.data.data.orders)) {
+      const pagination = response.data.data.pagination;
+      return {
+        data: response.data.data.orders,
+        meta: {
+          current_page: pagination?.current_page || 1,
+          per_page: pagination?.per_page || response.data.data.orders.length,
+          total: pagination?.total || response.data.data.orders.length,
+          last_page: pagination?.total_pages || 1
+        }
+      };
+    }
+
+    // Eğer yanıt doğrudan bir array ise (fallback)
     if (Array.isArray(response)) {
       return {
         data: response,
@@ -189,9 +248,17 @@ class CustomersService {
       };
     }
 
-    // Eğer yanıt zaten doğru formatta ise
+    // Eğer yanıt data içinde array ise (fallback)
     if (response.data && Array.isArray(response.data)) {
-      return response;
+      return {
+        data: response.data,
+        meta: {
+          current_page: 1,
+          per_page: response.data.length,
+          total: response.data.length,
+          last_page: 1
+        }
+      };
     }
 
     // Hiçbir durum uymazsa boş array dön
@@ -226,17 +293,52 @@ class CustomersService {
       last_page: number;
     };
   }> {
-    const response = await apiClient.get<{
-      data: CustomerTicket[];
-      meta: {
-        current_page: number;
-        per_page: number;
-        total: number;
-        last_page: number;
-      };
-    }>(`/api/v1/users/${id}/tickets`, { params });
+    const response = await apiClient.get<any>(`/api/v1/users/${id}/tickets`, { params });
 
-    return response;
+    console.log("Müşteri biletleri API yanıtı:", response);
+
+    // Backend API formatı: { success: true, data: { tickets: [...], pagination: {...} } }
+    if (response.data && response.data.data && response.data.data.tickets && Array.isArray(response.data.data.tickets)) {
+      const pagination = response.data.data.pagination;
+      return {
+        data: response.data.data.tickets,
+        meta: {
+          current_page: pagination?.current_page || 1,
+          per_page: pagination?.per_page || response.data.data.tickets.length,
+          total: pagination?.total || response.data.data.tickets.length,
+          last_page: pagination?.total_pages || 1
+        }
+      };
+    }
+
+    // Eğer yanıt zaten doğru formatta ise (fallback)
+    if (response.data && Array.isArray(response.data.data)) {
+      return response.data;
+    }
+
+    // Eğer yanıt doğrudan doğru formatta ise (fallback)
+    if (Array.isArray(response.data)) {
+      return {
+        data: response.data,
+        meta: {
+          current_page: 1,
+          per_page: response.data.length,
+          total: response.data.length,
+          last_page: 1
+        }
+      };
+    }
+
+    // Hiçbir durum uymazsa boş array dön
+    return {
+      data: [],
+      meta: {
+        current_page: 1,
+        per_page: 0,
+        total: 0,
+        last_page: 1
+      }
+    };
   }
 
   /**
@@ -248,14 +350,21 @@ class CustomersService {
       `/api/v1/users/${id}/stats`
     );
 
-    // Eğer yanıt doğrudan stats nesnesi ise
-    if (response.total_orders !== undefined || response.total_spent !== undefined) {
-      return response;
+    console.log("Müşteri istatistikleri API yanıtı:", response);
+
+    // Backend API formatı: { success: true, data: { ...stats } }
+    if (response.data && response.data.data && (response.data.data.total_orders !== undefined || response.data.data.total_spent !== undefined)) {
+      return response.data.data;
     }
 
-    // Eğer yanıt data içinde ise
+    // Eğer yanıt data içinde ise (fallback)
     if (response.data && (response.data.total_orders !== undefined || response.data.total_spent !== undefined)) {
       return response.data;
+    }
+
+    // Eğer yanıt doğrudan stats nesnesi ise (fallback)
+    if (response.total_orders !== undefined || response.total_spent !== undefined) {
+      return response;
     }
 
     // Hiçbir durum uymazsa boş stats dön
@@ -300,7 +409,23 @@ class CustomersService {
       { params }
     );
 
-    // Eğer yanıt doğrudan bir array ise
+    console.log("Müşteri aktivitesi API yanıtı:", response);
+
+    // Backend API formatı: { success: true, data: { activities: [...], pagination: {...} } }
+    if (response.data && response.data.data && response.data.data.activities && Array.isArray(response.data.data.activities)) {
+      const pagination = response.data.data.pagination;
+      return {
+        data: response.data.data.activities,
+        meta: {
+          current_page: pagination?.current_page || 1,
+          per_page: pagination?.per_page || response.data.data.activities.length,
+          total: pagination?.total || response.data.data.activities.length,
+          last_page: pagination?.total_pages || 1
+        }
+      };
+    }
+
+    // Eğer yanıt doğrudan bir array ise (fallback)
     if (Array.isArray(response)) {
       return {
         data: response,
@@ -313,9 +438,17 @@ class CustomersService {
       };
     }
 
-    // Eğer yanıt zaten doğru formatta ise
+    // Eğer yanıt data içinde array ise (fallback)
     if (response.data && Array.isArray(response.data)) {
-      return response;
+      return {
+        data: response.data,
+        meta: {
+          current_page: 1,
+          per_page: response.data.length,
+          total: response.data.length,
+          last_page: 1
+        }
+      };
     }
 
     // Hiçbir durum uymazsa boş array dön
@@ -335,11 +468,23 @@ class CustomersService {
    * Uses /api/v1/users/by-role/customers/stats endpoint
    */
   async getGeneralStats(): Promise<CustomerStats> {
-    const response = await apiClient.get<{ data: CustomerStats }>(
+    const response = await apiClient.get<any>(
       "/api/v1/users/by-role/customers/stats"
     );
 
-    return response.data;
+    console.log("Genel müşteri istatistikleri API yanıtı:", response);
+
+    // Backend API formatı: { success: true, data: { ...stats } }
+    if (response.data && response.data.data) {
+      return response.data.data;
+    }
+
+    // Fallback
+    if (response.data) {
+      return response.data;
+    }
+
+    throw new Error("İstatistikler alınamadı");
   }
 
   /**
@@ -347,12 +492,29 @@ class CustomersService {
    * Uses /api/v1/users/by-role/customers/top-spenders endpoint
    */
   async getTopSpenders(limit?: number): Promise<TopCustomer[]> {
-    const response = await apiClient.get<{ data: TopCustomer[] }>(
+    const response = await apiClient.get<any>(
       "/api/v1/users/by-role/customers/top-spenders",
       { params: { limit } }
     );
 
-    return response.data;
+    console.log("En çok harcama yapanlar API yanıtı:", response);
+
+    // Backend API formatı: { success: true, data: { top_spenders: [...] } }
+    if (response.data && response.data.data && response.data.data.top_spenders && Array.isArray(response.data.data.top_spenders)) {
+      return response.data.data.top_spenders;
+    }
+
+    // Fallback: { success: true, data: [...] }
+    if (response.data && response.data.data && Array.isArray(response.data.data)) {
+      return response.data.data;
+    }
+
+    // Fallback
+    if (response.data && Array.isArray(response.data)) {
+      return response.data;
+    }
+
+    return [];
   }
 
   /**
@@ -360,11 +522,23 @@ class CustomersService {
    * Uses /api/v1/users/by-role/customers/segments endpoint
    */
   async getSegmentation(): Promise<CustomerSegmentation> {
-    const response = await apiClient.get<{ data: CustomerSegmentation }>(
+    const response = await apiClient.get<any>(
       "/api/v1/users/by-role/customers/segments"
     );
 
-    return response.data;
+    console.log("Müşteri segmentasyonu API yanıtı:", response);
+
+    // Backend API formatı: { success: true, data: { segments: [...] } }
+    if (response.data && response.data.data && response.data.data.segments && Array.isArray(response.data.data.segments)) {
+      return response.data.data;
+    }
+
+    // Fallback
+    if (response.data && response.data.data) {
+      return response.data.data;
+    }
+
+    throw new Error("Segmentasyon alınamadı");
   }
 
   /**
