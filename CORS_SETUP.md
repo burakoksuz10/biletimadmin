@@ -53,19 +53,24 @@ return [
 'same_site' => 'lax',
 ```
 
-### 4. Environment Variables (`.env`)
+### 4. Environment Variables (`.env`) ✅ YAPILANDIRILDI
 
 ```env
-# Development
-SANCTUM_STATEFUL_DOMAINS=localhost:3000
-SESSION_DOMAIN=localhost
-SESSION_SECURE=false
+# Production (Aktif Yapılandırma)
+SANCTUM_STATEFUL_DOMAINS=biletim.vercel.app,localhost:3000
+SESSION_DOMAIN=.biletim.simgesoft.com
+SESSION_SECURE=true
 
-# Production (şu an için gerek yok)
-# SANCTUM_STATEFUL_DOMAINS=yourdomain.com
-# SESSION_DOMAIN=yourdomain.com
-# SESSION_SECURE=true
+# Development (Local test için)
+# SANCTUM_STATEFUL_DOMAINS=localhost:3000
+# SESSION_DOMAIN=localhost
+# SESSION_SECURE=false
 ```
+
+**Not:** Backend developer tarafından yapılandırılmıştır:
+- `SESSION_DOMAIN=.biletim.simgesoft.com` (dot ile başlar, subdomain'leri içerir)
+- `SANCTUM_STATEFUL_DOMAINS=biletim.vercel.app,localhost:3000`
+- `php artisan optimize:clear` ve `php artisan config:cache` çalıştırıldı
 
 ## 🧪 Test Etmek İçin
 
