@@ -19,6 +19,7 @@ import type {
 class CustomersService {
   /**
    * Get all customers with filters
+   * Uses /users endpoint with role=customer filter
    */
   async getAll(filters?: CustomerFilters): Promise<{
     data: CustomerListItem[];
@@ -37,17 +38,23 @@ class CustomersService {
         total: number;
         last_page: number;
       };
-    }>("/customers", { params: filters });
+    }>("/users", {
+      params: {
+        role: "customer", // Filter for customers only
+        ...filters
+      }
+    });
 
     return response;
   }
 
   /**
    * Get customer by ID with full details
+   * Uses /users endpoint
    */
   async getById(id: number): Promise<Customer> {
     const response = await apiClient.get<{ data: Customer }>(
-      `/customers/${id}`
+      `/users/${id}`
     );
 
     return response.data;
@@ -55,10 +62,11 @@ class CustomersService {
 
   /**
    * Update customer
+   * Uses /users endpoint
    */
   async update(id: number, data: UpdateCustomerRequest): Promise<Customer> {
     const response = await apiClient.put<{ data: Customer }>(
-      `/customers/${id}`,
+      `/users/${id}`,
       data
     );
 
@@ -67,13 +75,15 @@ class CustomersService {
 
   /**
    * Delete customer (soft delete)
+   * Uses /users endpoint
    */
   async delete(id: number): Promise<void> {
-    await apiClient.delete(`/customers/${id}`);
+    await apiClient.delete(`/users/${id}`);
   }
 
   /**
    * Get customer orders
+   * Uses /users endpoint
    */
   async getOrders(
     id: number,
@@ -99,13 +109,14 @@ class CustomersService {
         total: number;
         last_page: number;
       };
-    }>(`/customers/${id}/orders`, { params });
+    }>(`/users/${id}/orders`, { params });
 
     return response;
   }
 
   /**
    * Get customer tickets
+   * Uses /users endpoint
    */
   async getTickets(
     id: number,
@@ -131,17 +142,18 @@ class CustomersService {
         total: number;
         last_page: number;
       };
-    }>(`/customers/${id}/tickets`, { params });
+    }>(`/users/${id}/tickets`, { params });
 
     return response;
   }
 
   /**
    * Get customer detailed statistics
+   * Uses /users endpoint
    */
   async getStats(id: number): Promise<CustomerDetailedStats> {
     const response = await apiClient.get<{ data: CustomerDetailedStats }>(
-      `/customers/${id}/stats`
+      `/users/${id}/stats`
     );
 
     return response.data;
@@ -149,6 +161,7 @@ class CustomersService {
 
   /**
    * Get customer activity history
+   * Uses /users endpoint
    */
   async getActivity(
     id: number,
@@ -174,17 +187,19 @@ class CustomersService {
         total: number;
         last_page: number;
       };
-    }>(`/customers/${id}/activity`, { params });
+    }>(`/users/${id}/activity`, { params });
 
     return response;
   }
 
   /**
    * Get general customer statistics
+   * Uses /users endpoint with role=customer filter
    */
   async getGeneralStats(): Promise<CustomerStats> {
     const response = await apiClient.get<{ data: CustomerStats }>(
-      "/customers/stats"
+      "/users/stats",
+      { params: { role: "customer" } }
     );
 
     return response.data;
@@ -192,11 +207,12 @@ class CustomersService {
 
   /**
    * Get top spending customers
+   * Uses /users endpoint with role=customer filter
    */
   async getTopSpenders(limit?: number): Promise<TopCustomer[]> {
     const response = await apiClient.get<{ data: TopCustomer[] }>(
-      "/customers/top-spenders",
-      { params: { limit } }
+      "/users/top-spenders",
+      { params: { role: "customer", limit } }
     );
 
     return response.data;
@@ -204,10 +220,12 @@ class CustomersService {
 
   /**
    * Get customer segmentation
+   * Uses /users endpoint with role=customer filter
    */
   async getSegmentation(): Promise<CustomerSegmentation> {
     const response = await apiClient.get<{ data: CustomerSegmentation }>(
-      "/customers/segments"
+      "/users/segments",
+      { params: { role: "customer" } }
     );
 
     return response.data;
@@ -215,13 +233,18 @@ class CustomersService {
 
   /**
    * Export customers
+   * Uses /users endpoint with role=customer filter
    */
   async exportCustomers(
     format: "csv" | "excel",
     filters?: CustomerFilters
   ): Promise<Blob> {
-    const response = await apiClient.get<Blob>("/customers/export", {
-      params: { ...filters, format },
+    const response = await apiClient.get<Blob>("/users/export", {
+      params: {
+        role: "customer",
+        ...filters,
+        format
+      },
       responseType: "blob",
     });
 
@@ -230,6 +253,7 @@ class CustomersService {
 
   /**
    * Bulk action on customers
+   * Uses /users endpoint
    */
   async bulkAction(
     action: "suspend" | "activate" | "ban" | "send_email",
@@ -239,9 +263,9 @@ class CustomersService {
     const response = await apiClient.post<{
       success: boolean;
       message: string;
-    }>("/customers/bulk-action", {
+    }>("/users/bulk-action", {
       action,
-      customer_ids: customerIds,
+      user_ids: customerIds,
       data,
     });
 
