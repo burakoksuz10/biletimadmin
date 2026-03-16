@@ -5,7 +5,7 @@
 // User & Authentication Types
 // ============================================
 
-export type BackendUserRole = "SUPER_ADMIN" | "ORG_ADMIN" | "CO_ADMIN";
+export type BackendUserRole = "super_admin" | "org_admin" | "co_admin";
 
 export interface BackendUser {
   id: number;

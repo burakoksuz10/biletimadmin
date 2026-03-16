@@ -1,5 +1,5 @@
 // Authentication Service
-// Handles all authentication operations with Laravel Sanctum
+// Handles all authentication operations with Laravel Sanctum Token-based Auth
 
 import { apiClient } from "../client";
 import type { BackendUser } from "../types/biletleme.types";
@@ -17,74 +17,70 @@ interface RegisterData {
   phone?: string;
 }
 
-interface AuthResponse {
-  data: BackendUser;
-  message?: string;
+interface LoginResponse {
+  success: boolean;
+  message: string;
+  data: {
+    user: BackendUser;
+    token: string;
+    token_type: string;
+  };
 }
 
 class AuthService {
   /**
-   * Fetch CSRF cookie from Laravel Sanctum
-   * Must be called before login/register for web authentication
-   */
-  async getCsrfToken(): Promise<void> {
-    await apiClient.getCsrfToken();
-  }
-
-  /**
    * Login with email and password
-   * Automatically fetches CSRF token before login
+   * Returns user data and stores the Bearer token
    */
   async login(credentials: LoginCredentials): Promise<BackendUser> {
-    // First, get CSRF token
-    await this.getCsrfToken();
-
-    // Then, login - backend returns { data: { user object } } or { user: {...} }
-    // We handle both formats
-    const response = await apiClient.post<AuthResponse | BackendUser>(
-      "/auth/login",
+    // Login to /api/v1/login endpoint
+    const response = await apiClient.post<LoginResponse>(
+      "/login",
       credentials
     );
 
-    // Handle different response formats
-    if ("data" in response && response.data) {
-      return response.data as BackendUser;
+    // Store the Bearer token
+    if (response.success && response.data?.token) {
+      apiClient.setToken(response.data.token);
     }
 
-    return response as BackendUser;
+    // Return the user data
+    return response.data.user;
   }
 
   /**
    * Register new user
-   * Automatically fetches CSRF token before registration
+   * Returns user data and stores the Bearer token
    */
   async register(data: RegisterData): Promise<BackendUser> {
-    // First, get CSRF token
-    await this.getCsrfToken();
-
-    // Then, register
-    const response = await apiClient.post<AuthResponse | BackendUser>(
-      "/auth/register",
+    // Register to /api/v1/register endpoint
+    const response = await apiClient.post<LoginResponse>(
+      "/register",
       data
     );
 
-    // Handle different response formats
-    if ("data" in response && response.data) {
-      return response.data as BackendUser;
+    // Store the Bearer token
+    if (response.success && response.data?.token) {
+      apiClient.setToken(response.data.token);
     }
 
-    return response as BackendUser;
+    // Return the user data
+    return response.data.user;
   }
 
   /**
    * Logout current user
+   * Clears token from storage and calls backend logout endpoint
    */
   async logout(): Promise<void> {
     try {
-      await apiClient.post("/auth/logout");
+      await apiClient.post("/logout");
     } catch {
       // Even if logout fails on server, we clear local state
       console.warn("Sunucu logout hatası, yerel oturum temizleniyor");
+    } finally {
+      // Always clear the token
+      apiClient.clearToken();
     }
   }
 
@@ -96,20 +92,20 @@ class AuthService {
       "/auth/me"
     );
 
-    // Handle different response formats
+    // Handle response format { data: { user } }
     if ("data" in response && response.data) {
-      return response.data as BackendUser;
+      return response.data;
     }
 
-    return response as BackendUser;
+    // Handle direct user object response
+    return response as unknown as BackendUser;
   }
 
   /**
    * Request password reset email
    */
   async forgotPassword(email: string): Promise<void> {
-    await this.getCsrfToken();
-    await apiClient.post("/auth/forgot-password", { email });
+    await apiClient.post("/forgot-password", { email });
   }
 
   /**
@@ -120,16 +116,21 @@ class AuthService {
     password: string;
     password_confirmation: string;
   }): Promise<void> {
-    await this.getCsrfToken();
-    await apiClient.post("/auth/reset-password", data);
+    await apiClient.post("/reset-password", data);
   }
 
   /**
    * Verify OTP code
    */
   async verifyOtp(data: { email: string; otp: string }): Promise<void> {
-    await this.getCsrfToken();
-    await apiClient.post("/auth/verify-otp", data);
+    await apiClient.post("/verify-otp", data);
+  }
+
+  /**
+   * Check if user has a valid token
+   */
+  hasValidToken(): boolean {
+    return apiClient.hasValidToken();
   }
 }
 

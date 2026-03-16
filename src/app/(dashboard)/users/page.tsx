@@ -41,9 +41,9 @@ import { mockUsers } from "@/lib/mock-data/users";
 import type { UserListItem, UserRole, UserStatus } from "@/types/user.types";
 
 const roleVariantMap: Record<UserRole, "success" | "info" | "neutral"> = {
-  SUPER_ADMIN: "success",
-  ORG_ADMIN: "info",
-  CO_ADMIN: "neutral",
+  super_admin: "success",
+  org_admin: "info",
+  co_admin: "neutral",
 };
 
 const statusVariantMap: Record<UserStatus, "success" | "warning" | "danger"> = {
@@ -53,9 +53,9 @@ const statusVariantMap: Record<UserStatus, "success" | "warning" | "danger"> = {
 };
 
 const roleLabels: Record<UserRole, string> = {
-  SUPER_ADMIN: "Süper Admin",
-  ORG_ADMIN: "Organizasyon Admini",
-  CO_ADMIN: "Co-Admin",
+  super_admin: "Süper Admin",
+  org_admin: "Organizasyon Admini",
+  co_admin: "Co-Admin",
 };
 
 const statusLabels: Record<UserStatus, string> = {
@@ -289,7 +289,7 @@ export default function UsersPage() {
   });
 
   const roleCounts = useMemo(() => {
-    const counts = { all: mockUsers.length, SUPER_ADMIN: 0, ORG_ADMIN: 0, CO_ADMIN: 0 };
+    const counts = { all: mockUsers.length, super_admin: 0, org_admin: 0, co_admin: 0 };
     mockUsers.forEach((u) => {
       counts[u.role]++;
     });
@@ -376,7 +376,7 @@ export default function UsersPage() {
               <div>
                 <p className="text-[12px] text-[#666d80]">Org. Adminler</p>
                 <p className="text-[20px] font-semibold text-[#0d0d12]">
-                  {roleCounts.ORG_ADMIN}
+                  {roleCounts.org_admin}
                 </p>
               </div>
             </div>
@@ -386,7 +386,7 @@ export default function UsersPage() {
 
       {/* Role Tabs */}
       <div className="flex items-center gap-2 border-b border-[#e5e7eb]">
-        {(["all", "SUPER_ADMIN", "ORG_ADMIN", "CO_ADMIN"] as const).map(
+        {(["all", "super_admin", "org_admin", "co_admin"] as const).map(
           (role) => (
             <button
               key={role}
@@ -397,9 +397,9 @@ export default function UsersPage() {
                   : "border-transparent text-[#666d80] hover:text-[#0d0d12]"
               }`}
             >
-              {role === "SUPER_ADMIN"
+              {role === "super_admin"
                 ? "Süper Adminler"
-                : role === "ORG_ADMIN"
+                : role === "org_admin"
                 ? "Org. Adminler"
                 : "Co-Adminler"}
               <span className="ml-2 text-[12px] text-[#818898]">

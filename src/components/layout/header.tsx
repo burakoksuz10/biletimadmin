@@ -63,7 +63,7 @@ export function Header({ sidebarCollapsed }: HeaderProps) {
                   {user?.name || "Admin Kullanıcı"}
                 </p>
                 <p className="text-[12px] text-[#666d80] leading-[18px]">
-                  {user?.role === "SUPER_ADMIN" ? "Süper Admin" : user?.role === "ORG_ADMIN" ? "Org. Admin" : "Co-Admin"}
+                  {user?.role === "super_admin" ? "Süper Admin" : user?.role === "org_admin" ? "Org. Admin" : "Co-Admin"}
                 </p>
               </div>
               <ChevronDown className="w-4 h-4 text-[#666d80]" />

@@ -28,13 +28,14 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
-  // Initialize from localStorage and verify session
+  // Initialize from localStorage and verify token
   useEffect(() => {
     async function initAuth() {
       try {
         const storedUser = localStorage.getItem("user");
+        const hasToken = authService.hasValidToken();
 
-        if (storedUser) {
+        if (storedUser && hasToken) {
           // Verify session is still valid by fetching current user from backend
           try {
             const backendUser = await authService.getCurrentUser();
@@ -42,7 +43,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
             setUser(mappedUser);
             localStorage.setItem("user", JSON.stringify(mappedUser));
           } catch {
-            // Session expired or invalid, clear storage
+            // Token expired or invalid, clear storage
             localStorage.removeItem("user");
             setUser(null);
           }

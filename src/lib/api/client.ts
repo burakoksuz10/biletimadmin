@@ -1,5 +1,5 @@
 // API Client Configuration with Axios
-// Configured for Laravel Sanctum Cookie-based (Stateful) Authentication
+// Configured for Laravel Sanctum Token-based Authentication
 // Backend: Biletleme Platform (Laravel 12)
 
 import axios, { AxiosInstance, AxiosError, InternalAxiosRequestConfig } from "axios";
@@ -7,6 +7,9 @@ import axios, { AxiosInstance, AxiosError, InternalAxiosRequestConfig } from "ax
 // API Configuration
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || "https://biletim.simgesoft.com";
 const API_VERSION = process.env.NEXT_PUBLIC_API_VERSION || "v1";
+
+// Token storage key
+const TOKEN_STORAGE_KEY = "auth_token";
 
 // Error types
 export interface ApiValidationError {
@@ -23,32 +26,25 @@ export interface ApiError {
 
 class ApiClient {
   private client: AxiosInstance;
-  private csrfClient: AxiosInstance;
 
   constructor() {
     // Main API client - for all API requests
     this.client = axios.create({
       baseURL: `${API_BASE_URL}/api/${API_VERSION}`,
       timeout: 30000,
-      withCredentials: true, // Required for Sanctum cookie-based auth
       headers: {
         "Content-Type": "application/json",
         "Accept": "application/json",
       },
     });
 
-    // Separate client for CSRF cookie (no /api/v1 prefix)
-    this.csrfClient = axios.create({
-      baseURL: API_BASE_URL,
-      timeout: 10000,
-      withCredentials: true,
-    });
-
-    // Request interceptor - Add XSRF token from cookie
+    // Request interceptor - Add Bearer token from localStorage
     this.client.interceptors.request.use(
       (config: InternalAxiosRequestConfig) => {
-        // Axios automatically reads XSRF-TOKEN cookie and sets X-XSRF-TOKEN header
-        // when withCredentials is true. No manual handling needed.
+        const token = this.getToken();
+        if (token) {
+          config.headers.Authorization = `Bearer ${token}`;
+        }
         return config;
       },
       (error: AxiosError) => {
@@ -63,9 +59,10 @@ class ApiClient {
         const status = error.response?.status;
         const responseData = error.response?.data as Record<string, unknown> | undefined;
 
-        // Handle 401 - Unauthorized (session expired)
+        // Handle 401 - Unauthorized (token expired or invalid)
         if (status === 401) {
           if (typeof window !== "undefined") {
+            this.clearToken();
             localStorage.removeItem("user");
             // Only redirect if not already on login page
             if (!window.location.pathname.includes("/login")) {
@@ -144,10 +141,28 @@ class ApiClient {
     );
   }
 
-  // Fetch CSRF cookie from Laravel Sanctum
-  // Must be called before login/register
-  async getCsrfToken(): Promise<void> {
-    await this.csrfClient.get("/sanctum/csrf-cookie");
+  // Token management methods
+  setToken(token: string): void {
+    if (typeof window !== "undefined") {
+      localStorage.setItem(TOKEN_STORAGE_KEY, token);
+    }
+  }
+
+  getToken(): string | null {
+    if (typeof window !== "undefined") {
+      return localStorage.getItem(TOKEN_STORAGE_KEY);
+    }
+    return null;
+  }
+
+  clearToken(): void {
+    if (typeof window !== "undefined") {
+      localStorage.removeItem(TOKEN_STORAGE_KEY);
+    }
+  }
+
+  hasValidToken(): boolean {
+    return this.getToken() !== null;
   }
 
   // HTTP Methods
