@@ -200,10 +200,10 @@ export default function CustomersPage() {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-[24px] font-semibold text-[#0d0d12]">
+          <h1 className="text-[24px] font-semibold text-[#0d0d12] dark:text-[#f9fafb]">
             Müşteriler
           </h1>
-          <p className="text-[14px] text-[#666d80] mt-1">
+          <p className="text-[14px] text-[#666d80] dark:text-[#9ca3af] mt-1">
             Bilet alan müşterileri görüntüleyin ve yönetin
           </p>
         </div>
@@ -224,12 +224,12 @@ export default function CustomersPage() {
         <Card className="border-[#e5e7eb]">
           <CardContent className="p-6">
             <div className="flex items-center gap-4">
-              <div className="w-12 h-12 rounded-xl bg-[#e1eee3] flex items-center justify-center">
-                <Users className="w-6 h-6 text-[#09724a]" />
+              <div className="w-12 h-12 rounded-xl bg-[#e1eee3] dark:bg-[#1a2e1f] flex items-center justify-center">
+                <Users className="w-6 h-6 text-[#09724a] dark:text-[#00fb90]" />
               </div>
               <div>
-                <p className="text-[12px] text-[#666d80]">Toplam Müşteri</p>
-                <p className="text-[20px] font-semibold text-[#0d0d12]">
+                <p className="text-[12px] text-[#666d80] dark:text-[#9ca3af]">Toplam Müşteri</p>
+                <p className="text-[20px] font-semibold text-[#0d0d12] dark:text-[#f9fafb]">
                   {stats.total}
                 </p>
               </div>
@@ -240,12 +240,12 @@ export default function CustomersPage() {
         <Card className="border-[#e5e7eb]">
           <CardContent className="p-6">
             <div className="flex items-center gap-4">
-              <div className="w-12 h-12 rounded-xl bg-[#ecfdf3] flex items-center justify-center">
-                <Shield className="w-6 h-6 text-[#10b981]" />
+              <div className="w-12 h-12 rounded-xl bg-[#ecfdf3] dark:bg-[#1a2e1f] flex items-center justify-center">
+                <Shield className="w-6 h-6 text-[#10b981] dark:text-[#00fb90]" />
               </div>
               <div>
-                <p className="text-[12px] text-[#666d80]">Aktif</p>
-                <p className="text-[20px] font-semibold text-[#0d0d0d12]">
+                <p className="text-[12px] text-[#666d80] dark:text-[#9ca3af]">Aktif</p>
+                <p className="text-[20px] font-semibold text-[#0d0d12] dark:text-[#f9fafb]">
                   {stats.active}
                 </p>
               </div>
@@ -256,12 +256,12 @@ export default function CustomersPage() {
         <Card className="border-[#e5e7eb]">
           <CardContent className="p-6">
             <div className="flex items-center gap-4">
-              <div className="w-12 h-12 rounded-xl bg-[#fff8f0] flex items-center justify-center">
-                <Ban className="w-6 h-6 text-[#d39c3d]" />
+              <div className="w-12 h-12 rounded-xl bg-[#fff8f0] dark:bg-[#2e241a] flex items-center justify-center">
+                <Ban className="w-6 h-6 text-[#d39c3d] dark:text-[#f5a623]" />
               </div>
               <div>
-                <p className="text-[12px] text-[#666d80]">Askıya Alındı</p>
-                <p className="text-[20px] font-semibold text-[#0d0d0d12]">
+                <p className="text-[12px] text-[#666d80] dark:text-[#9ca3af]">Askıya Alındı</p>
+                <p className="text-[20px] font-semibold text-[#0d0d12] dark:text-[#f9fafb]">
                   {stats.suspended}
                 </p>
               </div>
@@ -272,12 +272,12 @@ export default function CustomersPage() {
         <Card className="border-[#e5e7eb]">
           <CardContent className="p-6">
             <div className="flex items-center gap-4">
-              <div className="w-12 h-12 rounded-xl bg-[#fff0f3] flex items-center justify-center">
-                <Crown className="w-6 h-6 text-[#df1c41]" />
+              <div className="w-12 h-12 rounded-xl bg-[#fff0f3] dark:bg-[#2e1a1f] flex items-center justify-center">
+                <Crown className="w-6 h-6 text-[#df1c41] dark:text-[#ff6b8a]" />
               </div>
               <div>
-                <p className="text-[12px] text-[#666d80]">VIP Müşteriler</p>
-                <p className="text-[20px] font-semibold text-[#0d0d0d12]">
+                <p className="text-[12px] text-[#666d80] dark:text-[#9ca3af]">VIP Müşteriler</p>
+                <p className="text-[20px] font-semibold text-[#0d0d12] dark:text-[#f9fafb]">
                   {stats.vip}
                 </p>
               </div>
@@ -291,12 +291,12 @@ export default function CustomersPage() {
         <Card className="border-[#e5e7eb]">
           <CardContent className="p-6">
             <div className="flex items-center gap-4">
-              <div className="w-12 h-12 rounded-xl bg-[#effafa] flex items-center justify-center">
-                <TrendingUp className="w-6 h-6 text-[#09724a]" />
+              <div className="w-12 h-12 rounded-xl bg-[#effafa] dark:bg-[#1a2e2e] flex items-center justify-center">
+                <TrendingUp className="w-6 h-6 text-[#09724a] dark:text-[#00fb90]" />
               </div>
               <div>
-                <p className="text-[12px] text-[#666d80]">Toplam Harcama</p>
-                <p className="text-[20px] font-semibold text-[#0d0d0d12]">
+                <p className="text-[12px] text-[#666d80] dark:text-[#9ca3af]">Toplam Harcama</p>
+                <p className="text-[20px] font-semibold text-[#0d0d12] dark:text-[#f9fafb]">
                   {stats.totalRevenue.toLocaleString()} ₺
                 </p>
               </div>
@@ -307,12 +307,12 @@ export default function CustomersPage() {
         <Card className="border-[#e5e7eb]">
           <CardContent className="p-6">
             <div className="flex items-center gap-4">
-              <div className="w-12 h-12 rounded-xl bg-[#eff6ff] flex items-center justify-center">
-                <Ticket className="w-6 h-6 text-[#3b82f6]" />
+              <div className="w-12 h-12 rounded-xl bg-[#eff6ff] dark:bg-[#1a242e] flex items-center justify-center">
+                <Ticket className="w-6 h-6 text-[#3b82f6] dark:text-[#60a5fa]" />
               </div>
               <div>
-                <p className="text-[12px] text-[#666d80]">Toplam Bilet</p>
-                <p className="text-[20px] font-semibold text-[#0d0d0d12]">
+                <p className="text-[12px] text-[#666d80] dark:text-[#9ca3af]">Toplam Bilet</p>
+                <p className="text-[20px] font-semibold text-[#0d0d12] dark:text-[#f9fafb]">
                   {customers.reduce((sum, c) => sum + c.total_tickets, 0).toLocaleString()}
                 </p>
               </div>
@@ -323,12 +323,12 @@ export default function CustomersPage() {
         <Card className="border-[#e5e7eb]">
           <CardContent className="p-6">
             <div className="flex items-center gap-4">
-              <div className="w-12 h-12 rounded-xl bg-[#fffbeb] flex items-center justify-center">
-                <Star className="w-6 h-6 text-[#f59e0b]" />
+              <div className="w-12 h-12 rounded-xl bg-[#fffbeb] dark:bg-[#2e2a1a] flex items-center justify-center">
+                <Star className="w-6 h-6 text-[#f59e0b] dark:text-[#fbbf24]" />
               </div>
               <div>
-                <p className="text-[12px] text-[#666d80]">Bu Ay Yeni</p>
-                <p className="text-[20px] font-semibold text-[#0d0d0d12]">
+                <p className="text-[12px] text-[#666d80] dark:text-[#9ca3af]">Bu Ay Yeni</p>
+                <p className="text-[20px] font-semibold text-[#0d0d12] dark:text-[#f9fafb]">
                   {stats.new}
                 </p>
               </div>
@@ -338,15 +338,15 @@ export default function CustomersPage() {
       </div>
 
       {/* Status Tabs */}
-      <div className="flex items-center gap-2 border-b border-[#e5e7eb]">
+      <div className="flex items-center gap-2 border-b border-[#e5e7eb] dark:border-[#374151]">
         {(["all", "active", "suspended", "banned"] as const).map((status) => (
           <button
             key={status}
             onClick={() => setStatusFilter(status)}
             className={`px-4 py-3 text-[14px] font-medium border-b-2 transition-colors ${
               statusFilter === status
-                ? "border-[#09724a] text-[#09724a]"
-                : "border-transparent text-[#666d80] hover:text-[#0d0d12]"
+                ? "border-[#09724a] text-[#09724a] dark:text-[#00fb90] dark:border-[#00fb90]"
+                : "border-transparent text-[#666d80] dark:text-[#9ca3af] hover:text-[#0d0d12] dark:hover:text-[#f9fafb]"
             }`}
           >
             {status === "all"
@@ -372,8 +372,8 @@ export default function CustomersPage() {
               onClick={() => setSegmentFilter(segment)}
               className={`px-3 py-1.5 rounded-lg text-[14px] font-medium transition-colors ${
                 segmentFilter === segment
-                  ? "bg-[#09724a] text-white"
-                  : "bg-[#f7f7f7] text-[#666d80] hover:text-[#0d0d12]"
+                  ? "bg-[#09724a] text-white dark:bg-[#00fb90] dark:text-[#0d0d12]"
+                  : "bg-[#f7f7f7] text-[#666d80] hover:text-[#0d0d12] dark:bg-[#1f2937] dark:text-[#9ca3af] dark:hover:text-[#f9fafb]"
               }`}
             >
               {segment === "all"
@@ -400,13 +400,13 @@ export default function CustomersPage() {
       {/* Search & Filters */}
       <div className="flex items-center gap-4">
         <div className="relative flex-1 max-w-sm">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-[#818898]" />
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-[#818898] dark:text-[#9ca3af]" />
           <Input
             type="search"
             placeholder="Müşteri ara..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="pl-10 h-10 rounded-lg bg-[#f7f7f7] border-[#e5e7eb]"
+            className="pl-10 h-10 rounded-lg bg-[#f7f7f7] border-[#e5e7eb] dark:bg-[#1f2937] dark:border-[#374151] dark:text-[#f9fafb] dark:placeholder:text-[#6b7280]"
           />
         </div>
         <Button variant="secondary" className="h-10">
@@ -417,8 +417,8 @@ export default function CustomersPage() {
 
       {/* Bulk Actions Bar */}
       {selectedIds.length > 0 && (
-        <div className="flex items-center justify-between bg-[#e1eee3] border border-[#09724a] rounded-lg p-3">
-          <p className="text-[14px] text-[#09724a]">
+        <div className="flex items-center justify-between bg-[#e1eee3] dark:bg-[#1a2e1f] border border-[#09724a] dark:border-[#00fb90] rounded-lg p-3">
+          <p className="text-[14px] text-[#09724a] dark:text-[#00fb90]">
             {selectedIds.length} müşteri seçildi
           </p>
           <div className="flex items-center gap-2">
@@ -457,7 +457,7 @@ export default function CustomersPage() {
           <div className="overflow-x-auto">
             <table className="w-full">
               <thead>
-                <tr className="border-b border-[#e5e7eb] bg-[#f7f7f7]">
+                <tr className="border-b border-[#e5e7eb] dark:border-[#374151] bg-[#f7f7f7] dark:bg-[#1f2937]">
                   <th className="text-left py-3 px-4 w-12">
                     <input
                       type="checkbox"
@@ -467,45 +467,45 @@ export default function CustomersPage() {
                     />
                   </th>
                   <th
-                    className="text-left py-3 px-4 cursor-pointer hover:bg-[#e5e7eb]"
+                    className="text-left py-3 px-4 cursor-pointer hover:bg-[#e5e7eb] dark:hover:bg-[#374151]"
                     onClick={() => handleSort("name")}
                   >
                     <div className="flex items-center gap-1">
-                      Müşteri
-                      <ArrowUpDown className="w-3 h-3 text-[#818898]" />
+                      <span className="text-[#0d0d12] dark:text-[#f9fafb]">Müşteri</span>
+                      <ArrowUpDown className="w-3 h-3 text-[#818898] dark:text-[#9ca3af]" />
                     </div>
                   </th>
-                  <th className="text-left py-3 px-4">İletişim</th>
+                  <th className="text-left py-3 px-4 text-[#0d0d12] dark:text-[#f9fafb]">İletişim</th>
                   <th
-                    className="text-left py-3 px-4 cursor-pointer hover:bg-[#e5e7eb]"
+                    className="text-left py-3 px-4 cursor-pointer hover:bg-[#e5e7eb] dark:hover:bg-[#374151]"
                     onClick={() => handleSort("total_spent")}
                   >
                     <div className="flex items-center gap-1">
-                      Harcama
-                      <ArrowUpDown className="w-3 h-3 text-[#818898]" />
+                      <span className="text-[#0d0d12] dark:text-[#f9fafb]">Harcama</span>
+                      <ArrowUpDown className="w-3 h-3 text-[#818898] dark:text-[#9ca3af]" />
                     </div>
                   </th>
-                  <th className="text-left py-3 px-4">Segment</th>
+                  <th className="text-left py-3 px-4 text-[#0d0d12] dark:text-[#f9fafb]">Segment</th>
                   <th
-                    className="text-left py-3 px-4 cursor-pointer hover:bg-[#e5e7eb]"
+                    className="text-left py-3 px-4 cursor-pointer hover:bg-[#e5e7eb] dark:hover:bg-[#374151]"
                     onClick={() => handleSort("total_spent")}
                   >
                     <div className="flex items-center gap-1">
-                      Siparişler
-                      <ArrowUpDown className="w-3 h-3 text-[#818898]" />
+                      <span className="text-[#0d0d12] dark:text-[#f9fafb]">Siparişler</span>
+                      <ArrowUpDown className="w-3 h-3 text-[#818898] dark:text-[#9ca3af]" />
                     </div>
                   </th>
                   <th
-                    className="text-left py-3 px-4 cursor-pointer hover:bg-[#e5e7eb]"
+                    className="text-left py-3 px-4 cursor-pointer hover:bg-[#e5e7eb] dark:hover:bg-[#374151]"
                     onClick={() => handleSort("last_order")}
                   >
                     <div className="flex items-center gap-1">
-                      Son Sipariş
-                      <ArrowUpDown className="w-3 h-3 text-[#818898]" />
+                      <span className="text-[#0d0d12] dark:text-[#f9fafb]">Son Sipariş</span>
+                      <ArrowUpDown className="w-3 h-3 text-[#818898] dark:text-[#9ca3af]" />
                     </div>
                   </th>
-                  <th className="text-left py-3 px-4">Durum</th>
-                  <th className="text-right py-3 px-4">İşlemler</th>
+                  <th className="text-left py-3 px-4 text-[#0d0d12] dark:text-[#f9fafb]">Durum</th>
+                  <th className="text-right py-3 px-4 text-[#0d0d12] dark:text-[#f9fafb]">İşlemler</th>
                 </tr>
               </thead>
               <tbody>
@@ -513,7 +513,7 @@ export default function CustomersPage() {
                   <tr>
                     <td
                       colSpan={9}
-                      className="py-12 text-center text-[14px] text-[#666d80]"
+                      className="py-12 text-center text-[14px] text-[#666d80] dark:text-[#9ca3af]"
                     >
                       Yükleniyor...
                     </td>
@@ -522,7 +522,7 @@ export default function CustomersPage() {
                   <tr>
                     <td
                       colSpan={9}
-                      className="py-12 text-center text-[14px] text-[#666d80]"
+                      className="py-12 text-center text-[14px] text-[#666d80] dark:text-[#9ca3af]"
                     >
                       Müşteri bulunamadı
                     </td>
@@ -531,7 +531,7 @@ export default function CustomersPage() {
                   filteredCustomers.map((customer) => (
                     <tr
                       key={customer.id}
-                      className="border-b border-[#e5e7eb] hover:bg-[#f7f7f7] transition-colors"
+                      className="border-b border-[#e5e7eb] dark:border-[#374151] hover:bg-[#f7f7f7] dark:hover:bg-[#1f2937] transition-colors"
                     >
                       <td className="py-3 px-4">
                         <input
@@ -543,7 +543,7 @@ export default function CustomersPage() {
                       </td>
                       <td className="py-3 px-4">
                         <div className="flex items-center gap-3">
-                          <div className="w-10 h-10 rounded-full bg-[#e1eee3] border border-[#09724a] flex items-center justify-center flex-shrink-0">
+                          <div className="w-10 h-10 rounded-full bg-[#e1eee3] dark:bg-[#1a2e1f] border border-[#09724a] dark:border-[#00fb90] flex items-center justify-center flex-shrink-0">
                             {customer.avatar ? (
                               <img
                                 src={customer.avatar}
@@ -551,14 +551,14 @@ export default function CustomersPage() {
                                 className="w-full h-full rounded-full object-cover"
                               />
                             ) : (
-                              <User className="w-5 h-5 text-[#09724a]" />
+                              <User className="w-5 h-5 text-[#09724a] dark:text-[#00fb90]" />
                             )}
                           </div>
                           <div>
-                            <p className="text-[14px] font-medium text-[#0d0d12]">
+                            <p className="text-[14px] font-medium text-[#0d0d12] dark:text-[#f9fafb]">
                               {customer.name}
                             </p>
-                            <div className="flex items-center gap-1 text-[12px] text-[#666d80]">
+                            <div className="flex items-center gap-1 text-[12px] text-[#666d80] dark:text-[#9ca3af]">
                               <Mail className="w-3 h-3" />
                               {customer.email}
                             </div>
@@ -567,14 +567,14 @@ export default function CustomersPage() {
                       </td>
                       <td className="py-3 px-4">
                         <div className="flex items-center gap-2">
-                          <Phone className="w-4 h-4 text-[#818898]" />
-                          <p className="text-[14px] text-[#666d80]">
+                          <Phone className="w-4 h-4 text-[#818898] dark:text-[#9ca3af]" />
+                          <p className="text-[14px] text-[#666d80] dark:text-[#9ca3af]">
                             {customer.phone}
                           </p>
                         </div>
                       </td>
                       <td className="py-3 px-4">
-                        <p className="text-[14px] font-medium text-[#0d0d0d12]">
+                        <p className="text-[14px] font-medium text-[#0d0d12] dark:text-[#f9fafb]">
                           {customer.total_spent.toLocaleString()} ₺
                         </p>
                       </td>
@@ -586,14 +586,14 @@ export default function CustomersPage() {
                         )}
                       </td>
                       <td className="py-3 px-4">
-                        <p className="text-[14px] text-[#0d0d0d12]">
+                        <p className="text-[14px] text-[#0d0d12] dark:text-[#f9fafb]">
                           {customer.total_orders} sipariş
                         </p>
                       </td>
                       <td className="py-3 px-4">
                         <div className="flex items-center gap-2">
-                          <Calendar className="w-4 h-4 text-[#818898]" />
-                          <p className="text-[14px] text-[#666d80]">
+                          <Calendar className="w-4 h-4 text-[#818898] dark:text-[#9ca3af]" />
+                          <p className="text-[14px] text-[#666d80] dark:text-[#9ca3af]">
                             {customer.last_order_date
                               ? formatDate(customer.last_order_date)
                               : "-"}
@@ -613,16 +613,16 @@ export default function CustomersPage() {
                                 showActionsId === customer.id ? null : customer.id
                               )
                             }
-                            className="w-8 h-8 rounded-lg flex items-center justify-center hover:bg-[#f7f7f7] transition-colors"
+                            className="w-8 h-8 rounded-lg flex items-center justify-center hover:bg-[#f7f7f7] dark:hover:bg-[#374151] transition-colors"
                           >
-                            <MoreHorizontal className="w-4 h-4 text-[#666d80]" />
+                            <MoreHorizontal className="w-4 h-4 text-[#666d80] dark:text-[#9ca3af]" />
                           </button>
 
                           {showActionsId === customer.id && (
-                            <div className="absolute right-0 top-full mt-1 w-40 bg-white rounded-lg border border-[#e5e7eb] shadow-lg py-1 z-10">
+                            <div className="absolute right-0 top-full mt-1 w-40 bg-white dark:bg-[#1f2937] rounded-lg border border-[#e5e7eb] dark:border-[#374151] shadow-lg py-1 z-10">
                               <Link
                                 href={`/customers/${customer.id}`}
-                                className="flex items-center gap-2 px-3 py-2 text-[14px] text-[#0d0d12] hover:bg-[#f7f7f7]"
+                                className="flex items-center gap-2 px-3 py-2 text-[14px] text-[#0d0d12] dark:text-[#f9fafb] hover:bg-[#f7f7f7] dark:hover:bg-[#374151]"
                                 onClick={() => setShowActionsId(null)}
                               >
                                 <Eye className="w-4 h-4" />
@@ -630,7 +630,7 @@ export default function CustomersPage() {
                               </Link>
                               <Link
                                 href={`/customers/${customer.id}/edit`}
-                                className="flex items-center gap-2 px-3 py-2 text-[14px] text-[#0d0d12] hover:bg-[#f7f7f7]"
+                                className="flex items-center gap-2 px-3 py-2 text-[14px] text-[#0d0d12] dark:text-[#f9fafb] hover:bg-[#f7f7f7] dark:hover:bg-[#374151]"
                                 onClick={() => setShowActionsId(null)}
                               >
                                 <Edit className="w-4 h-4" />
@@ -642,7 +642,7 @@ export default function CustomersPage() {
                                     setShowActionsId(null);
                                     // TODO: Suspend customer
                                   }}
-                                  className="flex items-center gap-2 w-full px-3 py-2 text-[14px] text-[#d39c3d] hover:bg-[#fff8f0]"
+                                  className="flex items-center gap-2 w-full px-3 py-2 text-[14px] text-[#d39c3d] dark:text-[#f5a623] hover:bg-[#fff8f0] dark:hover:bg-[#2e241a]"
                                 >
                                   <Ban className="w-4 h-4" />
                                   Askıya Al
@@ -654,7 +654,7 @@ export default function CustomersPage() {
                                     setShowActionsId(null);
                                     // TODO: Activate customer
                                   }}
-                                  className="flex items-center gap-2 w-full px-3 py-2 text-[14px] text-[#09724a] hover:bg-[#e1eee3]"
+                                  className="flex items-center gap-2 w-full px-3 py-2 text-[14px] text-[#09724a] dark:text-[#00fb90] hover:bg-[#e1eee3] dark:hover:bg-[#1a2e1f]"
                                 >
                                   <Shield className="w-4 h-4" />
                                   Etkinleştir
@@ -672,8 +672,8 @@ export default function CustomersPage() {
           </div>
 
           {/* Pagination */}
-          <div className="flex items-center justify-between p-4 border-t border-[#e5e7eb]">
-            <p className="text-[14px] text-[#666d80]">
+          <div className="flex items-center justify-between p-4 border-t border-[#e5e7eb] dark:border-[#374151]">
+            <p className="text-[14px] text-[#666d80] dark:text-[#9ca3af]">
               {filteredCustomers.length} sonuçtan gösteriliyor
             </p>
             <div className="flex items-center gap-2">

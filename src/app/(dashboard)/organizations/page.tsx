@@ -220,13 +220,13 @@ export default function OrganizationsPage() {
           <CardContent className="p-6">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-[14px] text-[#666d80]">Toplam</p>
-                <p className="text-[28px] font-semibold text-[#0d0d12] mt-1">
+                <p className="text-[14px] text-[#666d80] dark:text-[#9ca3af]">Toplam</p>
+                <p className="text-[28px] font-semibold text-[#0d0d12] dark:text-[#f9fafb] mt-1">
                   {organizations.length}
                 </p>
               </div>
-              <div className="w-12 h-12 rounded-full bg-[#e1eee3] flex items-center justify-center">
-                <Building2 className="w-6 h-6 text-[#09724a]" />
+              <div className="w-12 h-12 rounded-full bg-[#e1eee3] dark:bg-[#1a2e1f] flex items-center justify-center">
+                <Building2 className="w-6 h-6 text-[#09724a] dark:text-[#00fb90]" />
               </div>
             </div>
           </CardContent>
@@ -236,13 +236,13 @@ export default function OrganizationsPage() {
           <CardContent className="p-6">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-[14px] text-[#666d80]">Aktif</p>
-                <p className="text-[28px] font-semibold text-[#0d0d12] mt-1">
+                <p className="text-[14px] text-[#666d80] dark:text-[#9ca3af]">Aktif</p>
+                <p className="text-[28px] font-semibold text-[#0d0d12] dark:text-[#f9fafb] mt-1">
                   {organizations.filter((o) => o.status === "active").length}
                 </p>
               </div>
-              <div className="w-12 h-12 rounded-full bg-[#ecfdf3] flex items-center justify-center">
-                <CheckCircle className="w-6 h-6 text-[#10b981]" />
+              <div className="w-12 h-12 rounded-full bg-[#ecfdf3] dark:bg-[#1a2e1f] flex items-center justify-center">
+                <CheckCircle className="w-6 h-6 text-[#10b981] dark:text-[#00fb90]" />
               </div>
             </div>
           </CardContent>
@@ -252,13 +252,13 @@ export default function OrganizationsPage() {
           <CardContent className="p-6">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-[14px] text-[#666d80]">Pasif</p>
-                <p className="text-[28px] font-semibold text-[#0d0d12] mt-1">
+                <p className="text-[14px] text-[#666d80] dark:text-[#9ca3af]">Pasif</p>
+                <p className="text-[28px] font-semibold text-[#0d0d12] dark:text-[#f9fafb] mt-1">
                   {organizations.filter((o) => o.status === "inactive").length}
                 </p>
               </div>
-              <div className="w-12 h-12 rounded-full bg-[#fffbeb] flex items-center justify-center">
-                <XCircle className="w-6 h-6 text-[#f59e0b]" />
+              <div className="w-12 h-12 rounded-full bg-[#fffbeb] dark:bg-[#2e2a1a] flex items-center justify-center">
+                <XCircle className="w-6 h-6 text-[#f59e0b] dark:text-[#fbbf24]" />
               </div>
             </div>
           </CardContent>
@@ -268,13 +268,13 @@ export default function OrganizationsPage() {
           <CardContent className="p-6">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-[14px] text-[#666d80]">Toplam Mekan</p>
-                <p className="text-[28px] font-semibold text-[#0d0d12] mt-1">
+                <p className="text-[14px] text-[#666d80] dark:text-[#9ca3af]">Toplam Mekan</p>
+                <p className="text-[28px] font-semibold text-[#0d0d12] dark:text-[#f9fafb] mt-1">
                   {organizations.reduce((sum, o) => sum + getVenueCount(o.id), 0)}
                 </p>
               </div>
-              <div className="w-12 h-12 rounded-full bg-[#eff6ff] flex items-center justify-center">
-                <MapPin className="w-6 h-6 text-[#3b82f6]" />
+              <div className="w-12 h-12 rounded-full bg-[#eff6ff] dark:bg-[#1a242e] flex items-center justify-center">
+                <MapPin className="w-6 h-6 text-[#3b82f6] dark:text-[#60a5fa]" />
               </div>
             </div>
           </CardContent>
@@ -284,12 +284,12 @@ export default function OrganizationsPage() {
       {/* Filters */}
       <div className="flex items-center gap-4">
         <div className="relative flex-1 max-w-sm">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#666d80]" />
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#666d80] dark:text-[#9ca3af]" />
           <Input
             placeholder="Organizatör ara..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="pl-10 h-10 border-[#e5e7eb]"
+            className="pl-10 h-10 border-[#e5e7eb] dark:border-[#374151] dark:bg-[#1f2937] dark:text-[#f9fafb] dark:placeholder:text-[#6b7280]"
           />
         </div>
 
@@ -302,8 +302,8 @@ export default function OrganizationsPage() {
                 onClick={() => setStatusFilter(status)}
                 className={
                   statusFilter === status
-                    ? "bg-[#09724a] text-white"
-                    : "bg-white border-[#e5e7eb] text-[#666d80] hover:bg-[#f7f7f7]"
+                    ? "bg-[#09724a] text-white dark:bg-[#00fb90] dark:text-[#0d0d12]"
+                    : "bg-white border-[#e5e7eb] text-[#666d80] hover:bg-[#f7f7f7] dark:bg-[#1f2937] dark:border-[#374151] dark:text-[#9ca3af] dark:hover:bg-[#374151]"
                 }
               >
                 {status === "all" && "Tümü"}
@@ -322,20 +322,20 @@ export default function OrganizationsPage() {
           <div className="overflow-x-auto">
             <table className="w-full">
               <thead>
-                <tr className="border-b border-[#e5e7eb]">
-                  <th className="text-left py-3 px-4 text-[14px] font-medium text-[#0d0d12]">
+                <tr className="border-b border-[#e5e7eb] dark:border-[#374151] bg-[#f7f7f7] dark:bg-[#1f2937]">
+                  <th className="text-left py-3 px-4 text-[14px] font-medium text-[#0d0d12] dark:text-[#f9fafb]">
                     Organizatör
                   </th>
-                  <th className="text-left py-3 px-4 text-[14px] font-medium text-[#0d0d12]">
+                  <th className="text-left py-3 px-4 text-[14px] font-medium text-[#0d0d12] dark:text-[#f9fafb]">
                     Konum
                   </th>
-                  <th className="text-left py-3 px-4 text-[14px] font-medium text-[#0d0d12]">
+                  <th className="text-left py-3 px-4 text-[14px] font-medium text-[#0d0d12] dark:text-[#f9fafb]">
                     Durum
                   </th>
-                  <th className="text-left py-3 px-4 text-[14px] font-medium text-[#0d0d12]">
+                  <th className="text-left py-3 px-4 text-[14px] font-medium text-[#0d0d12] dark:text-[#f9fafb]">
                     Mekan Sayısı
                   </th>
-                  <th className="text-right py-3 px-4 text-[14px] font-medium text-[#0d0d12]">
+                  <th className="text-right py-3 px-4 text-[14px] font-medium text-[#0d0d12] dark:text-[#f9fafb]">
                     İşlemler
                   </th>
                 </tr>
@@ -345,7 +345,7 @@ export default function OrganizationsPage() {
                   <tr>
                     <td
                       colSpan={5}
-                      className="py-8 text-center text-[#666d80]"
+                      className="py-8 text-center text-[#666d80] dark:text-[#9ca3af]"
                     >
                       Yükleniyor...
                     </td>
@@ -354,7 +354,7 @@ export default function OrganizationsPage() {
                   <tr>
                     <td
                       colSpan={5}
-                      className="py-8 text-center text-[#666d80]"
+                      className="py-8 text-center text-[#666d80] dark:text-[#9ca3af]"
                     >
                       Organizatör bulunamadı
                     </td>
@@ -363,22 +363,22 @@ export default function OrganizationsPage() {
                   filteredOrganizations.map((org) => (
                     <tr
                       key={org.id}
-                      className="border-b border-[#e5e7eb] hover:bg-[#f7f7f7] transition-colors"
+                      className="border-b border-[#e5e7eb] dark:border-[#374151] hover:bg-[#f7f7f7] dark:hover:bg-[#1f2937] transition-colors"
                     >
                       <td className="py-3 px-4">
                         <div>
-                          <p className="text-[14px] font-medium text-[#0d0d12]">
+                          <p className="text-[14px] font-medium text-[#0d0d12] dark:text-[#f9fafb]">
                             {org.name}
                           </p>
                           {org.description && (
-                            <p className="text-[12px] text-[#666d80] mt-0.5">
+                            <p className="text-[12px] text-[#666d80] dark:text-[#9ca3af] mt-0.5">
                               {org.description}
                             </p>
                           )}
                         </div>
                       </td>
                       <td className="py-3 px-4">
-                        <p className="text-[14px] text-[#0d0d12]">
+                        <p className="text-[14px] text-[#0d0d12] dark:text-[#f9fafb]">
                           {org.city && org.country
                             ? `${org.city}, ${org.country}`
                             : "-"}
@@ -390,7 +390,7 @@ export default function OrganizationsPage() {
                         </Badge>
                       </td>
                       <td className="py-3 px-4">
-                        <p className="text-[14px] text-[#0d0d12]">
+                        <p className="text-[14px] text-[#0d0d12] dark:text-[#f9fafb]">
                           {getVenueCount(org.id)}
                         </p>
                       </td>
@@ -400,7 +400,7 @@ export default function OrganizationsPage() {
                             <Button
                               variant="ghost"
                               size="small"
-                              className="h-8 w-8 p-0 text-[#666d80] hover:text-[#09724a]"
+                              className="h-8 w-8 p-0 text-[#666d80] dark:text-[#9ca3af] hover:text-[#09724a] dark:hover:text-[#00fb90]"
                             >
                               <Eye className="w-4 h-4" />
                             </Button>
@@ -408,7 +408,7 @@ export default function OrganizationsPage() {
                           <Button
                             variant="ghost"
                             size="small"
-                            className="h-8 w-8 p-0 text-[#666d80] hover:text-[#09724a]"
+                            className="h-8 w-8 p-0 text-[#666d80] dark:text-[#9ca3af] hover:text-[#09724a] dark:hover:text-[#00fb90]"
                             onClick={() => setEditingOrganization(org)}
                           >
                             <Edit className="w-4 h-4" />
@@ -416,7 +416,7 @@ export default function OrganizationsPage() {
                           <Button
                             variant="ghost"
                             size="small"
-                            className="h-8 w-8 p-0 text-[#666d80] hover:text-[#df1c41]"
+                            className="h-8 w-8 p-0 text-[#666d80] dark:text-[#9ca3af] hover:text-[#df1c41] dark:hover:text-[#ff6b8a]"
                             onClick={() => setDeletingOrganization(org)}
                           >
                             <Trash2 className="w-4 h-4" />

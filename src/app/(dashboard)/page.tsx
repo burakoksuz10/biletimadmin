@@ -63,8 +63,8 @@ export default function DashboardPage() {
     <div className="space-y-6">
       {/* Page Title */}
       <div>
-        <h1 className="text-[24px] font-semibold text-[#0d0d12]">Dashboard</h1>
-        <p className="text-[14px] text-[#666d80] mt-1">
+        <h1 className="text-[24px] font-semibold text-[#0d0d12] dark:text-[#f9fafb]">Dashboard</h1>
+        <p className="text-[14px] text-[#666d80] dark:text-[#9ca3af] mt-1">
           Hoş geldiniz! Etkinliklerinizle ilgili son gelişmeler.
         </p>
       </div>
@@ -76,36 +76,36 @@ export default function DashboardPage() {
           const isPositive = stat.change >= 0;
 
           return (
-            <Card key={stat.title} className="border-[#e5e7eb]">
+            <Card key={stat.title} className="border-[#e5e7eb] dark:border-[#374151] dark:bg-[#1f2937]">
               <CardContent className="p-6">
                 <div className="flex items-start justify-between">
                   <div className="flex-1">
-                    <p className="text-[14px] text-[#666d80] mb-1">
+                    <p className="text-[14px] text-[#666d80] dark:text-[#9ca3af] mb-1">
                       {stat.title}
                     </p>
-                    <p className="text-[24px] font-semibold text-[#0d0d12]">
+                    <p className="text-[24px] font-semibold text-[#0d0d12] dark:text-[#f9fafb]">
                       {stat.value}
                     </p>
                     <div className="flex items-center gap-1 mt-2">
                       {isPositive ? (
-                        <TrendingUp className="w-4 h-4 text-[#09724a]" />
+                        <TrendingUp className="w-4 h-4 text-[#09724a] dark:text-[#00fb90]" />
                       ) : (
                         <TrendingDown className="w-4 h-4 text-[#df1c41]" />
                       )}
                       <span
                         className={`text-[12px] font-medium ${
-                          isPositive ? "text-[#09724a]" : "text-[#df1c41]"
+                          isPositive ? "text-[#09724a] dark:text-[#00fb90]" : "text-[#df1c41]"
                         }`}
                       >
                         {isPositive ? "+" : ""}
                         {Math.abs(stat.change)}%
                       </span>
-                      <span className="text-[12px] text-[#818898] ml-1">
+                      <span className="text-[12px] text-[#818898] dark:text-[#6b7280] ml-1">
                         geçen aya göre
                       </span>
                     </div>
                   </div>
-                  <div className={`w-12 h-12 rounded-xl ${stat.color} flex items-center justify-center`}>
+                  <div className={`w-12 h-12 rounded-xl ${stat.color} dark:bg-opacity-20 flex items-center justify-center`}>
                     <Icon className={`w-6 h-6 ${stat.iconColor}`} />
                   </div>
                 </div>
@@ -118,9 +118,9 @@ export default function DashboardPage() {
       {/* Charts Row */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Sales Chart */}
-        <Card className="lg:col-span-2 border-[#e5e7eb]">
+        <Card className="lg:col-span-2 border-[#e5e7eb] dark:border-[#374151] dark:bg-[#1f2937]">
           <CardHeader className="pb-4">
-            <CardTitle className="text-[16px] font-semibold text-[#0d0d12]">
+            <CardTitle className="text-[16px] font-semibold text-[#0d0d12] dark:text-[#f9fafb]">
               Satış Özeti
             </CardTitle>
           </CardHeader>
@@ -178,9 +178,9 @@ export default function DashboardPage() {
         </Card>
 
         {/* Best Visited Locations */}
-        <Card className="border-[#e5e7eb]">
+        <Card className="border-[#e5e7eb] dark:border-[#374151] dark:bg-[#1f2937]">
           <CardHeader className="pb-4">
-            <CardTitle className="text-[16px] font-semibold text-[#0d0d0d12]">
+            <CardTitle className="text-[16px] font-semibold text-[#0d0d0d12] dark:text-[#f9fafb]">
               En Çok Ziyaret Edilen Lokasyonlar
             </CardTitle>
           </CardHeader>
@@ -189,16 +189,16 @@ export default function DashboardPage() {
               {mockBestVisited.map((location, index) => (
                 <div key={index} className="space-y-2">
                   <div className="flex items-center justify-between">
-                    <span className="text-[14px] text-[#0d0d12]">
+                    <span className="text-[14px] text-[#0d0d12] dark:text-[#f9fafb]">
                       {location.country}
                     </span>
-                    <span className="text-[14px] font-semibold text-[#0d0d12]">
+                    <span className="text-[14px] font-semibold text-[#0d0d12] dark:text-[#f9fafb]">
                       {formatCurrency(location.amount)}
                     </span>
                   </div>
-                  <div className="h-2 bg-[#f7f7f7] rounded-full overflow-hidden">
+                  <div className="h-2 bg-[#f7f7f7] dark:bg-[#374151] rounded-full overflow-hidden">
                     <div
-                      className="h-full bg-[#09724a] rounded-full transition-all duration-500"
+                      className="h-full bg-[#09724a] dark:bg-[#00fb90] rounded-full transition-all duration-500"
                       style={{ width: `${location.percentage}%` }}
                     />
                   </div>
@@ -210,13 +210,13 @@ export default function DashboardPage() {
       </div>
 
       {/* Recent Payouts Table */}
-      <Card className="border-[#e5e7eb]">
+      <Card className="border-[#e5e7eb] dark:border-[#374151] dark:bg-[#1f2937]">
         <CardHeader className="pb-4">
           <div className="flex items-center justify-between">
-            <CardTitle className="text-[16px] font-semibold text-[#0d0d12]">
+            <CardTitle className="text-[16px] font-semibold text-[#0d0d12] dark:text-[#f9fafb]">
               Son Ödemeler
             </CardTitle>
-            <button className="text-[14px] text-[#09724a] font-medium hover:underline">
+            <button className="text-[14px] text-[#09724a] dark:text-[#00fb90] font-medium hover:underline">
               Tümünü Gör
             </button>
           </div>
@@ -225,20 +225,20 @@ export default function DashboardPage() {
           <div className="overflow-x-auto">
             <table className="w-full">
               <thead>
-                <tr className="border-b border-[#e5e7eb]">
-                  <th className="text-left py-3 px-4 text-[12px] font-medium text-[#818898] uppercase tracking-wider">
+                <tr className="border-b border-[#e5e7eb] dark:border-[#374151]">
+                  <th className="text-left py-3 px-4 text-[12px] font-medium text-[#818898] dark:text-[#9ca3af] uppercase tracking-wider">
                     Organizatör
                   </th>
-                  <th className="text-left py-3 px-4 text-[12px] font-medium text-[#818898] uppercase tracking-wider">
+                  <th className="text-left py-3 px-4 text-[12px] font-medium text-[#818898] dark:text-[#9ca3af] uppercase tracking-wider">
                     Tutar
                   </th>
-                  <th className="text-left py-3 px-4 text-[12px] font-medium text-[#818898] uppercase tracking-wider">
+                  <th className="text-left py-3 px-4 text-[12px] font-medium text-[#818898] dark:text-[#9ca3af] uppercase tracking-wider">
                     İletişim
                   </th>
-                  <th className="text-left py-3 px-4 text-[12px] font-medium text-[#818898] uppercase tracking-wider">
+                  <th className="text-left py-3 px-4 text-[12px] font-medium text-[#818898] dark:text-[#9ca3af] uppercase tracking-wider">
                     Talep Tarihi
                   </th>
-                  <th className="text-left py-3 px-4 text-[12px] font-medium text-[#818898] uppercase tracking-wider">
+                  <th className="text-left py-3 px-4 text-[12px] font-medium text-[#818898] dark:text-[#9ca3af] uppercase tracking-wider">
                     Durum
                   </th>
                 </tr>
@@ -247,25 +247,25 @@ export default function DashboardPage() {
                 {mockRecentPayouts.map((payout) => (
                   <tr
                     key={payout.id}
-                    className="border-b border-[#e5e7eb] hover:bg-[#f7f7f7] transition-colors"
+                    className="border-b border-[#e5e7eb] dark:border-[#374151] hover:bg-[#f7f7f7] dark:hover:bg-[#374151] transition-colors"
                   >
                     <td className="py-3 px-4">
-                      <p className="text-[14px] font-medium text-[#0d0d12]">
+                      <p className="text-[14px] font-medium text-[#0d0d12] dark:text-[#f9fafb]">
                         {payout.organizer}
                       </p>
                     </td>
                     <td className="py-3 px-4">
-                      <p className="text-[14px] font-semibold text-[#0d0d12]">
+                      <p className="text-[14px] font-semibold text-[#0d0d12] dark:text-[#f9fafb]">
                         {formatCurrency(payout.amount)}
                       </p>
                     </td>
                     <td className="py-3 px-4">
-                      <p className="text-[14px] text-[#666d80]">
+                      <p className="text-[14px] text-[#666d80] dark:text-[#9ca3af]">
                         {payout.contact}
                       </p>
                     </td>
                     <td className="py-3 px-4">
-                      <p className="text-[14px] text-[#666d80]">
+                      <p className="text-[14px] text-[#666d80] dark:text-[#9ca3af]">
                         {formatDate(payout.requestedOn)}
                       </p>
                     </td>

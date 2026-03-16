@@ -236,13 +236,13 @@ export default function VenuesPage() {
           <CardContent className="p-6">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-[14px] text-[#666d80]">Toplam</p>
-                <p className="text-[28px] font-semibold text-[#0d0d12] mt-1">
+                <p className="text-[14px] text-[#666d80] dark:text-[#9ca3af]">Toplam</p>
+                <p className="text-[28px] font-semibold text-[#0d0d12] dark:text-[#f9fafb] mt-1">
                   {venues.length}
                 </p>
               </div>
-              <div className="w-12 h-12 rounded-full bg-[#e1eee3] flex items-center justify-center">
-                <MapPin className="w-6 h-6 text-[#09724a]" />
+              <div className="w-12 h-12 rounded-full bg-[#e1eee3] dark:bg-[#1a2e1f] flex items-center justify-center">
+                <MapPin className="w-6 h-6 text-[#09724a] dark:text-[#00fb90]" />
               </div>
             </div>
           </CardContent>
@@ -252,13 +252,13 @@ export default function VenuesPage() {
           <CardContent className="p-6">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-[14px] text-[#666d80]">Aktif</p>
-                <p className="text-[28px] font-semibold text-[#0d0d12] mt-1">
+                <p className="text-[14px] text-[#666d80] dark:text-[#9ca3af]">Aktif</p>
+                <p className="text-[28px] font-semibold text-[#0d0d12] dark:text-[#f9fafb] mt-1">
                   {venues.filter((v) => v.status === "active").length}
                 </p>
               </div>
-              <div className="w-12 h-12 rounded-full bg-[#ecfdf3] flex items-center justify-center">
-                <CheckCircle className="w-6 h-6 text-[#10b981]" />
+              <div className="w-12 h-12 rounded-full bg-[#ecfdf3] dark:bg-[#1a2e1f] flex items-center justify-center">
+                <CheckCircle className="w-6 h-6 text-[#10b981] dark:text-[#00fb90]" />
               </div>
             </div>
           </CardContent>
@@ -268,15 +268,15 @@ export default function VenuesPage() {
           <CardContent className="p-6">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-[14px] text-[#666d80]">Toplam Kapasite</p>
-                <p className="text-[28px] font-semibold text-[#0d0d12] mt-1">
+                <p className="text-[14px] text-[#666d80] dark:text-[#9ca3af]">Toplam Kapasite</p>
+                <p className="text-[28px] font-semibold text-[#0d0d12] dark:text-[#f9fafb] mt-1">
                   {venues
                     .reduce((sum, v) => sum + v.capacity, 0)
                     .toLocaleString()}
                 </p>
               </div>
-              <div className="w-12 h-12 rounded-full bg-[#eff6ff] flex items-center justify-center">
-                <Users className="w-6 h-6 text-[#3b82f6]" />
+              <div className="w-12 h-12 rounded-full bg-[#eff6ff] dark:bg-[#1a242e] flex items-center justify-center">
+                <Users className="w-6 h-6 text-[#3b82f6] dark:text-[#60a5fa]" />
               </div>
             </div>
           </CardContent>
@@ -286,8 +286,8 @@ export default function VenuesPage() {
           <CardContent className="p-6">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-[14px] text-[#666d80]">Ort. Kapasite</p>
-                <p className="text-[28px] font-semibold text-[#0d0d12] mt-1">
+                <p className="text-[14px] text-[#666d80] dark:text-[#9ca3af]">Ort. Kapasite</p>
+                <p className="text-[28px] font-semibold text-[#0d0d12] dark:text-[#f9fafb] mt-1">
                   {venues.length > 0
                     ? Math.round(
                         venues.reduce((sum, v) => sum + v.capacity, 0) /
@@ -296,8 +296,8 @@ export default function VenuesPage() {
                     : "0"}
                 </p>
               </div>
-              <div className="w-12 h-12 rounded-full bg-[#fffbeb] flex items-center justify-center">
-                <TrendingUp className="w-6 h-6 text-[#f59e0b]" />
+              <div className="w-12 h-12 rounded-full bg-[#fffbeb] dark:bg-[#2e2a1a] flex items-center justify-center">
+                <TrendingUp className="w-6 h-6 text-[#f59e0b] dark:text-[#fbbf24]" />
               </div>
             </div>
           </CardContent>
@@ -307,12 +307,12 @@ export default function VenuesPage() {
       {/* Filters */}
       <div className="flex items-center gap-4">
         <div className="relative flex-1 max-w-sm">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#666d80]" />
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#666d80] dark:text-[#9ca3af]" />
           <Input
             placeholder="Mekan ara..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="pl-10 h-10 border-[#e5e7eb]"
+            className="pl-10 h-10 border-[#e5e7eb] dark:border-[#374151] dark:bg-[#1f2937] dark:text-[#f9fafb] dark:placeholder:text-[#6b7280]"
           />
         </div>
 
@@ -325,8 +325,8 @@ export default function VenuesPage() {
                 onClick={() => setStatusFilter(status)}
                 className={
                   statusFilter === status
-                    ? "bg-[#09724a] text-white"
-                    : "bg-white border-[#e5e7eb] text-[#666d80] hover:bg-[#f7f7f7]"
+                    ? "bg-[#09724a] text-white dark:bg-[#00fb90] dark:text-[#0d0d12]"
+                    : "bg-white border-[#e5e7eb] text-[#666d80] hover:bg-[#f7f7f7] dark:bg-[#1f2937] dark:border-[#374151] dark:text-[#9ca3af] dark:hover:bg-[#374151]"
                 }
               >
                 {status === "all" && "Tümü"}
@@ -345,23 +345,23 @@ export default function VenuesPage() {
           <div className="overflow-x-auto">
             <table className="w-full">
               <thead>
-                <tr className="border-b border-[#e5e7eb]">
-                  <th className="text-left py-3 px-4 text-[14px] font-medium text-[#0d0d12]">
+                <tr className="border-b border-[#e5e7eb] dark:border-[#374151] bg-[#f7f7f7] dark:bg-[#1f2937]">
+                  <th className="text-left py-3 px-4 text-[14px] font-medium text-[#0d0d12] dark:text-[#f9fafb]">
                     Mekan
                   </th>
-                  <th className="text-left py-3 px-4 text-[14px] font-medium text-[#0d0d12]">
+                  <th className="text-left py-3 px-4 text-[14px] font-medium text-[#0d0d12] dark:text-[#f9fafb]">
                     Organizatör
                   </th>
-                  <th className="text-left py-3 px-4 text-[14px] font-medium text-[#0d0d12]">
+                  <th className="text-left py-3 px-4 text-[14px] font-medium text-[#0d0d12] dark:text-[#f9fafb]">
                     Konum
                   </th>
-                  <th className="text-left py-3 px-4 text-[14px] font-medium text-[#0d0d12]">
+                  <th className="text-left py-3 px-4 text-[14px] font-medium text-[#0d0d12] dark:text-[#f9fafb]">
                     Kapasite
                   </th>
-                  <th className="text-left py-3 px-4 text-[14px] font-medium text-[#0d0d12]">
+                  <th className="text-left py-3 px-4 text-[14px] font-medium text-[#0d0d12] dark:text-[#f9fafb]">
                     Durum
                   </th>
-                  <th className="text-right py-3 px-4 text-[14px] font-medium text-[#0d0d12]">
+                  <th className="text-right py-3 px-4 text-[14px] font-medium text-[#0d0d12] dark:text-[#f9fafb]">
                     İşlemler
                   </th>
                 </tr>
@@ -371,7 +371,7 @@ export default function VenuesPage() {
                   <tr>
                     <td
                       colSpan={6}
-                      className="py-8 text-center text-[#666d80]"
+                      className="py-8 text-center text-[#666d80] dark:text-[#9ca3af]"
                     >
                       Yükleniyor...
                     </td>
@@ -380,7 +380,7 @@ export default function VenuesPage() {
                   <tr>
                     <td
                       colSpan={6}
-                      className="py-8 text-center text-[#666d80]"
+                      className="py-8 text-center text-[#666d80] dark:text-[#9ca3af]"
                     >
                       Mekan bulunamadı
                     </td>
@@ -389,30 +389,30 @@ export default function VenuesPage() {
                   filteredVenues.map((venue) => (
                     <tr
                       key={venue.id}
-                      className="border-b border-[#e5e7eb] hover:bg-[#f7f7f7] transition-colors"
+                      className="border-b border-[#e5e7eb] dark:border-[#374151] hover:bg-[#f7f7f7] dark:hover:bg-[#1f2937] transition-colors"
                     >
                       <td className="py-3 px-4">
                         <div>
-                          <p className="text-[14px] font-medium text-[#0d0d12]">
+                          <p className="text-[14px] font-medium text-[#0d0d12] dark:text-[#f9fafb]">
                             {venue.name}
                           </p>
                         </div>
                       </td>
                       <td className="py-3 px-4">
                         <div className="flex items-center gap-2">
-                          <Building2 className="w-4 h-4 text-[#666d80]" />
-                          <p className="text-[14px] text-[#0d0d12]">
+                          <Building2 className="w-4 h-4 text-[#666d80] dark:text-[#9ca3af]" />
+                          <p className="text-[14px] text-[#0d0d12] dark:text-[#f9fafb]">
                             {organizationNames[venue.organization_id] || "-"}
                           </p>
                         </div>
                       </td>
                       <td className="py-3 px-4">
-                        <p className="text-[14px] text-[#0d0d12]">
+                        <p className="text-[14px] text-[#0d0d12] dark:text-[#f9fafb]">
                           {venue.city}, {venue.country}
                         </p>
                       </td>
                       <td className="py-3 px-4">
-                        <p className="text-[14px] text-[#0d0d12]">
+                        <p className="text-[14px] text-[#0d0d12] dark:text-[#f9fafb]">
                           {venue.capacity.toLocaleString()} kişi
                         </p>
                       </td>
@@ -427,7 +427,7 @@ export default function VenuesPage() {
                             <Button
                               variant="ghost"
                               size="small"
-                              className="h-8 w-8 p-0 text-[#666d80] hover:text-[#09724a]"
+                              className="h-8 w-8 p-0 text-[#666d80] dark:text-[#9ca3af] hover:text-[#09724a] dark:hover:text-[#00fb90]"
                             >
                               <Eye className="w-4 h-4" />
                             </Button>
@@ -435,7 +435,7 @@ export default function VenuesPage() {
                           <Button
                             variant="ghost"
                             size="small"
-                            className="h-8 w-8 p-0 text-[#666d80] hover:text-[#09724a]"
+                            className="h-8 w-8 p-0 text-[#666d80] dark:text-[#9ca3af] hover:text-[#09724a] dark:hover:text-[#00fb90]"
                             onClick={() => setEditingVenue(venue)}
                           >
                             <Edit className="w-4 h-4" />

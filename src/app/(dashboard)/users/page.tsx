@@ -325,12 +325,12 @@ export default function UsersPage() {
         <Card className="border-[#e5e7eb]">
           <CardContent className="p-6">
             <div className="flex items-center gap-4">
-              <div className="w-12 h-12 rounded-xl bg-[#e1eee3] flex items-center justify-center">
-                <Users className="w-6 h-6 text-[#09724a]" />
+              <div className="w-12 h-12 rounded-xl bg-[#e1eee3] dark:bg-[#1a2e1f] flex items-center justify-center">
+                <Users className="w-6 h-6 text-[#09724a] dark:text-[#00fb90]" />
               </div>
               <div>
-                <p className="text-[12px] text-[#666d80]">Toplam Kullanıcı</p>
-                <p className="text-[20px] font-semibold text-[#0d0d12]">
+                <p className="text-[12px] text-[#666d80] dark:text-[#9ca3af]">Toplam Kullanıcı</p>
+                <p className="text-[20px] font-semibold text-[#0d0d12] dark:text-[#f9fafb]">
                   {mockUsers.length}
                 </p>
               </div>
@@ -340,12 +340,12 @@ export default function UsersPage() {
         <Card className="border-[#e5e7eb]">
           <CardContent className="p-6">
             <div className="flex items-center gap-4">
-              <div className="w-12 h-12 rounded-xl bg-[#effefa] flex items-center justify-center">
-                <Shield className="w-6 h-6 text-[#09724a]" />
+              <div className="w-12 h-12 rounded-xl bg-[#effefa] dark:bg-[#1a2e2e] flex items-center justify-center">
+                <Shield className="w-6 h-6 text-[#09724a] dark:text-[#00fb90]" />
               </div>
               <div>
-                <p className="text-[12px] text-[#666d80]">Aktif</p>
-                <p className="text-[20px] font-semibold text-[#0d0d12]">
+                <p className="text-[12px] text-[#666d80] dark:text-[#9ca3af]">Aktif</p>
+                <p className="text-[20px] font-semibold text-[#0d0d12] dark:text-[#f9fafb]">
                   {statusCounts.active}
                 </p>
               </div>
@@ -355,12 +355,12 @@ export default function UsersPage() {
         <Card className="border-[#e5e7eb]">
           <CardContent className="p-6">
             <div className="flex items-center gap-4">
-              <div className="w-12 h-12 rounded-xl bg-[#fff8f0] flex items-center justify-center">
-                <Ban className="w-6 h-6 text-[#d39c3d]" />
+              <div className="w-12 h-12 rounded-xl bg-[#fff8f0] dark:bg-[#2e241a] flex items-center justify-center">
+                <Ban className="w-6 h-6 text-[#d39c3d] dark:text-[#f5a623]" />
               </div>
               <div>
-                <p className="text-[12px] text-[#666d80]">Askıya Alındı</p>
-                <p className="text-[20px] font-semibold text-[#0d0d12]">
+                <p className="text-[12px] text-[#666d80] dark:text-[#9ca3af]">Askıya Alındı</p>
+                <p className="text-[20px] font-semibold text-[#0d0d12] dark:text-[#f9fafb]">
                   {statusCounts.suspended}
                 </p>
               </div>
@@ -370,12 +370,12 @@ export default function UsersPage() {
         <Card className="border-[#e5e7eb]">
           <CardContent className="p-6">
             <div className="flex items-center gap-4">
-              <div className="w-12 h-12 rounded-xl bg-[#fff0f3] flex items-center justify-center">
-                <Crown className="w-6 h-6 text-[#df1c41]" />
+              <div className="w-12 h-12 rounded-xl bg-[#fff0f3] dark:bg-[#2e1a1f] flex items-center justify-center">
+                <Crown className="w-6 h-6 text-[#df1c41] dark:text-[#ff6b8a]" />
               </div>
               <div>
-                <p className="text-[12px] text-[#666d80]">Org. Adminler</p>
-                <p className="text-[20px] font-semibold text-[#0d0d12]">
+                <p className="text-[12px] text-[#666d80] dark:text-[#9ca3af]">Org. Adminler</p>
+                <p className="text-[20px] font-semibold text-[#0d0d12] dark:text-[#f9fafb]">
                   {roleCounts.org_admin}
                 </p>
               </div>
@@ -385,7 +385,7 @@ export default function UsersPage() {
       </div>
 
       {/* Role Tabs */}
-      <div className="flex items-center gap-2 border-b border-[#e5e7eb]">
+      <div className="flex items-center gap-2 border-b border-[#e5e7eb] dark:border-[#374151]">
         {(["all", "super_admin", "org_admin", "co_admin"] as const).map(
           (role) => (
             <button
@@ -393,8 +393,8 @@ export default function UsersPage() {
               onClick={() => setRoleFilter(role)}
               className={`px-4 py-3 text-[14px] font-medium border-b-2 transition-colors ${
                 roleFilter === role
-                  ? "border-[#09724a] text-[#09724a]"
-                  : "border-transparent text-[#666d80] hover:text-[#0d0d12]"
+                  ? "border-[#09724a] text-[#09724a] dark:text-[#00fb90] dark:border-[#00fb90]"
+                  : "border-transparent text-[#666d80] dark:text-[#9ca3af] hover:text-[#0d0d12] dark:hover:text-[#f9fafb]"
               }`}
             >
               {role === "super_admin"
@@ -418,8 +418,8 @@ export default function UsersPage() {
             onClick={() => setStatusFilter(status)}
             className={`px-3 py-1.5 rounded-lg text-[14px] font-medium transition-colors ${
               statusFilter === status
-                ? "bg-[#09724a] text-white"
-                : "bg-[#f7f7f7] text-[#666d80] hover:text-[#0d0d12]"
+                ? "bg-[#09724a] text-white dark:bg-[#00fb90] dark:text-[#0d0d12]"
+                : "bg-[#f7f7f7] text-[#666d80] hover:text-[#0d0d12] dark:bg-[#1f2937] dark:text-[#9ca3af] dark:hover:text-[#f9fafb]"
             }`}
           >
             {status.charAt(0).toUpperCase() + status.slice(1)}
@@ -433,13 +433,13 @@ export default function UsersPage() {
       {/* Search & Filters */}
       <div className="flex items-center gap-4">
         <div className="relative flex-1 max-w-sm">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-[#818898]" />
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-[#818898] dark:text-[#9ca3af]" />
           <Input
             type="search"
             placeholder="Kullanıcı ara..."
             value={globalFilter}
             onChange={(e) => setGlobalFilter(e.target.value)}
-            className="pl-10 h-10 rounded-lg bg-[#f7f7f7] border-[#e5e7eb]"
+            className="pl-10 h-10 rounded-lg bg-[#f7f7f7] border-[#e5e7eb] dark:bg-[#1f2937] dark:border-[#374151] dark:text-[#f9fafb] dark:placeholder:text-[#6b7280]"
           />
         </div>
         <Button variant="secondary" className="h-10">
@@ -457,7 +457,7 @@ export default function UsersPage() {
                 {table.getHeaderGroups().map((headerGroup) => (
                   <tr
                     key={headerGroup.id}
-                    className="border-b border-[#e5e7eb]"
+                    className="border-b border-[#e5e7eb] dark:border-[#374151] bg-[#f7f7f7] dark:bg-[#1f2937]"
                   >
                     {headerGroup.headers.map((header) => (
                       <th
@@ -480,7 +480,7 @@ export default function UsersPage() {
                   <tr>
                     <td
                       colSpan={columns.length}
-                      className="text-center py-12 text-[14px] text-[#666d80]"
+                      className="text-center py-12 text-[14px] text-[#666d80] dark:text-[#9ca3af]"
                     >
                       Kullanıcı bulunamadı.
                     </td>
@@ -489,7 +489,7 @@ export default function UsersPage() {
                   table.getRowModel().rows.map((row) => (
                     <tr
                       key={row.id}
-                      className="border-b border-[#e5e7eb] hover:bg-[#f7f7f7] transition-colors"
+                      className="border-b border-[#e5e7eb] dark:border-[#374151] hover:bg-[#f7f7f7] dark:hover:bg-[#1f2937] transition-colors"
                     >
                       {row.getVisibleCells().map((cell) => (
                         <td key={cell.id} className="py-3 px-4">
@@ -507,8 +507,8 @@ export default function UsersPage() {
           </div>
 
           {/* Pagination */}
-          <div className="flex items-center justify-between p-4 border-t border-[#e5e7eb]">
-            <p className="text-[14px] text-[#666d80]">
+          <div className="flex items-center justify-between p-4 border-t border-[#e5e7eb] dark:border-[#374151]">
+            <p className="text-[14px] text-[#666d80] dark:text-[#9ca3af]">
               {table.getFilteredRowModel().rows.length} sonuçtan{" "}
               {table.getState().pagination.pageIndex *
                 table.getState().pagination.pageSize +
@@ -537,8 +537,8 @@ export default function UsersPage() {
                   onClick={() => table.setPageIndex(i)}
                   className={`w-8 h-8 rounded-lg text-[14px] font-medium transition-colors ${
                     table.getState().pagination.pageIndex === i
-                      ? "bg-[#09724a] text-white"
-                      : "text-[#666d80] hover:bg-[#f7f7f7]"
+                      ? "bg-[#09724a] text-white dark:bg-[#00fb90] dark:text-[#0d0d12]"
+                      : "text-[#666d80] hover:bg-[#f7f7f7] dark:text-[#9ca3af] dark:hover:bg-[#1f2937]"
                   }`}
                 >
                   {i + 1}
