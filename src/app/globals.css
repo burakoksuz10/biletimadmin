@@ -8,16 +8,32 @@
   --color-primary-light: #0d9762;
   --color-primary-accent: #00fb90;
 
-  /* Neutral Colors */
-  --color-neutral-900: #0d0d12;
-  --color-neutral-800: #0f1613;
-  --color-neutral-700: #1f1f21;
-  --color-neutral-600: #000000;
-  --color-neutral-500: #666d80;
-  --color-neutral-400: #818898;
-  --color-neutral-300: #e5e7eb;
-  --color-neutral-200: #f7f7f7;
-  --color-neutral-100: #ffffff;
+  /* Neutral Colors - Light Mode */
+  --color-neutral-50: #f9fafb;
+  --color-neutral-100: #f3f4f6;
+  --color-neutral-200: #e5e7eb;
+  --color-neutral-300: #d1d5db;
+  --color-neutral-400: #9ca3af;
+  --color-neutral-500: #6b7280;
+  --color-neutral-600: #4b5563;
+  --color-neutral-700: #374151;
+  --color-neutral-800: #1f2937;
+  --color-neutral-900: #111827;
+  --color-neutral-950: #030712;
+
+  /* Text Colors - Light Mode */
+  --color-text-primary: #0d0d12;
+  --color-text-secondary: #666d80;
+  --color-text-tertiary: #9ca3af;
+  --color-text-inverse: #ffffff;
+
+  /* Background Colors - Light Mode */
+  --color-bg-primary: #ffffff;
+  --color-bg-secondary: #f7f7f7;
+  --color-bg-tertiary: #f3f4f6;
+
+  /* Border Colors - Light Mode */
+  --color-border: #e5e7eb;
 
   /* Status Colors */
   --color-success: #09724a;
@@ -45,32 +61,48 @@
 
 /* Dark Mode Colors */
 .dark {
-  /* Primary Colors */
+  /* Primary Colors - Dark Mode */
   --color-primary: #00fb90;
   --color-primary-dark: #00d976;
   --color-primary-light: #00ffa0;
   --color-primary-accent: #09724a;
 
-  /* Neutral Colors - Inverted for dark mode */
-  --color-neutral-900: #ffffff;
-  --color-neutral-800: #f7f7f7;
-  --color-neutral-700: #e5e7eb;
-  --color-neutral-600: #d1d5db;
-  --color-neutral-500: #9ca3af;
-  --color-neutral-400: #6b7280;
-  --color-neutral-300: #4b5563;
+  /* Neutral Colors - Dark Mode */
+  --color-neutral-50: #0f172a;
+  --color-neutral-100: #1e293b;
   --color-neutral-200: #374151;
-  --color-neutral-100: #111827;
+  --color-neutral-300: #4b5563;
+  --color-neutral-400: #6b7280;
+  --color-neutral-500: #9ca3af;
+  --color-neutral-600: #d1d5db;
+  --color-neutral-700: #e5e7eb;
+  --color-neutral-800: #f3f4f6;
+  --color-neutral-900: #f9fafb;
+  --color-neutral-950: #ffffff;
 
-  /* Status Colors */
+  /* Text Colors - Dark Mode */
+  --color-text-primary: #f9fafb;
+  --color-text-secondary: #d1d5db;
+  --color-text-tertiary: #9ca3af;
+  --color-text-inverse: #0d0d12;
+
+  /* Background Colors - Dark Mode */
+  --color-bg-primary: #111827;
+  --color-bg-secondary: #1f2937;
+  --color-bg-tertiary: #374151;
+
+  /* Border Colors - Dark Mode */
+  --color-border: #374151;
+
+  /* Status Colors - Dark Mode */
   --color-success: #00fb90;
-  --color-success-bg: rgba(0, 251, 144, 0.1);
+  --color-success-bg: rgba(0, 251, 144, 0.15);
   --color-warning: #fbbf24;
-  --color-warning-bg: rgba(251, 191, 36, 0.1);
+  --color-warning-bg: rgba(251, 191, 36, 0.15);
   --color-danger: #f87171;
-  --color-danger-bg: rgba(248, 113, 113, 0.1);
+  --color-danger-bg: rgba(248, 113, 113, 0.15);
   --color-info: #60a5fa;
-  --color-info-bg: rgba(96, 165, 250, 0.1);
+  --color-info-bg: rgba(96, 165, 250, 0.15);
 }
 
 @theme inline {
@@ -120,12 +152,12 @@
 
 /* Base Styles */
 * {
-  border-color: var(--color-neutral-300);
+  border-color: var(--color-border);
 }
 
 body {
-  background: var(--color-neutral-200);
-  color: var(--color-neutral-900);
+  background: var(--color-bg-secondary);
+  color: var(--color-text-primary);
   font-family: var(--font-manrope), Arial, Helvetica, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
@@ -133,8 +165,8 @@ body {
 }
 
 .dark body {
-  background: var(--color-neutral-100);
-  color: var(--color-neutral-800);
+  background: var(--color-bg-primary);
+  color: var(--color-text-primary);
 }
 
 /* Custom Utilities */
