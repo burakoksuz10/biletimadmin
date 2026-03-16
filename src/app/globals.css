@@ -51,7 +51,7 @@
   --color-primary-light: #00ffa0;
   --color-primary-accent: #09724a;
 
-  /* Neutral Colors */
+  /* Neutral Colors - Inverted for dark mode */
   --color-neutral-900: #ffffff;
   --color-neutral-800: #f7f7f7;
   --color-neutral-700: #e5e7eb;
@@ -134,7 +134,7 @@ body {
 
 .dark body {
   background: var(--color-neutral-100);
-  color: var(--color-neutral-900);
+  color: var(--color-neutral-800);
 }
 
 /* Custom Utilities */
