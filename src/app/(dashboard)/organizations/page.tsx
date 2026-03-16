@@ -1,12 +1,40 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import Link from "next/link";
-import { Plus, Search, MoreVertical, Eye, Edit, Trash2, MapPin } from "lucide-react";
+import {
+  Plus,
+  Search,
+  Eye,
+  Edit,
+  Trash2,
+  MapPin,
+  Building2,
+  CheckCircle,
+  XCircle,
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+} from "@/components/ui/dialog";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
+import { OrganizationForm } from "@/components/organizations/organization-form";
 import { organizationsService } from "@/lib/api/services";
 import type { Organization } from "@/lib/api/types/biletleme.types";
 
@@ -14,7 +42,17 @@ export default function OrganizationsPage() {
   const [organizations, setOrganizations] = useState<Organization[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
-  const [statusFilter, setStatusFilter] = useState<"all" | "active" | "inactive" | "suspended">("all");
+  const [statusFilter, setStatusFilter] = useState<
+    "all" | "active" | "inactive" | "suspended"
+  >("all");
+
+  // Dialog states
+  const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false);
+  const [editingOrganization, setEditingOrganization] =
+    useState<Organization | null>(null);
+  const [deletingOrganization, setDeletingOrganization] =
+    useState<Organization | null>(null);
+  const [isDeleting, setIsDeleting] = useState(false);
 
   // Mock data for now - will be replaced with API call
   const mockOrganizations: Organization[] = [
@@ -65,13 +103,25 @@ export default function OrganizationsPage() {
   ];
 
   // Load organizations
-  useState(() => {
-    // Simulate loading
-    setTimeout(() => {
-      setOrganizations(mockOrganizations);
-      setIsLoading(false);
-    }, 500);
-  });
+  useEffect(() => {
+    const loadOrganizations = async () => {
+      try {
+        setIsLoading(true);
+        // Try to load from API first, fallback to mock data
+        try {
+          const data = await organizationsService.getAll();
+          setOrganizations(data);
+        } catch {
+          // Fallback to mock data if API is not available
+          setOrganizations(mockOrganizations);
+        }
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    loadOrganizations();
+  }, []);
 
   // Filter organizations
   const filteredOrganizations = useMemo(() => {
@@ -81,13 +131,17 @@ export default function OrganizationsPage() {
         org.description?.toLowerCase().includes(searchQuery.toLowerCase()) ||
         org.city?.toLowerCase().includes(searchQuery.toLowerCase());
 
-      const matchesStatus = statusFilter === "all" || org.status === statusFilter;
+      const matchesStatus =
+        statusFilter === "all" || org.status === statusFilter;
 
       return matchesSearch && matchesStatus;
     });
   }, [organizations, searchQuery, statusFilter]);
 
-  const statusVariantMap: Record<string, "success" | "warning" | "danger"> = {
+  const statusVariantMap: Record<
+    string,
+    "success" | "warning" | "danger"
+  > = {
     active: "success",
     inactive: "warning",
     suspended: "danger",
@@ -97,6 +151,46 @@ export default function OrganizationsPage() {
     active: "Aktif",
     inactive: "Pasif",
     suspended: "Askıya Alındı",
+  };
+
+  // Mock venue counts - will be fetched from API
+  const getVenueCount = (orgId: number) => {
+    return orgId === 1 ? 2 : orgId === 2 ? 1 : orgId === 3 ? 1 : orgId === 4 ? 1 : 0;
+  };
+
+  // Handle organization creation success
+  const handleCreateSuccess = (newOrganization: Organization) => {
+    setOrganizations((prev) => [...prev, newOrganization]);
+    setIsCreateDialogOpen(false);
+  };
+
+  // Handle organization update success
+  const handleEditSuccess = (updatedOrganization: Organization) => {
+    setOrganizations((prev) =>
+      prev.map((o) =>
+        o.id === updatedOrganization.id ? updatedOrganization : o
+      )
+    );
+    setEditingOrganization(null);
+  };
+
+  // Handle organization delete
+  const handleDelete = async () => {
+    if (!deletingOrganization) return;
+
+    try {
+      setIsDeleting(true);
+      await organizationsService.delete(deletingOrganization.id);
+      setOrganizations((prev) =>
+        prev.filter((o) => o.id !== deletingOrganization.id)
+      );
+      setDeletingOrganization(null);
+    } catch (error) {
+      console.error("Failed to delete organization:", error);
+      // TODO: Show error toast
+    } finally {
+      setIsDeleting(false);
+    }
   };
 
   return (
@@ -111,7 +205,10 @@ export default function OrganizationsPage() {
             Organizasyonları yönetin ve görüntüleyin
           </p>
         </div>
-        <Button className="bg-[#09724a] hover:bg-[#0d8a52] text-white">
+        <Button
+          className="bg-[#09724a] hover:bg-[#0d8a52] text-white"
+          onClick={() => setIsCreateDialogOpen(true)}
+        >
           <Plus className="w-4 h-4 mr-2" />
           Yeni Organizasyon
         </Button>
@@ -173,8 +270,7 @@ export default function OrganizationsPage() {
               <div>
                 <p className="text-[14px] text-[#666d80]">Toplam Mekan</p>
                 <p className="text-[28px] font-semibold text-[#0d0d12] mt-1">
-                  {/* This will be calculated from venues */}
-                  5
+                  {organizations.reduce((sum, o) => sum + getVenueCount(o.id), 0)}
                 </p>
               </div>
               <div className="w-12 h-12 rounded-full bg-[#eff6ff] flex items-center justify-center">
@@ -198,23 +294,25 @@ export default function OrganizationsPage() {
         </div>
 
         <div className="flex gap-2">
-          {(["all", "active", "inactive", "suspended"] as const).map((status) => (
-            <Button
-              key={status}
-              variant={statusFilter === status ? "primary" : "secondary"}
-              onClick={() => setStatusFilter(status)}
-              className={
-                statusFilter === status
-                  ? "bg-[#09724a] text-white"
-                  : "bg-white border-[#e5e7eb] text-[#666d80] hover:bg-[#f7f7f7]"
-              }
-            >
-              {status === "all" && "Tümü"}
-              {status === "active" && "Aktif"}
-              {status === "inactive" && "Pasif"}
-              {status === "suspended" && "Askıya Alındı"}
-            </Button>
-          ))}
+          {(["all", "active", "inactive", "suspended"] as const).map(
+            (status) => (
+              <Button
+                key={status}
+                variant={statusFilter === status ? "primary" : "secondary"}
+                onClick={() => setStatusFilter(status)}
+                className={
+                  statusFilter === status
+                    ? "bg-[#09724a] text-white"
+                    : "bg-white border-[#e5e7eb] text-[#666d80] hover:bg-[#f7f7f7]"
+                }
+              >
+                {status === "all" && "Tümü"}
+                {status === "active" && "Aktif"}
+                {status === "inactive" && "Pasif"}
+                {status === "suspended" && "Askıya Alındı"}
+              </Button>
+            )
+          )}
         </div>
       </div>
 
@@ -245,13 +343,19 @@ export default function OrganizationsPage() {
               <tbody>
                 {isLoading ? (
                   <tr>
-                    <td colSpan={5} className="py-8 text-center text-[#666d80]">
+                    <td
+                      colSpan={5}
+                      className="py-8 text-center text-[#666d80]"
+                    >
                       Yükleniyor...
                     </td>
                   </tr>
                 ) : filteredOrganizations.length === 0 ? (
                   <tr>
-                    <td colSpan={5} className="py-8 text-center text-[#666d80]">
+                    <td
+                      colSpan={5}
+                      className="py-8 text-center text-[#666d80]"
+                    >
                       Organizasyon bulunamadı
                     </td>
                   </tr>
@@ -287,8 +391,7 @@ export default function OrganizationsPage() {
                       </td>
                       <td className="py-3 px-4">
                         <p className="text-[14px] text-[#0d0d12]">
-                          {/* This will be fetched from venues */}
-                          {org.id === 1 ? 2 : org.id === 2 ? 1 : org.id === 3 ? 1 : org.id === 4 ? 1 : 0}
+                          {getVenueCount(org.id)}
                         </p>
                       </td>
                       <td className="py-3 px-4">
@@ -302,19 +405,19 @@ export default function OrganizationsPage() {
                               <Eye className="w-4 h-4" />
                             </Button>
                           </Link>
-                          <Link href={`/organizations/${org.id}/edit`}>
-                            <Button
-                              variant="ghost"
-                              size="small"
-                              className="h-8 w-8 p-0 text-[#666d80] hover:text-[#09724a]"
-                            >
-                              <Edit className="w-4 h-4" />
-                            </Button>
-                          </Link>
+                          <Button
+                            variant="ghost"
+                            size="small"
+                            className="h-8 w-8 p-0 text-[#666d80] hover:text-[#09724a]"
+                            onClick={() => setEditingOrganization(org)}
+                          >
+                            <Edit className="w-4 h-4" />
+                          </Button>
                           <Button
                             variant="ghost"
                             size="small"
                             className="h-8 w-8 p-0 text-[#666d80] hover:text-[#df1c41]"
+                            onClick={() => setDeletingOrganization(org)}
                           >
                             <Trash2 className="w-4 h-4" />
                           </Button>
@@ -328,9 +431,76 @@ export default function OrganizationsPage() {
           </div>
         </CardContent>
       </Card>
+
+      {/* Create Organization Dialog */}
+      <Dialog
+        open={isCreateDialogOpen}
+        onOpenChange={setIsCreateDialogOpen}
+      >
+        <DialogContent className="sm:max-w-[600px] max-h-[90vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle>Yeni Organizasyon Ekle</DialogTitle>
+            <DialogDescription>
+              Yeni bir organizasyon oluşturun. Zorunlu alanları doldurun.
+            </DialogDescription>
+          </DialogHeader>
+          <OrganizationForm
+            onSuccess={handleCreateSuccess}
+            onCancel={() => setIsCreateDialogOpen(false)}
+          />
+        </DialogContent>
+      </Dialog>
+
+      {/* Edit Organization Dialog */}
+      <Dialog
+        open={!!editingOrganization}
+        onOpenChange={(open) => !open && setEditingOrganization(null)}
+      >
+        <DialogContent className="sm:max-w-[600px] max-h-[90vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle>Organizasyonu Düzenle</DialogTitle>
+            <DialogDescription>
+              {editingOrganization?.name} organizasyonunun bilgilerini
+              güncelleyin.
+            </DialogDescription>
+          </DialogHeader>
+          {editingOrganization && (
+            <OrganizationForm
+              organization={editingOrganization}
+              onSuccess={handleEditSuccess}
+              onCancel={() => setEditingOrganization(null)}
+            />
+          )}
+        </DialogContent>
+      </Dialog>
+
+      {/* Delete Confirmation Dialog */}
+      <AlertDialog
+        open={!!deletingOrganization}
+        onOpenChange={(open) => !open && setDeletingOrganization(null)}
+      >
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Organizasyonu Sil</AlertDialogTitle>
+            <AlertDialogDescription>
+              <strong>{deletingOrganization?.name}</strong> organizasyonunu
+              silmek istediğinize emin misiniz? Bu işlem geri alınamaz.
+              Organizasyona bağlı mekanlar veya etkinlikler varsa silme işlemi
+              başarısız olabilir.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel disabled={isDeleting}>İptal</AlertDialogCancel>
+            <AlertDialogAction
+              className="bg-[#df1c41] hover:bg-[#c4183a]"
+              onClick={handleDelete}
+              disabled={isDeleting}
+            >
+              {isDeleting ? "Siliniyor..." : "Sil"}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 }
-
-// Import icons at the top
-import { Building2, CheckCircle, XCircle } from "lucide-react";

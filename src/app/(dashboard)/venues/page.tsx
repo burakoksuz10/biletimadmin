@@ -1,12 +1,41 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import Link from "next/link";
-import { Plus, Search, Eye, Edit, Trash2, MapPin, Building2 } from "lucide-react";
+import {
+  Plus,
+  Search,
+  Eye,
+  Edit,
+  Trash2,
+  MapPin,
+  Building2,
+  CheckCircle,
+  Users,
+  TrendingUp,
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+} from "@/components/ui/dialog";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
+import { VenueForm } from "@/components/venues/venue-form";
 import { venuesService } from "@/lib/api/services";
 import type { Venue } from "@/lib/api/types/biletleme.types";
 
@@ -14,7 +43,15 @@ export default function VenuesPage() {
   const [venues, setVenues] = useState<Venue[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
-  const [statusFilter, setStatusFilter] = useState<"all" | "active" | "inactive" | "maintenance">("all");
+  const [statusFilter, setStatusFilter] = useState<
+    "all" | "active" | "inactive" | "maintenance"
+  >("all");
+
+  // Dialog states
+  const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false);
+  const [editingVenue, setEditingVenue] = useState<Venue | null>(null);
+  const [deletingVenue, setDeletingVenue] = useState<Venue | null>(null);
+  const [isDeleting, setIsDeleting] = useState(false);
 
   // Mock data for now - will be replaced with API call
   const mockVenues: Venue[] = [
@@ -86,13 +123,25 @@ export default function VenuesPage() {
   ];
 
   // Load venues
-  useState(() => {
-    // Simulate loading
-    setTimeout(() => {
-      setVenues(mockVenues);
-      setIsLoading(false);
-    }, 500);
-  });
+  useEffect(() => {
+    const loadVenues = async () => {
+      try {
+        setIsLoading(true);
+        // Try to load from API first, fallback to mock data
+        try {
+          const data = await venuesService.getAll();
+          setVenues(data);
+        } catch {
+          // Fallback to mock data if API is not available
+          setVenues(mockVenues);
+        }
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    loadVenues();
+  }, []);
 
   // Organization names mapping
   const organizationNames: Record<number, string> = {
@@ -110,7 +159,8 @@ export default function VenuesPage() {
         venue.address.toLowerCase().includes(searchQuery.toLowerCase()) ||
         venue.city.toLowerCase().includes(searchQuery.toLowerCase());
 
-      const matchesStatus = statusFilter === "all" || venue.status === statusFilter;
+      const matchesStatus =
+        statusFilter === "all" || venue.status === statusFilter;
 
       return matchesSearch && matchesStatus;
     });
@@ -128,6 +178,37 @@ export default function VenuesPage() {
     maintenance: "Bakımda",
   };
 
+  // Handle venue creation success
+  const handleCreateSuccess = (newVenue: Venue) => {
+    setVenues((prev) => [...prev, newVenue]);
+    setIsCreateDialogOpen(false);
+  };
+
+  // Handle venue update success
+  const handleEditSuccess = (updatedVenue: Venue) => {
+    setVenues((prev) =>
+      prev.map((v) => (v.id === updatedVenue.id ? updatedVenue : v))
+    );
+    setEditingVenue(null);
+  };
+
+  // Handle venue delete
+  const handleDelete = async () => {
+    if (!deletingVenue) return;
+
+    try {
+      setIsDeleting(true);
+      await venuesService.delete(deletingVenue.id);
+      setVenues((prev) => prev.filter((v) => v.id !== deletingVenue.id));
+      setDeletingVenue(null);
+    } catch (error) {
+      console.error("Failed to delete venue:", error);
+      // TODO: Show error toast
+    } finally {
+      setIsDeleting(false);
+    }
+  };
+
   return (
     <div className="space-y-6">
       {/* Header */}
@@ -140,7 +221,10 @@ export default function VenuesPage() {
             Etkinlik mekanlarını yönetin ve görüntüleyin
           </p>
         </div>
-        <Button className="bg-[#09724a] hover:bg-[#0d8a52] text-white">
+        <Button
+          className="bg-[#09724a] hover:bg-[#0d8a52] text-white"
+          onClick={() => setIsCreateDialogOpen(true)}
+        >
           <Plus className="w-4 h-4 mr-2" />
           Yeni Mekan
         </Button>
@@ -186,7 +270,9 @@ export default function VenuesPage() {
               <div>
                 <p className="text-[14px] text-[#666d80]">Toplam Kapasite</p>
                 <p className="text-[28px] font-semibold text-[#0d0d12] mt-1">
-                  {venues.reduce((sum, v) => sum + v.capacity, 0).toLocaleString()}
+                  {venues
+                    .reduce((sum, v) => sum + v.capacity, 0)
+                    .toLocaleString()}
                 </p>
               </div>
               <div className="w-12 h-12 rounded-full bg-[#eff6ff] flex items-center justify-center">
@@ -204,7 +290,8 @@ export default function VenuesPage() {
                 <p className="text-[28px] font-semibold text-[#0d0d12] mt-1">
                   {venues.length > 0
                     ? Math.round(
-                        venues.reduce((sum, v) => sum + v.capacity, 0) / venues.length
+                        venues.reduce((sum, v) => sum + v.capacity, 0) /
+                          venues.length
                       ).toLocaleString()
                     : "0"}
                 </p>
@@ -230,23 +317,25 @@ export default function VenuesPage() {
         </div>
 
         <div className="flex gap-2">
-          {(["all", "active", "inactive", "maintenance"] as const).map((status) => (
-            <Button
-              key={status}
-              variant={statusFilter === status ? "primary" : "secondary"}
-              onClick={() => setStatusFilter(status)}
-              className={
-                statusFilter === status
-                  ? "bg-[#09724a] text-white"
-                  : "bg-white border-[#e5e7eb] text-[#666d80] hover:bg-[#f7f7f7]"
-              }
-            >
-              {status === "all" && "Tümü"}
-              {status === "active" && "Aktif"}
-              {status === "inactive" && "Pasif"}
-              {status === "maintenance" && "Bakımda"}
-            </Button>
-          ))}
+          {(["all", "active", "inactive", "maintenance"] as const).map(
+            (status) => (
+              <Button
+                key={status}
+                variant={statusFilter === status ? "primary" : "secondary"}
+                onClick={() => setStatusFilter(status)}
+                className={
+                  statusFilter === status
+                    ? "bg-[#09724a] text-white"
+                    : "bg-white border-[#e5e7eb] text-[#666d80] hover:bg-[#f7f7f7]"
+                }
+              >
+                {status === "all" && "Tümü"}
+                {status === "active" && "Aktif"}
+                {status === "inactive" && "Pasif"}
+                {status === "maintenance" && "Bakımda"}
+              </Button>
+            )
+          )}
         </div>
       </div>
 
@@ -280,13 +369,19 @@ export default function VenuesPage() {
               <tbody>
                 {isLoading ? (
                   <tr>
-                    <td colSpan={6} className="py-8 text-center text-[#666d80]">
+                    <td
+                      colSpan={6}
+                      className="py-8 text-center text-[#666d80]"
+                    >
                       Yükleniyor...
                     </td>
                   </tr>
                 ) : filteredVenues.length === 0 ? (
                   <tr>
-                    <td colSpan={6} className="py-8 text-center text-[#666d80]">
+                    <td
+                      colSpan={6}
+                      className="py-8 text-center text-[#666d80]"
+                    >
                       Mekan bulunamadı
                     </td>
                   </tr>
@@ -337,19 +432,19 @@ export default function VenuesPage() {
                               <Eye className="w-4 h-4" />
                             </Button>
                           </Link>
-                          <Link href={`/venues/${venue.id}/edit`}>
-                            <Button
-                              variant="ghost"
-                              size="small"
-                              className="h-8 w-8 p-0 text-[#666d80] hover:text-[#09724a]"
-                            >
-                              <Edit className="w-4 h-4" />
-                            </Button>
-                          </Link>
+                          <Button
+                            variant="ghost"
+                            size="small"
+                            className="h-8 w-8 p-0 text-[#666d80] hover:text-[#09724a]"
+                            onClick={() => setEditingVenue(venue)}
+                          >
+                            <Edit className="w-4 h-4" />
+                          </Button>
                           <Button
                             variant="ghost"
                             size="small"
                             className="h-8 w-8 p-0 text-[#666d80] hover:text-[#df1c41]"
+                            onClick={() => setDeletingVenue(venue)}
                           >
                             <Trash2 className="w-4 h-4" />
                           </Button>
@@ -363,9 +458,71 @@ export default function VenuesPage() {
           </div>
         </CardContent>
       </Card>
+
+      {/* Create Venue Dialog */}
+      <Dialog open={isCreateDialogOpen} onOpenChange={setIsCreateDialogOpen}>
+        <DialogContent className="sm:max-w-[600px] max-h-[90vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle>Yeni Mekan Ekle</DialogTitle>
+            <DialogDescription>
+              Yeni bir etkinlik mekanı oluşturun. Zorunlu alanları doldurun.
+            </DialogDescription>
+          </DialogHeader>
+          <VenueForm
+            onSuccess={handleCreateSuccess}
+            onCancel={() => setIsCreateDialogOpen(false)}
+          />
+        </DialogContent>
+      </Dialog>
+
+      {/* Edit Venue Dialog */}
+      <Dialog
+        open={!!editingVenue}
+        onOpenChange={(open) => !open && setEditingVenue(null)}
+      >
+        <DialogContent className="sm:max-w-[600px] max-h-[90vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle>Mekanı Düzenle</DialogTitle>
+            <DialogDescription>
+              {editingVenue?.name} mekanının bilgilerini güncelleyin.
+            </DialogDescription>
+          </DialogHeader>
+          {editingVenue && (
+            <VenueForm
+              venue={editingVenue}
+              onSuccess={handleEditSuccess}
+              onCancel={() => setEditingVenue(null)}
+            />
+          )}
+        </DialogContent>
+      </Dialog>
+
+      {/* Delete Confirmation Dialog */}
+      <AlertDialog
+        open={!!deletingVenue}
+        onOpenChange={(open) => !open && setDeletingVenue(null)}
+      >
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Mekanı Sil</AlertDialogTitle>
+            <AlertDialogDescription>
+              <strong>{deletingVenue?.name}</strong> mekanını silmek istediğinize
+              emin misiniz? Bu işlem geri alınamaz. Mekana bağlı etkinlikler
+              varsa silme işlemi başarısız olabilir.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel disabled={isDeleting}>İptal</AlertDialogCancel>
+            <AlertDialogAction
+              className="bg-[#df1c41] hover:bg-[#c4183a]"
+              onClick={handleDelete}
+              disabled={isDeleting}
+            >
+              {isDeleting ? "Siliniyor..." : "Sil"}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 }
-
-// Import icons at the top
-import { CheckCircle, Users, TrendingUp } from "lucide-react";
