@@ -3,7 +3,7 @@
 ## 📋 Frontend Bilgileri
 
 - **Frontend URL:** `http://localhost:3000` (Development)
-- **Production URL:** (Production domain'i buraya ekleyin)
+- **Production URL:** `https://biletim.vercel.app` ✅
 - **Framework:** Next.js 15 (React)
 - **Authentication:** Laravel Sanctum (Cookie-based/Stateful)
 
@@ -17,7 +17,7 @@ return [
     
     'allowed_origins' => [
         'http://localhost:3000',
-        // Production domain'i buraya ekleyin
+        'https://biletim.vercel.app', // Production
     ],
     
     'allowed_methods' => ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
@@ -38,7 +38,7 @@ return [
 'stateful' => [
     'domains' => [
         'http://localhost:3000',
-        // Production domain'i buraya ekleyin
+        'biletim.vercel.app', // Production (http:// olmadan)
     ],
 ],
 ```
@@ -71,9 +71,16 @@ SESSION_SECURE=false
 
 ### 1. Login Testi
 
-Frontend'de şu bilgilerle giriş yapın:
-- **Email:** `superadmin@biletix.com`
-- **Password:** `password`
+Frontend'de (https://biletim.vercel.app) şu bilgilerle giriş yapın:
+
+| Email | Rol | Şifre |
+|------|-----|-------|
+| super@biletim.com | SUPER_ADMIN | password |
+| bkm@biletim.com | BKM Org Admin | password |
+| zorlu@biletim.com | Zorlu PSM Org Admin | password |
+| anadolu@biletim.com | Anadolu Org Admin | password |
+| ege@biletim.com | Ege Org Admin | password |
+| coadmin@biletim.com | Co-Admin (BKM+Zorlu) | password |
 
 ### 2. API Testi
 
@@ -94,7 +101,7 @@ fetch('https://biletim.simgesoft.com/api/v1/auth/login', {
     'Accept': 'application/json'
   },
   body: JSON.stringify({
-    email: 'superadmin@biletix.com',
+    email: 'super@biletim.com',
     password: 'password'
   })
 }).then(r => r.json()).then(d => console.log('Login:', d));
