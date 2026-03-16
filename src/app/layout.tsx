@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Manrope, Inter_Tight } from "next/font/google";
 import "./globals.css";
 import { AuthProvider } from "@/contexts/auth-context";
+import { ThemeProvider } from "@/contexts/theme-context";
 import { ToastProvider } from "@/components/ui/toast";
 
 const manrope = Manrope({
@@ -29,11 +30,13 @@ export default function RootLayout({
   return (
     <html lang="en" className={`${manrope.variable} ${interTight.variable}`}>
       <body className="antialiased">
-        <AuthProvider>
-          <ToastProvider>
-            {children}
-          </ToastProvider>
-        </AuthProvider>
+        <ThemeProvider>
+          <AuthProvider>
+            <ToastProvider>
+              {children}
+            </ToastProvider>
+          </AuthProvider>
+        </ThemeProvider>
       </body>
     </html>
   );

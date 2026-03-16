@@ -83,26 +83,26 @@ export function Sidebar({ isCollapsed, onToggle }: SidebarProps) {
   return (
     <aside
       className={cn(
-        "fixed left-0 top-0 h-screen bg-white border-r border-[#e5e7eb] transition-all duration-300 z-40",
+        "fixed left-0 top-0 h-screen bg-white dark:bg-[#111827] border-r border-[#e5e7eb] dark:border-[#374151] transition-all duration-300 z-40",
         isCollapsed ? "w-[80px]" : "w-[300px]"
       )}
     >
       <div className="flex flex-col h-full">
         {/* Logo */}
-        <div className="h-[72px] flex items-center justify-between px-6 border-b border-[#e5e7eb]">
+        <div className="h-[72px] flex items-center justify-between px-6 border-b border-[#e5e7eb] dark:border-[#374151]">
           {!isCollapsed && (
             <Link href="/" className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-[9.85px] bg-[#09724a] flex items-center justify-center">
-                <div className="w-6 h-6 rounded-full bg-[#e1eee3] border border-[#09724a]" />
+              <div className="w-10 h-10 rounded-[9.85px] bg-[#09724a] dark:bg-[#00fb90] flex items-center justify-center">
+                <div className="w-6 h-6 rounded-full bg-[#e1eee3] dark:bg-[#111827] border border-[#09724a] dark:border-[#00fb90]" />
               </div>
-              <span className="text-[20px] font-bold text-[#0d0d12]">
+              <span className="text-[20px] font-bold text-[#0d0d12] dark:text-[#ffffff]">
                 Biletim
               </span>
             </Link>
           )}
           {isCollapsed && (
-            <div className="w-10 h-10 rounded-[9.85px] bg-[#09724a] flex items-center justify-center mx-auto">
-              <div className="w-6 h-6 rounded-full bg-[#e1eee3] border border-[#09724a]" />
+            <div className="w-10 h-10 rounded-[9.85px] bg-[#09724a] dark:bg-[#00fb90] flex items-center justify-center mx-auto">
+              <div className="w-6 h-6 rounded-full bg-[#e1eee3] dark:bg-[#111827] border border-[#09724a] dark:border-[#00fb90]" />
             </div>
           )}
         </div>
@@ -121,8 +121,8 @@ export function Sidebar({ isCollapsed, onToggle }: SidebarProps) {
                     className={cn(
                       "flex items-center gap-3 rounded-lg px-3 py-2.5 transition-colors",
                       isActive
-                        ? "bg-[#e1eee3] text-[#09724a]"
-                        : "text-[#666d80] hover:bg-[#f7f7f7] hover:text-[#0d0d12]",
+                        ? "bg-[#e1eee3] dark:bg-[#1f1f21] text-[#09724a] dark:text-[#00fb90]"
+                        : "text-[#666d80] dark:text-[#9ca3af] hover:bg-[#f7f7f7] dark:hover:bg-[#1f1f21] hover:text-[#0d0d12] dark:hover:text-[#ffffff]",
                       isCollapsed && "justify-center"
                     )}
                     title={isCollapsed ? item.title : undefined}
@@ -141,11 +141,11 @@ export function Sidebar({ isCollapsed, onToggle }: SidebarProps) {
         </nav>
 
         {/* Toggle Button */}
-        <div className="p-4 border-t border-[#e5e7eb]">
+        <div className="p-4 border-t border-[#e5e7eb] dark:border-[#374151]">
           <button
             onClick={onToggle}
             className={cn(
-              "flex items-center gap-3 w-full rounded-lg px-3 py-2.5 text-[#666d80] hover:bg-[#f7f7f7] hover:text-[#0d0d12] transition-colors",
+              "flex items-center gap-3 w-full rounded-lg px-3 py-2.5 text-[#666d80] dark:text-[#9ca3af] hover:bg-[#f7f7f7] dark:hover:bg-[#1f1f21] hover:text-[#0d0d12] dark:hover:text-[#ffffff] transition-colors",
               isCollapsed && "justify-center"
             )}
           >
