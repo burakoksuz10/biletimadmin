@@ -17,16 +17,20 @@ export default function DashboardLayout({
   const router = useRouter();
 
   useEffect(() => {
+    console.log("🏠 [DASHBOARD LAYOUT] Mounted:", mounted);
     setMounted(true);
   }, []);
 
   useEffect(() => {
+    console.log("🔍 [DASHBOARD LAYOUT] Auth kontrolü - mounted:", mounted, "isLoading:", isLoading, "user:", user ? "var" : "yok");
     if (mounted && !isLoading && !user) {
+      console.log("⚠️ [DASHBOARD LAYOUT] User yok, login'e yönlendiriliyor...");
       router.push("/login");
     }
   }, [user, isLoading, router, mounted]);
 
   if (!mounted || isLoading) {
+    console.log("⏳ [DASHBOARD LAYOUT] Loading gösteriliyor...");
     return (
       <div className="flex items-center justify-center h-screen bg-white">
         <div className="flex flex-col items-center gap-4">
@@ -40,8 +44,11 @@ export default function DashboardLayout({
   }
 
   if (!user) {
+    console.log("❌ [DASHBOARD LAYOUT] User yok, null döndürülüyor");
     return null;
   }
+
+  console.log("✅ [DASHBOARD LAYOUT] Dashboard render ediliyor, user:", user.name);
 
   return (
     <div className="min-h-screen bg-[#f7f7f7]">

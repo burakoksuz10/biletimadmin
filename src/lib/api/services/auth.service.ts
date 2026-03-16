@@ -33,18 +33,26 @@ class AuthService {
    * Returns user data and stores the Bearer token
    */
   async login(credentials: LoginCredentials): Promise<BackendUser> {
+    console.log("🔑 [AUTH SERVICE] Login başlıyor:", credentials.email);
+    
     // Login to /api/v1/login endpoint
     const response = await apiClient.post<LoginResponse>(
       "/login",
       credentials
     );
 
+    console.log("📦 [AUTH SERVICE] Backend yanıtı:", response);
+
     // Store the Bearer token
     if (response.success && response.data?.token) {
+      console.log("💾 [AUTH SERVICE] Token saklanıyor:", response.data.token.substring(0, 20) + "...");
       apiClient.setToken(response.data.token);
+    } else {
+      console.error("❌ [AUTH SERVICE] Token bulunamadı! Response:", response);
     }
 
     // Return the user data
+    console.log("✅ [AUTH SERVICE] User data dönüyor:", response.data.user);
     return response.data.user;
   }
 

@@ -36,12 +36,13 @@ export default function LoginPage() {
     setIsLoading(true);
     setErrorMessage(null);
     try {
-      console.log("Login attempt with:", data.email);
+      console.log("🔐 [LOGIN] Başlıyor...", data.email);
       await login(data);
-      console.log("Login successful, redirecting...");
+      console.log("✅ [LOGIN] Başarılı! User ve token set edildi");
+      console.log("🔄 [LOGIN] Dashboard'a yönlendiriliyor...");
       router.push("/");
     } catch (error: unknown) {
-      console.error("Login failed:", error);
+      console.error("❌ [LOGIN] Hata:", error);
       if (error && typeof error === "object" && "message" in error) {
         setErrorMessage((error as { message: string }).message);
       } else if (error instanceof Error) {
