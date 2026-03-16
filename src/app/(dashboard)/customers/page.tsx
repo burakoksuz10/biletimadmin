@@ -61,29 +61,10 @@ export default function CustomersPage() {
     const loadCustomers = async () => {
       try {
         setIsLoading(true);
-        console.log("Müşteriler yükleniyor...");
         const response = await customersService.getAll();
-        console.log("API yanıtı:", response);
-        console.log("API yanıtı data:", response.data);
-        console.log("API yanıtı data tipi:", typeof response.data);
-        console.log("API yanıtı data array mi?:", Array.isArray(response.data));
-        
-        if (Array.isArray(response.data)) {
-          console.log("İlk müşteri:", response.data[0]);
-          console.log("İlk müşteri anahtarları:", response.data[0] ? Object.keys(response.data[0]) : "undefined");
-        }
-        
         setCustomers(response.data);
-        console.log("Müşteriler yüklendi:", response.data.length);
       } catch (error: any) {
         console.error("Müşteriler yüklenirken hata:", error);
-        // Hata mesajını göster
-        console.error("Hata detayları:", JSON.stringify(error, null, 2));
-        
-        // 401 hatası için özel mesaj
-        if (error.status === 401) {
-          console.error("Oturum süreniz doldu. Lütfen tekrar giriş yapın.");
-        }
       } finally {
         setIsLoading(false);
       }
@@ -540,7 +521,7 @@ export default function CustomersPage() {
                         <div className="flex items-center gap-2">
                           <Phone className="w-4 h-4 text-[#818898] dark:text-[#9ca3af]" />
                           <p className="text-[14px] text-[#666d80] dark:text-[#9ca3af]">
-                            {customer.phone}
+                            {customer.phone || "-"}
                           </p>
                         </div>
                       </td>

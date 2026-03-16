@@ -30,21 +30,14 @@ class CustomersService {
       last_page: number;
     };
   }> {
-    console.log("🔍 [CUSTOMERS SERVICE] API çağrısı yapılıyor: /api/v1/users/by-role/customers", filters);
-    
     try {
       const response = await apiClient.get<any>("/users/by-role/customers", {
         params: filters
       });
 
-      console.log("📦 [CUSTOMERS SERVICE] Ham API yanıtı:", response);
-      console.log("📦 [CUSTOMERS SERVICE] Response tipi:", typeof response);
-      console.log("📦 [CUSTOMERS SERVICE] Response anahtarları:", response ? Object.keys(response) : "response null/undefined");
-
       // Backend API formatı: { success: true, data: { customers: [...], pagination: {...} } }
       // Axios response.data ile geldiği için response.data.data.customers erişmemiz gerekiyor
       if (response.data && response.data.data && response.data.data.customers && Array.isArray(response.data.data.customers)) {
-        console.log("✅ [CUSTOMERS SERVICE] Yanıt data.data.customers içinde array, uzunluk:", response.data.data.customers.length);
         
         const customers = response.data.data.customers;
         const pagination = response.data.data.pagination;
@@ -62,7 +55,6 @@ class CustomersService {
 
       // Eski format için fallback: { success: true, data: [...], pagination: {...} }
       if (response.data && response.data.data && Array.isArray(response.data.data)) {
-        console.log("✅ [CUSTOMERS SERVICE] Yanıt data.data içinde array (eski format), uzunluk:", response.data.data.length);
         
         const customers = response.data.data;
         const pagination = response.data.pagination;
@@ -80,7 +72,6 @@ class CustomersService {
 
       // Eğer yanıt doğrudan bir array ise (fallback)
       if (Array.isArray(response)) {
-        console.log("✅ [CUSTOMERS SERVICE] Yanıt doğrudan array, uzunluk:", response.length);
         return {
           data: response,
           meta: {
@@ -94,7 +85,6 @@ class CustomersService {
 
       // Eğer yanıt response.data içinde array ise (fallback)
       if (response.data && Array.isArray(response.data)) {
-        console.log("✅ [CUSTOMERS SERVICE] Yanıt response.data içinde array, uzunluk:", response.data.length);
         return {
           data: response.data,
           meta: {
@@ -107,9 +97,6 @@ class CustomersService {
       }
 
       // Hiçbir durum uymazsa boş array dön
-      console.warn("⚠️ [CUSTOMERS SERVICE] Beklenmeyen API yanıt formatı:", response);
-      console.warn("⚠️ [CUSTOMERS SERVICE] response.data:", response.data);
-      console.warn("⚠️ [CUSTOMERS SERVICE] response.data?.data:", response.data?.data);
       return {
         data: [],
         meta: {
@@ -121,8 +108,6 @@ class CustomersService {
       };
     } catch (error: any) {
       console.error("❌ [CUSTOMERS SERVICE] API çağrısı hatası:", error);
-      console.error("❌ [CUSTOMERS SERVICE] Hata status:", error.status);
-      console.error("❌ [CUSTOMERS SERVICE] Hata mesajı:", error.message);
       throw error;
     }
   }
@@ -165,8 +150,6 @@ class CustomersService {
       `/users/${id}`,
       data
     );
-
-    console.log("Müşteri güncelleme API yanıtı:", response);
 
     // Backend API formatı: { success: true, data: { ...customer }, message: "..." }
     if (response.data && response.data.data && response.data.data.id) {
@@ -218,8 +201,6 @@ class CustomersService {
       `/users/${id}/orders`,
       { params }
     );
-
-    console.log("Müşteri siparişleri API yanıtı:", response);
 
     // Backend API formatı: { success: true, data: { orders: [...], pagination: {...} } }
     if (response.data && response.data.data && response.data.data.orders && Array.isArray(response.data.data.orders)) {
@@ -295,8 +276,6 @@ class CustomersService {
   }> {
     const response = await apiClient.get<any>(`/users/${id}/tickets`, { params });
 
-    console.log("Müşteri biletleri API yanıtı:", response);
-
     // Backend API formatı: { success: true, data: { tickets: [...], pagination: {...} } }
     if (response.data && response.data.data && response.data.data.tickets && Array.isArray(response.data.data.tickets)) {
       const pagination = response.data.data.pagination;
@@ -349,8 +328,6 @@ class CustomersService {
     const response = await apiClient.get<any>(
       `/users/${id}/stats`
     );
-
-    console.log("Müşteri istatistikleri API yanıtı:", response);
 
     // Backend API formatı: { success: true, data: { ...stats } }
     if (response.data && response.data.data && (response.data.data.total_orders !== undefined || response.data.data.total_spent !== undefined)) {
@@ -408,8 +385,6 @@ class CustomersService {
       `/users/${id}/activity`,
       { params }
     );
-
-    console.log("Müşteri aktivitesi API yanıtı:", response);
 
     // Backend API formatı: { success: true, data: { activities: [...], pagination: {...} } }
     if (response.data && response.data.data && response.data.data.activities && Array.isArray(response.data.data.activities)) {
@@ -472,8 +447,6 @@ class CustomersService {
       "/users/by-role/customers/stats"
     );
 
-    console.log("Genel müşteri istatistikleri API yanıtı:", response);
-
     // Backend API formatı: { success: true, data: { ...stats } }
     if (response.data && response.data.data) {
       return response.data.data;
@@ -496,8 +469,6 @@ class CustomersService {
       "/users/by-role/customers/top-spenders",
       { params: { limit } }
     );
-
-    console.log("En çok harcama yapanlar API yanıtı:", response);
 
     // Backend API formatı: { success: true, data: { top_spenders: [...] } }
     if (response.data && response.data.data && response.data.data.top_spenders && Array.isArray(response.data.data.top_spenders)) {
@@ -525,8 +496,6 @@ class CustomersService {
     const response = await apiClient.get<any>(
       "/users/by-role/customers/segments"
     );
-
-    console.log("Müşteri segmentasyonu API yanıtı:", response);
 
     // Backend API formatı: { success: true, data: { segments: [...] } }
     if (response.data && response.data.data && response.data.data.segments && Array.isArray(response.data.data.segments)) {
