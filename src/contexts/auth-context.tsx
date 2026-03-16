@@ -1,6 +1,6 @@
 "use client";
 
-import React, { createContext, useContext, useState, useEffect } from "react";
+import React, { createContext, useContext, useState, useEffect, useRef } from "react";
 import type { User, AuthContextType, LoginRequest, RegisterRequest } from "@/types/auth.types";
 import type { BackendUser } from "@/lib/api/types/biletleme.types";
 import { authService } from "@/lib/api/services";
@@ -26,55 +26,46 @@ function mapBackendUser(backendUser: BackendUser): User {
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
+  const initRef = useRef(false);
 
-  // Initialize from localStorage and verify token
+  // Initialize from localStorage and trust the token
+  // Token will be validated when making API calls
+  // If token is invalid, the axios interceptor will handle it
   useEffect(() => {
-    async function initAuth() {
-      console.log("🚀 [AUTH CONTEXT] Initialization başlıyor...");
-      try {
-        const storedUser = localStorage.getItem("user");
-        const hasToken = authService.hasValidToken();
-        
-        console.log("📦 [AUTH CONTEXT] localStorage'dan:", storedUser ? "User var" : "User yok");
-        console.log("🔑 [AUTH CONTEXT] Token kontrolü:", hasToken ? "Token var" : "Token yok");
-
-        if (storedUser && hasToken) {
-          // First, load user from localStorage immediately
-          const parsedUser = JSON.parse(storedUser);
-          console.log("✅ [AUTH CONTEXT] localStorage'dan user yüklendi:", parsedUser);
-          setUser(parsedUser);
-          
-          // Then verify session is still valid by fetching current user from backend
-          try {
-            console.log("🔍 [AUTH CONTEXT] Backend'den user doğrulanıyor...");
-            const backendUser = await authService.getCurrentUser();
-            const mappedUser = mapBackendUser(backendUser);
-            console.log("✅ [AUTH CONTEXT] Backend user doğrulandı:", mappedUser);
-            setUser(mappedUser);
-            localStorage.setItem("user", JSON.stringify(mappedUser));
-          } catch (error) {
-            console.error("❌ [AUTH CONTEXT] Backend doğrulaması başarısız:", error);
-            // Token expired or invalid, clear storage
-            localStorage.removeItem("user");
-            setUser(null);
-          }
-        } else {
-          console.log("⚠️ [AUTH CONTEXT] Token veya user yok, login gerekli");
-        }
-      } catch (error) {
-        console.error("❌ [AUTH CONTEXT] Initialization hatası:", error);
-        // Error during initialization, clear storage
-        localStorage.removeItem("user");
-        setUser(null);
-      } finally {
-        console.log("✅ [AUTH CONTEXT] Initialization tamamlandı, isLoading: false");
-        setIsLoading(false);
-      }
+    // Prevent double initialization in React Strict Mode
+    if (initRef.current) {
+      return;
     }
+    initRef.current = true;
 
-    initAuth();
-  }, []);
+    console.log("🚀 [AUTH CONTEXT] Initialization başlıyor...");
+    
+    try {
+      const storedUser = localStorage.getItem("user");
+      const hasToken = authService.hasValidToken();
+      
+      console.log("📦 [AUTH CONTEXT] localStorage'dan:", storedUser ? "User var" : "User yok");
+      console.log("🔑 [AUTH CONTEXT] Token kontrolü:", hasToken ? "Token var" : "Token yok");
+
+      if (storedUser && hasToken) {
+        // Load user from localStorage
+        const parsedUser = JSON.parse(storedUser);
+        console.log("✅ [AUTH CONTEXT] localStorage'dan user yüklendi:", parsedUser);
+        setUser(parsedUser);
+      } else {
+        console.log("⚠️ [AUTH CONTEXT] Token veya user yok, login gerekli");
+      }
+    } catch (error) {
+      console.error("❌ [AUTH CONTEXT] Initialization hatası:", error);
+      // Error during initialization, clear storage
+      localStorage.removeItem("user");
+      setUser(null);
+    } finally {
+      console.log("✅ [AUTH CONTEXT] Initialization tamamlandı, isLoading: false");
+      setIsLoading(false);
+    }
+  }, []); // Empty dependency array - only run once on mount
 
   const login = async (credentials: LoginRequest) => {
     console.log("🔐 [AUTH CONTEXT] Login fonksiyonu çağrıldı:", credentials.email);
@@ -134,17 +125,20 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   };
 
   const logout = async () => {
+    console.log("🚪 [AUTH CONTEXT] Logout başlıyor...");
     setIsLoading(true);
     try {
       // Call backend logout endpoint
       await authService.logout();
-    } catch {
+      console.log("✅ [AUTH CONTEXT] Backend logout başarılı");
+    } catch (error) {
       // Even if logout fails on server, we clear local state
-      console.warn("Sunucu logout hatası, yerel oturum temizleniyor");
+      console.warn("⚠️ [AUTH CONTEXT] Sunucu logout hatası, yerel oturum temizleniyor", error);
     } finally {
       setUser(null);
       localStorage.removeItem("user");
       setIsLoading(false);
+      console.log("✅ [AUTH CONTEXT] Logout tamamlandı");
     }
   };
 
