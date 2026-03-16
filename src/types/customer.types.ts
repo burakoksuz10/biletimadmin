@@ -53,15 +53,26 @@ export interface CustomerListItem {
   id: number;
   name: string;
   email: string;
-  phone: string;
+  phone?: string; // API'den gelmeyebilir
   avatar?: string;
   status: CustomerStatus;
   customer_segment?: CustomerSegment;
-  total_orders: number;
-  total_spent: number;
-  total_tickets: number;
+  total_orders?: number; // API'den gelmeyebilir
+  total_spent?: number; // API'den gelmeyebilir
+  total_tickets?: number; // API'den gelmeyebilir
   created_at: string;
   last_order_date?: string;
+  
+  // API'den gelen ek alanlar
+  role?: string;
+  role_label?: string;
+  user_group?: string;
+  user_group_label?: string;
+  is_email_verified?: boolean;
+  status_label?: string;
+  organization_id?: number | null;
+  email_verified_at?: string | null;
+  updated_at?: string;
 }
 
 export interface CustomerOrder {

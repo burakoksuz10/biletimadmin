@@ -118,7 +118,7 @@ export default function CustomersPage() {
         const matchesSearch =
           customer.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
           customer.email.toLowerCase().includes(searchQuery.toLowerCase()) ||
-          customer.phone.includes(searchQuery);
+          (customer.phone && customer.phone.includes(searchQuery));
 
         const matchesStatus = statusFilter === "all" || customer.status === statusFilter;
         const matchesSegment = segmentFilter === "all" || customer.customer_segment === segmentFilter;
@@ -136,7 +136,7 @@ export default function CustomersPage() {
             comparison = new Date(a.created_at).getTime() - new Date(b.created_at).getTime();
             break;
           case "total_spent":
-            comparison = a.total_spent - b.total_spent;
+            comparison = (a.total_spent || 0) - (b.total_spent || 0);
             break;
           case "last_order":
             const aDate = a.last_order_date ? new Date(a.last_order_date).getTime() : 0;
@@ -158,7 +158,7 @@ export default function CustomersPage() {
       banned: customers.filter((c) => c.status === "banned").length,
       vip: customers.filter((c) => c.customer_segment === "vip").length,
       new: customers.filter((c) => c.customer_segment === "new").length,
-      totalRevenue: customers.reduce((sum, c) => sum + c.total_spent, 0),
+      totalRevenue: customers.reduce((sum, c) => sum + (c.total_spent || 0), 0),
     };
   }, [customers]);
 
@@ -330,7 +330,7 @@ export default function CustomersPage() {
               <div>
                 <p className="text-[12px] text-[#666d80] dark:text-[#9ca3af]">Toplam Bilet</p>
                 <p className="text-[20px] font-semibold text-[#0d0d12] dark:text-[#f9fafb]">
-                  {customers.reduce((sum, c) => sum + c.total_tickets, 0).toLocaleString()}
+                  {customers.reduce((sum, c) => sum + (c.total_tickets || 0), 0).toLocaleString()}
                 </p>
               </div>
             </div>
@@ -592,7 +592,7 @@ export default function CustomersPage() {
                       </td>
                       <td className="py-3 px-4">
                         <p className="text-[14px] font-medium text-[#0d0d12] dark:text-[#f9fafb]">
-                          {customer.total_spent.toLocaleString()} ₺
+                          {(customer.total_spent || 0).toLocaleString()} ₺
                         </p>
                       </td>
                       <td className="py-3 px-4">
