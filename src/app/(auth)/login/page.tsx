@@ -17,6 +17,7 @@ export default function LoginPage() {
   const { login } = useAuth();
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   const {
     register,
@@ -33,11 +34,21 @@ export default function LoginPage() {
 
   const onSubmit = async (data: LoginFormValues) => {
     setIsLoading(true);
+    setErrorMessage(null);
     try {
+      console.log("Login attempt with:", data.email);
       await login(data);
+      console.log("Login successful, redirecting...");
       router.push("/");
-    } catch (error) {
+    } catch (error: unknown) {
       console.error("Login failed:", error);
+      if (error && typeof error === "object" && "message" in error) {
+        setErrorMessage((error as { message: string }).message);
+      } else if (error instanceof Error) {
+        setErrorMessage(error.message);
+      } else {
+        setErrorMessage("Giriş yapılamadı. Lütfen bilgilerinizi kontrol edin.");
+      }
     } finally {
       setIsLoading(false);
     }
@@ -124,6 +135,13 @@ export default function LoginPage() {
                   <p className="text-[14px] text-[#df1c41] mt-1">{errors.password.message}</p>
                 )}
               </div>
+
+              {/* Error Message */}
+              {errorMessage && (
+                <div className="p-4 bg-[#fff0f3] border border-[#df1c41] rounded-lg">
+                  <p className="text-[14px] text-[#df1c41] text-center">{errorMessage}</p>
+                </div>
+              )}
 
               {/* Remember Me & Forgot Password */}
               <div className="flex items-center justify-between">

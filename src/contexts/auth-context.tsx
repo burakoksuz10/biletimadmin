@@ -71,6 +71,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       const mappedUser = mapBackendUser(backendUser);
       setUser(mappedUser);
       localStorage.setItem("user", JSON.stringify(mappedUser));
+    } catch (error) {
+      console.error("Login error in AuthContext:", error);
+      // Re-throw error so it can be handled in the login page
+      throw error;
     } finally {
       setIsLoading(false);
     }
@@ -91,6 +95,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       const mappedUser = mapBackendUser(backendUser);
       setUser(mappedUser);
       localStorage.setItem("user", JSON.stringify(mappedUser));
+    } catch (error) {
+      console.error("Register error in AuthContext:", error);
+      // Re-throw error so it can be handled in the register page
+      throw error;
     } finally {
       setIsLoading(false);
     }
