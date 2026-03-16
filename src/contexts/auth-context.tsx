@@ -15,12 +15,12 @@ function mapBackendUser(backendUser: BackendUser): User {
     email: backendUser.email,
     phone: backendUser.phone,
     role: backendUser.role,
-    organization_id: backendUser.organization_id,
+    organization_id: backendUser.organization_id ?? undefined,
     organizations: backendUser.organizations,
-    status: backendUser.status,
+    status: backendUser.status || "active", // Default to active if not provided
     avatar: backendUser.avatar,
     createdAt: backendUser.created_at,
-    updatedAt: backendUser.updated_at,
+    updatedAt: backendUser.updated_at || backendUser.created_at, // Fallback to created_at
   };
 }
 
@@ -36,7 +36,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         const hasToken = authService.hasValidToken();
 
         if (storedUser && hasToken) {
-          // Verify session is still valid by fetching current user from backend
+          // First, load user from localStorage immediately
+          const parsedUser = JSON.parse(storedUser);
+          setUser(parsedUser);
+          
+          // Then verify session is still valid by fetching current user from backend
           try {
             const backendUser = await authService.getCurrentUser();
             const mappedUser = mapBackendUser(backendUser);

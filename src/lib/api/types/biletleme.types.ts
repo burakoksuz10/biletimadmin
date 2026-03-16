@@ -11,14 +11,17 @@ export interface BackendUser {
   id: number;
   name: string;
   email: string;
-  phone?: string;
   role: BackendUserRole;
-  organization_id?: number;
+  role_label?: string; // Backend provides Turkish label
+  organization_id?: number | null;
   organizations?: Organization[]; // For CO_ADMIN with multiple orgs
-  avatar?: string;
-  status: "active" | "banned" | "suspended";
+  email_verified_at?: string;
   created_at: string;
-  updated_at: string;
+  updated_at?: string;
+  // Optional fields that may not be in login response
+  phone?: string;
+  avatar?: string;
+  status?: "active" | "banned" | "suspended";
 }
 
 // ============================================
