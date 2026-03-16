@@ -56,30 +56,29 @@ export default function LoginPage() {
 
   return (
     <div className="min-h-screen w-full bg-white flex relative overflow-hidden">
-      {/* Decorative Background Elements - Fixed positioning */}
-      <div className="absolute top-0 left-0 w-[1192px] h-[670px] rounded-full bg-[#09724a] opacity-100 -translate-x-1/2 -translate-y-1/2" 
-           style={{ left: '-525px', top: '-265px' }} />
-      <div className="absolute w-[778px] h-[604px] rounded-full bg-[#09724a] opacity-80" 
-           style={{ left: '-389px', top: '274px' }} />
-      <div className="absolute bottom-0 left-0 w-[824px] h-[325px] rounded-full bg-[#09724a] opacity-80 -translate-x-1/2" 
-           style={{ left: '-225px', bottom: '-162px' }} />
+      {/* Decorative Background Elements */}
+      <div className="fixed top-0 left-0 w-[1192px] h-[670px] rounded-full bg-[#09724a] opacity-100 -translate-x-1/2 -translate-y-1/2 pointer-events-none"
+           style={{ left: '50%', top: '-200px' }} />
+      <div className="fixed w-[778px] h-[604px] rounded-full bg-[#09724a] opacity-80 pointer-events-none"
+           style={{ left: '50%', top: '150px' }} />
+      <div className="fixed bottom-0 left-0 w-[824px] h-[325px] rounded-full bg-[#09724a] opacity-80 -translate-x-1/2 pointer-events-none"
+           style={{ left: '50%', bottom: '-100px' }} />
 
       {/* Main Content */}
       <div className="relative z-10 w-full min-h-screen flex flex-col lg:flex-row">
         {/* Left Panel - Login Form */}
-        <div className="w-full lg:w-[436px] min-h-screen flex flex-col justify-center px-6 sm:px-12 lg:px-[82px] py-12">
-          {/* Logo */}
-          <Link href="/" className="flex items-center gap-3 mb-12">
-            <div className="w-10 h-10 rounded-[9.85px] bg-[#09724a] flex items-center justify-center flex-shrink-0">
-              <div className="w-6 h-6 rounded-full bg-[#e1eee3] border border-[#09724a]" />
-            </div>
-            <span className="text-[24.6px] font-bold text-[#0d0d12] leading-[33.23px]">
-              Biletim
-            </span>
-          </Link>
+        <div className="w-full lg:w-[480px] min-h-screen flex items-center justify-center px-6 sm:px-12 lg:px-16 xl:px-20 py-12">
+          <div className="w-full max-w-[400px]">
+            {/* Logo */}
+            <Link href="/" className="flex items-center gap-3 mb-10">
+              <div className="w-10 h-10 rounded-[9.85px] bg-[#09724a] flex items-center justify-center flex-shrink-0">
+                <div className="w-6 h-6 rounded-full bg-[##e1eee3] border border-[#09724a]" />
+              </div>
+              <span className="text-[24.6px] font-bold text-[#0d0d12] leading-[33.23px]">
+                Biletim
+              </span>
+            </Link>
 
-          {/* Login Form */}
-          <div className="w-full max-w-md">
             {/* Header */}
             <div className="text-center mb-8">
               <h1 className="text-[24px] font-bold text-[#0d0d12] leading-[31.2px] tracking-[-0.48px] mb-2">
@@ -202,7 +201,7 @@ export default function LoginPage() {
           <div className="w-full max-w-[778px] h-full max-h-[976px] rounded-[30px] bg-white/40 border border-white backdrop-blur-sm p-8 lg:p-12 xl:p-16 flex flex-col">
             {/* Logo */}
             <div className="w-[82px] h-[82px] rounded-[9.85px] bg-[#09724a] flex items-center justify-center mb-8 flex-shrink-0">
-              <div className="w-12 h-12 rounded-full bg-[#e1eee3] border border-[#09724a]" />
+              <div className="w-12 h-12 rounded-full bg-[##e1eee3] border border-[#09724a]" />
             </div>
 
             {/* Content */}
