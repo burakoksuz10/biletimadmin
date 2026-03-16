@@ -30,19 +30,40 @@ class CustomersService {
       last_page: number;
     };
   }> {
-    const response = await apiClient.get<{
-      data: CustomerListItem[];
-      meta: {
-        current_page: number;
-        per_page: number;
-        total: number;
-        last_page: number;
-      };
-    }>("/api/v1/users/by-role/customers", {
+    const response = await apiClient.get<any>("/api/v1/users/by-role/customers", {
       params: filters
     });
 
-    return response;
+    // Backend'den gelen yanıtı kontrol et ve düzgün formata dönüştür
+    // Eğer yanıt doğrudan bir array ise
+    if (Array.isArray(response)) {
+      return {
+        data: response,
+        meta: {
+          current_page: 1,
+          per_page: response.length,
+          total: response.length,
+          last_page: 1
+        }
+      };
+    }
+
+    // Eğer yanıt zaten doğru formatta ise
+    if (response.data && Array.isArray(response.data)) {
+      return response;
+    }
+
+    // Hiçbir durum uymazsa boş array dön
+    console.warn("Beklenmeyen API yanıt formatı:", response);
+    return {
+      data: [],
+      meta: {
+        current_page: 1,
+        per_page: 0,
+        total: 0,
+        last_page: 1
+      }
+    };
   }
 
   /**
@@ -50,11 +71,21 @@ class CustomersService {
    * Uses /api/v1/users/{id} endpoint
    */
   async getById(id: number): Promise<Customer> {
-    const response = await apiClient.get<{ data: Customer }>(
+    const response = await apiClient.get<any>(
       `/api/v1/users/${id}`
     );
 
-    return response.data;
+    // Eğer yanıt doğrudan müşteri nesnesi ise
+    if (response.id) {
+      return response;
+    }
+
+    // Eğer yanıt data içinde ise
+    if (response.data && response.data.id) {
+      return response.data;
+    }
+
+    throw new Error("Müşteri bulunamadı");
   }
 
   /**
@@ -62,12 +93,22 @@ class CustomersService {
    * Uses /api/v1/users/{id} endpoint
    */
   async update(id: number, data: UpdateCustomerRequest): Promise<Customer> {
-    const response = await apiClient.put<{ data: Customer }>(
+    const response = await apiClient.put<any>(
       `/api/v1/users/${id}`,
       data
     );
 
-    return response.data;
+    // Eğer yanıt doğrudan müşteri nesnesi ise
+    if (response.id) {
+      return response;
+    }
+
+    // Eğer yanıt data içinde ise
+    if (response.data && response.data.id) {
+      return response.data;
+    }
+
+    throw new Error("Müşteri güncellenemedi");
   }
 
   /**
@@ -98,17 +139,39 @@ class CustomersService {
       last_page: number;
     };
   }> {
-    const response = await apiClient.get<{
-      data: CustomerOrder[];
-      meta: {
-        current_page: number;
-        per_page: number;
-        total: number;
-        last_page: number;
-      };
-    }>(`/api/v1/users/${id}/orders`, { params });
+    const response = await apiClient.get<any>(
+      `/api/v1/users/${id}/orders`,
+      { params }
+    );
 
-    return response;
+    // Eğer yanıt doğrudan bir array ise
+    if (Array.isArray(response)) {
+      return {
+        data: response,
+        meta: {
+          current_page: 1,
+          per_page: response.length,
+          total: response.length,
+          last_page: 1
+        }
+      };
+    }
+
+    // Eğer yanıt zaten doğru formatta ise
+    if (response.data && Array.isArray(response.data)) {
+      return response;
+    }
+
+    // Hiçbir durum uymazsa boş array dön
+    return {
+      data: [],
+      meta: {
+        current_page: 1,
+        per_page: 0,
+        total: 0,
+        last_page: 1
+      }
+    };
   }
 
   /**
@@ -149,11 +212,35 @@ class CustomersService {
    * Uses /api/v1/users/{id}/stats endpoint
    */
   async getStats(id: number): Promise<CustomerDetailedStats> {
-    const response = await apiClient.get<{ data: CustomerDetailedStats }>(
+    const response = await apiClient.get<any>(
       `/api/v1/users/${id}/stats`
     );
 
-    return response.data;
+    // Eğer yanıt doğrudan stats nesnesi ise
+    if (response.total_orders !== undefined || response.total_spent !== undefined) {
+      return response;
+    }
+
+    // Eğer yanıt data içinde ise
+    if (response.data && (response.data.total_orders !== undefined || response.data.total_spent !== undefined)) {
+      return response.data;
+    }
+
+    // Hiçbir durum uymazsa boş stats dön
+    return {
+      total_orders: 0,
+      total_spent: 0,
+      total_tickets: 0,
+      events_attended: 0,
+      upcoming_events: 0,
+      favorite_categories: [],
+      favorite_venues: [],
+      average_order_value: 0,
+      first_order_date: undefined,
+      last_order_date: undefined,
+      lifetime_value: 0,
+      monthly_spending: []
+    };
   }
 
   /**
@@ -176,17 +263,39 @@ class CustomersService {
       last_page: number;
     };
   }> {
-    const response = await apiClient.get<{
-      data: CustomerActivity[];
-      meta: {
-        current_page: number;
-        per_page: number;
-        total: number;
-        last_page: number;
-      };
-    }>(`/api/v1/users/${id}/activity`, { params });
+    const response = await apiClient.get<any>(
+      `/api/v1/users/${id}/activity`,
+      { params }
+    );
 
-    return response;
+    // Eğer yanıt doğrudan bir array ise
+    if (Array.isArray(response)) {
+      return {
+        data: response,
+        meta: {
+          current_page: 1,
+          per_page: response.length,
+          total: response.length,
+          last_page: 1
+        }
+      };
+    }
+
+    // Eğer yanıt zaten doğru formatta ise
+    if (response.data && Array.isArray(response.data)) {
+      return response;
+    }
+
+    // Hiçbir durum uymazsa boş array dön
+    return {
+      data: [],
+      meta: {
+        current_page: 1,
+        per_page: 0,
+        total: 0,
+        last_page: 1
+      }
+    };
   }
 
   /**

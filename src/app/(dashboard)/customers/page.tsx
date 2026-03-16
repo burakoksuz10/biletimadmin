@@ -80,10 +80,15 @@ export default function CustomersPage() {
     const loadCustomers = async () => {
       try {
         setIsLoading(true);
+        console.log("Müşteriler yükleniyor...");
         const response = await customersService.getAll();
+        console.log("API yanıtı:", response);
         setCustomers(response.data);
+        console.log("Müşteriler yüklendi:", response.data.length);
       } catch (error) {
         console.error("Müşteriler yüklenirken hata:", error);
+        // Hata mesajını göster
+        console.error("Hata detayları:", JSON.stringify(error, null, 2));
       } finally {
         setIsLoading(false);
       }
