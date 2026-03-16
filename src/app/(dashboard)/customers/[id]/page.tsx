@@ -439,25 +439,25 @@ export default function CustomerDetailPage() {
                 <div>
                   <p className="text-[12px] text-[#666d80]">Toplam Sipariş</p>
                   <p className="text-[24px] font-semibold text-[#0d0d0d12]">
-                    {stats.total_orders}
+                    {stats?.total_orders ?? 0}
                   </p>
                 </div>
                 <div>
                   <p className="text-[12px] text-[#666d80]">Toplam Bilet</p>
                   <p className="text-[24px] font-semibold text-[#0d0d0d12]">
-                    {stats.total_tickets}
+                    {stats?.total_tickets ?? 0}
                   </p>
                 </div>
                 <div>
                   <p className="text-[12px] text-[#666d80]">Toplam Harcama</p>
                   <p className="text-[24px] font-semibold text-[#09724a]">
-                    {formatCurrency(stats.total_spent)}
+                    {formatCurrency(stats?.total_spent ?? 0)}
                   </p>
                 </div>
                 <div>
                   <p className="text-[12px] text-[#666d80]">Ortalama Sipariş</p>
                   <p className="text-[24px] font-semibold text-[#0d0d0d12]">
-                    {formatCurrency(stats.average_order_value)}
+                    {formatCurrency(stats?.average_order_value ?? 0)}
                   </p>
                 </div>
               </div>
@@ -465,7 +465,7 @@ export default function CustomerDetailPage() {
           </Card>
 
           {/* Favorite Categories */}
-          {stats.favorite_categories && stats.favorite_categories.length > 0 && (
+          {stats?.favorite_categories && stats.favorite_categories.length > 0 && (
             <Card className="border-[#e5e7eb]">
               <CardHeader>
                 <CardTitle className="text-[16px]">Favori Kategoriler</CardTitle>
@@ -484,7 +484,7 @@ export default function CustomerDetailPage() {
           )}
 
           {/* Favorite Venues */}
-          {stats.favorite_venues && stats.favorite_venues.length > 0 && (
+          {stats?.favorite_venues && stats.favorite_venues.length > 0 && (
             <Card className="border-[#e5e7eb]">
               <CardHeader>
                 <CardTitle className="text-[16px]">Favori Mekanlar</CardTitle>
@@ -509,7 +509,7 @@ export default function CustomerDetailPage() {
             </CardHeader>
             <CardContent>
               <div className="h-64 flex items-end gap-2">
-                {stats.monthly_spending.map((item, index) => (
+                {stats?.monthly_spending && stats.monthly_spending.map((item, index) => (
                   <div
                     key={index}
                     className="flex-1 flex flex-col items-center gap-2"
