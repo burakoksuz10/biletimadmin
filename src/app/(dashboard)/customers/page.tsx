@@ -83,6 +83,15 @@ export default function CustomersPage() {
         console.log("Müşteriler yükleniyor...");
         const response = await customersService.getAll();
         console.log("API yanıtı:", response);
+        console.log("API yanıtı data:", response.data);
+        console.log("API yanıtı data tipi:", typeof response.data);
+        console.log("API yanıtı data array mi?:", Array.isArray(response.data));
+        
+        if (Array.isArray(response.data)) {
+          console.log("İlk müşteri:", response.data[0]);
+          console.log("İlk müşteri anahtarları:", response.data[0] ? Object.keys(response.data[0]) : "undefined");
+        }
+        
         setCustomers(response.data);
         console.log("Müşteriler yüklendi:", response.data.length);
       } catch (error: any) {
