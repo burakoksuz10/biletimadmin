@@ -13,6 +13,26 @@ const organizationBaseSchema = {
     .max(1000, "Açıklama en fazla 1000 karakter olabilir")
     .optional()
     .nullable(),
+  tax_number: z
+    .string()
+    .max(20, "Vergi numarası en fazla 20 karakter olabilir")
+    .optional()
+    .nullable(),
+  tax_administration: z
+    .string()
+    .max(100, "Vergi dairesi en fazla 100 karakter olabilir")
+    .optional()
+    .nullable(),
+  city: z
+    .string()
+    .max(100, "Şehir en fazla 100 karakter olabilir")
+    .optional()
+    .nullable(),
+  district: z
+    .string()
+    .max(100, "İlçe en fazla 100 karakter olabilir")
+    .optional()
+    .nullable(),
   address: z
     .string()
     .max(500, "Adres en fazla 500 karakter olabilir")
@@ -23,13 +43,6 @@ const organizationBaseSchema = {
     .max(20, "Telefon numarası en fazla 20 karakter olabilir")
     .optional()
     .nullable(),
-  email: z
-    .string()
-    .email("Geçerli bir e-posta adresi girin")
-    .max(255, "E-posta en fazla 255 karakter olabilir")
-    .or(z.literal(""))
-    .optional()
-    .nullable(),
   website: z
     .string()
     .url("Geçerli bir website adresi girin")
@@ -37,16 +50,9 @@ const organizationBaseSchema = {
     .or(z.literal(""))
     .optional()
     .nullable(),
-  city: z
-    .string()
-    .max(100, "Şehir en fazla 100 karakter olabilir")
-    .optional()
-    .nullable(),
-  country: z
-    .string()
-    .max(100, "Ülke en fazla 100 karakter olabilir")
-    .optional()
-    .nullable(),
+  is_active: z
+    .boolean()
+    .optional(),
 };
 
 // Schema for creating organizations (name is required)
@@ -66,6 +72,26 @@ export const updateOrganizationSchema = z.object({
     .max(1000, "Açıklama en fazla 1000 karakter olabilir")
     .optional()
     .nullable(),
+  tax_number: z
+    .string()
+    .max(20, "Vergi numarası en fazla 20 karakter olabilir")
+    .optional()
+    .nullable(),
+  tax_administration: z
+    .string()
+    .max(100, "Vergi dairesi en fazla 100 karakter olabilir")
+    .optional()
+    .nullable(),
+  city: z
+    .string()
+    .max(100, "Şehir en fazla 100 karakter olabilir")
+    .optional()
+    .nullable(),
+  district: z
+    .string()
+    .max(100, "İlçe en fazla 100 karakter olabilir")
+    .optional()
+    .nullable(),
   address: z
     .string()
     .max(500, "Adres en fazla 500 karakter olabilir")
@@ -76,13 +102,6 @@ export const updateOrganizationSchema = z.object({
     .max(20, "Telefon numarası en fazla 20 karakter olabilir")
     .optional()
     .nullable(),
-  email: z
-    .string()
-    .email("Geçerli bir e-posta adresi girin")
-    .max(255, "E-posta en fazla 255 karakter olabilir")
-    .or(z.literal(""))
-    .optional()
-    .nullable(),
   website: z
     .string()
     .url("Geçerli bir website adresi girin")
@@ -90,17 +109,7 @@ export const updateOrganizationSchema = z.object({
     .or(z.literal(""))
     .optional()
     .nullable(),
-  city: z
-    .string()
-    .max(100, "Şehir en fazla 100 karakter olabilir")
-    .optional()
-    .nullable(),
-  country: z
-    .string()
-    .max(100, "Ülke en fazla 100 karakter olabilir")
-    .optional()
-    .nullable(),
-  status: z.enum(["active", "inactive", "suspended"]).optional(),
+  is_active: z.boolean().optional(),
 });
 
 export type OrganizationFormValues = z.infer<typeof organizationSchema>;

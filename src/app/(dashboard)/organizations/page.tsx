@@ -42,80 +42,24 @@ export default function OrganizationsPage() {
   const [organizations, setOrganizations] = useState<Organization[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
-  const [statusFilter, setStatusFilter] = useState<
-    "all" | "active" | "inactive" | "suspended"
-  >("all");
+  const [statusFilter, setStatusFilter] = useState<"all" | "active" | "inactive">("all");
 
   // Dialog states
   const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false);
-  const [editingOrganization, setEditingOrganization] =
-    useState<Organization | null>(null);
-  const [deletingOrganization, setDeletingOrganization] =
-    useState<Organization | null>(null);
+  const [editingOrganization, setEditingOrganization] = useState<Organization | null>(null);
+  const [deletingOrganization, setDeletingOrganization] = useState<Organization | null>(null);
   const [isDeleting, setIsDeleting] = useState(false);
-
-  // Mock data for now - will be replaced with API call
-  const mockOrganizations: Organization[] = [
-    {
-      id: 1,
-      name: "BKM",
-      slug: "bkm",
-      description: "Büyük Kültür Yolu",
-      city: "İstanbul",
-      country: "Türkiye",
-      status: "active",
-      created_at: "2024-01-01T00:00:00Z",
-      updated_at: "2024-01-01T00:00:00Z",
-    },
-    {
-      id: 2,
-      name: "Zorlu PSM",
-      slug: "zorlu-psm",
-      description: "Zorlu Performing Arts Center",
-      city: "İstanbul",
-      country: "Türkiye",
-      status: "active",
-      created_at: "2024-01-01T00:00:00Z",
-      updated_at: "2024-01-01T00:00:00Z",
-    },
-    {
-      id: 3,
-      name: "Anadolu Gösteri",
-      slug: "anadolu-gosteri",
-      description: "Anadolu Gösteri Grubu",
-      city: "Ankara",
-      country: "Türkiye",
-      status: "active",
-      created_at: "2024-01-01T00:00:00Z",
-      updated_at: "2024-01-01T00:00:00Z",
-    },
-    {
-      id: 4,
-      name: "Ege Etkinlik",
-      slug: "ege-etkinlik",
-      description: "Ege Etkinlik Grubu",
-      city: "İzmir",
-      country: "Türkiye",
-      status: "active",
-      created_at: "2024-01-01T00:00:00Z",
-      updated_at: "2024-01-01T00:00:00Z",
-    },
-  ];
 
   // Load organizations
   useEffect(() => {
     const loadOrganizations = async () => {
       try {
         setIsLoading(true);
-        // Try to load from API first, fallback to mock data
-        try {
-          const response = await organizationsService.getAll();
-          setOrganizations(response.data);
-        } catch (error) {
-          console.error("Organizatörler yüklenirken hata:", error);
-          // Fallback to mock data if API is not available
-          setOrganizations(mockOrganizations);
-        }
+        const response = await organizationsService.getAll();
+        setOrganizations(response.data);
+      } catch (error) {
+        console.error("Organizatörler yüklenirken hata:", error);
+        setOrganizations([]);
       } finally {
         setIsLoading(false);
       }
@@ -133,30 +77,22 @@ export default function OrganizationsPage() {
         org.city?.toLowerCase().includes(searchQuery.toLowerCase());
 
       const matchesStatus =
-        statusFilter === "all" || org.status === statusFilter;
+        statusFilter === "all" || 
+        (statusFilter === "active" && org.is_active === true) ||
+        (statusFilter === "inactive" && org.is_active === false);
 
       return matchesSearch && matchesStatus;
     });
   }, [organizations, searchQuery, statusFilter]);
 
-  const statusVariantMap: Record<
-    string,
-    "success" | "warning" | "danger"
-  > = {
+  const statusVariantMap: Record<string, "success" | "danger"> = {
     active: "success",
-    inactive: "warning",
-    suspended: "danger",
+    inactive: "danger",
   };
 
   const statusLabels: Record<string, string> = {
     active: "Aktif",
     inactive: "Pasif",
-    suspended: "Askıya Alındı",
-  };
-
-  // Mock venue counts - will be fetched from API
-  const getVenueCount = (orgId: number) => {
-    return orgId === 1 ? 2 : orgId === 2 ? 1 : orgId === 3 ? 1 : orgId === 4 ? 1 : 0;
   };
 
   // Handle organization creation success
@@ -188,14 +124,11 @@ export default function OrganizationsPage() {
           prev.filter((o) => o.id !== deletingOrganization.id)
         );
         setDeletingOrganization(null);
-        // TODO: Show success toast with message: response.message
       }
     } catch (error: any) {
       console.error("Failed to delete organization:", error);
-      // Extract error message from API response
-      const errorMessage = error?.response?.data?.message || "Organizatör silinirken bir hata oluştu";
-      // TODO: Show error toast with errorMessage
-      alert(errorMessage); // Temporary until toast is implemented
+      const errorMessage = error?.message || "Organizatör silinirken bir hata oluştu";
+      alert(errorMessage);
     } finally {
       setIsDeleting(false);
     }
@@ -223,7 +156,7 @@ export default function OrganizationsPage() {
       </div>
 
       {/* Stats Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         <Card className="border-[#e5e7eb]">
           <CardContent className="p-6">
             <div className="flex items-center justify-between">
@@ -246,7 +179,7 @@ export default function OrganizationsPage() {
               <div>
                 <p className="text-[14px] text-[#666d80] dark:text-[#9ca3af]">Aktif</p>
                 <p className="text-[28px] font-semibold text-[#0d0d12] dark:text-[#f9fafb] mt-1">
-                  {organizations.filter((o) => o.status === "active").length}
+                  {organizations.filter((o) => o.is_active === true).length}
                 </p>
               </div>
               <div className="w-12 h-12 rounded-full bg-[#ecfdf3] dark:bg-[#1a2e1f] flex items-center justify-center">
@@ -262,27 +195,11 @@ export default function OrganizationsPage() {
               <div>
                 <p className="text-[14px] text-[#666d80] dark:text-[#9ca3af]">Pasif</p>
                 <p className="text-[28px] font-semibold text-[#0d0d12] dark:text-[#f9fafb] mt-1">
-                  {organizations.filter((o) => o.status === "inactive").length}
+                  {organizations.filter((o) => o.is_active === false).length}
                 </p>
               </div>
-              <div className="w-12 h-12 rounded-full bg-[#fffbeb] dark:bg-[#2e2a1a] flex items-center justify-center">
-                <XCircle className="w-6 h-6 text-[#f59e0b] dark:text-[#fbbf24]" />
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card className="border-[#e5e7eb]">
-          <CardContent className="p-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-[14px] text-[#666d80] dark:text-[#9ca3af]">Toplam Mekan</p>
-                <p className="text-[28px] font-semibold text-[#0d0d12] dark:text-[#f9fafb] mt-1">
-                  {organizations.reduce((sum, o) => sum + getVenueCount(o.id), 0)}
-                </p>
-              </div>
-              <div className="w-12 h-12 rounded-full bg-[#eff6ff] dark:bg-[#1a242e] flex items-center justify-center">
-                <MapPin className="w-6 h-6 text-[#3b82f6] dark:text-[#60a5fa]" />
+              <div className="w-12 h-12 rounded-full bg-[#fff0f3] dark:bg-[#2e1a1f] flex items-center justify-center">
+                <XCircle className="w-6 h-6 text-[#df1c41] dark:text-[#ff6b8a]" />
               </div>
             </div>
           </CardContent>
@@ -302,25 +219,22 @@ export default function OrganizationsPage() {
         </div>
 
         <div className="flex gap-2">
-          {(["all", "active", "inactive", "suspended"] as const).map(
-            (status) => (
-              <Button
-                key={status}
-                variant={statusFilter === status ? "primary" : "secondary"}
-                onClick={() => setStatusFilter(status)}
-                className={
-                  statusFilter === status
-                    ? "bg-[#09724a] text-white dark:bg-[#00fb90] dark:text-[#0d0d12]"
-                    : "bg-white border-[#e5e7eb] text-[#666d80] hover:bg-[#f7f7f7] dark:bg-[#1f2937] dark:border-[#374151] dark:text-[#9ca3af] dark:hover:bg-[#374151]"
-                }
-              >
-                {status === "all" && "Tümü"}
-                {status === "active" && "Aktif"}
-                {status === "inactive" && "Pasif"}
-                {status === "suspended" && "Askıya Alındı"}
-              </Button>
-            )
-          )}
+          {(["all", "active", "inactive"] as const).map((status) => (
+            <Button
+              key={status}
+              variant={statusFilter === status ? "primary" : "secondary"}
+              onClick={() => setStatusFilter(status)}
+              className={
+                statusFilter === status
+                  ? "bg-[#09724a] text-white dark:bg-[#00fb90] dark:text-[#0d0d12]"
+                  : "bg-white border-[#e5e7eb] text-[#666d80] hover:bg-[#f7f7f7] dark:bg-[#1f2937] dark:border-[#374151] dark:text-[#9ca3af] dark:hover:bg-[#374151]"
+              }
+            >
+              {status === "all" && "Tümü"}
+              {status === "active" && "Aktif"}
+              {status === "inactive" && "Pasif"}
+            </Button>
+          ))}
         </div>
       </div>
 
@@ -340,9 +254,6 @@ export default function OrganizationsPage() {
                   <th className="text-left py-3 px-4 text-[14px] font-medium text-[#0d0d12] dark:text-[#f9fafb]">
                     Durum
                   </th>
-                  <th className="text-left py-3 px-4 text-[14px] font-medium text-[#0d0d12] dark:text-[#f9fafb]">
-                    Mekan Sayısı
-                  </th>
                   <th className="text-right py-3 px-4 text-[14px] font-medium text-[#0d0d12] dark:text-[#f9fafb]">
                     İşlemler
                   </th>
@@ -352,7 +263,7 @@ export default function OrganizationsPage() {
                 {isLoading ? (
                   <tr>
                     <td
-                      colSpan={5}
+                      colSpan={4}
                       className="py-8 text-center text-[#666d80] dark:text-[#9ca3af]"
                     >
                       Yükleniyor...
@@ -361,7 +272,7 @@ export default function OrganizationsPage() {
                 ) : filteredOrganizations.length === 0 ? (
                   <tr>
                     <td
-                      colSpan={5}
+                      colSpan={4}
                       className="py-8 text-center text-[#666d80] dark:text-[#9ca3af]"
                     >
                       Organizatör bulunamadı
@@ -379,7 +290,7 @@ export default function OrganizationsPage() {
                             {org.name}
                           </p>
                           {org.description && (
-                            <p className="text-[12px] text-[#666d80] dark:text-[#9ca3af] mt-0.5">
+                            <p className="text-[12px] text-[#666d80] dark:text-[#9ca3af] mt-0.5 line-clamp-1">
                               {org.description}
                             </p>
                           )}
@@ -387,20 +298,15 @@ export default function OrganizationsPage() {
                       </td>
                       <td className="py-3 px-4">
                         <p className="text-[14px] text-[#0d0d12] dark:text-[#f9fafb]">
-                          {org.city && org.country
-                            ? `${org.city}, ${org.country}`
-                            : "-"}
+                          {org.city && org.district
+                            ? `${org.district}, ${org.city}`
+                            : org.city || org.district || "-"}
                         </p>
                       </td>
                       <td className="py-3 px-4">
-                        <Badge variant={statusVariantMap[org.status]}>
-                          {statusLabels[org.status]}
+                        <Badge variant={statusVariantMap[org.is_active ? "active" : "inactive"]}>
+                          {statusLabels[org.is_active ? "active" : "inactive"]}
                         </Badge>
-                      </td>
-                      <td className="py-3 px-4">
-                        <p className="text-[14px] text-[#0d0d12] dark:text-[#f9fafb]">
-                          {getVenueCount(org.id)}
-                        </p>
                       </td>
                       <td className="py-3 px-4">
                         <div className="flex items-center justify-end gap-2">
@@ -493,8 +399,6 @@ export default function OrganizationsPage() {
             <AlertDialogDescription>
               <strong>{deletingOrganization?.name}</strong> organizatörünü
               silmek istediğinize emin misiniz? Bu işlem geri alınamaz.
-              Organizatöre bağlı mekanlar veya etkinlikler varsa silme işlemi
-              başarısız olabilir.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>

@@ -32,15 +32,17 @@ export interface Organization {
   id: number;
   name: string;
   slug: string;
+  logo_path?: string | null;
   description?: string | null;
-  logo?: string | null;
+  tax_number?: string | null;
+  tax_administration?: string | null;
+  city?: string | null;
+  district?: string | null;
   address?: string | null;
   phone?: string | null;
-  email?: string | null;
   website?: string | null;
-  city?: string | null;
-  country?: string | null;
-  status: "active" | "inactive" | "suspended";
+  is_active: boolean;
+  settings?: unknown | null;
   created_at: string;
   updated_at: string;
 }
@@ -48,17 +50,17 @@ export interface Organization {
 export interface CreateOrganizationRequest {
   name: string;
   description?: string | null;
+  tax_number?: string | null;
+  tax_administration?: string | null;
+  city?: string | null;
+  district?: string | null;
   address?: string | null;
   phone?: string | null;
-  email?: string | null;
   website?: string | null;
-  city?: string | null;
-  country?: string | null;
+  is_active?: boolean;
 }
 
-export interface UpdateOrganizationRequest extends Partial<CreateOrganizationRequest> {
-  status?: "active" | "inactive" | "suspended";
-}
+export interface UpdateOrganizationRequest extends Partial<CreateOrganizationRequest> {}
 
 // ============================================
 // Venue Types

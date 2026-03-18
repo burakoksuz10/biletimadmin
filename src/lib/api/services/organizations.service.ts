@@ -10,29 +10,18 @@ import type {
 } from "../types/biletleme.types";
 
 // Response types for API
+interface PaginationMeta {
+  total: number;
+  per_page: number;
+  current_page: number;
+  last_page: number;
+  from: number;
+  to: number;
+}
+
 interface OrganizationsListResponse {
   data: Organization[];
-  meta?: {
-    current_page: number;
-    per_page: number;
-    total: number;
-    last_page: number;
-  };
-}
-
-interface OrganizationResponse {
-  data: Organization;
-  message?: string;
-}
-
-interface OrganizationStatsResponse {
-  data: {
-    total_events: number;
-    active_events: number;
-    total_venues: number;
-    total_orders: number;
-    total_revenue: number;
-  };
+  pagination?: PaginationMeta;
 }
 
 class OrganizationsService {
@@ -48,28 +37,17 @@ class OrganizationsService {
         params: filters
       });
 
-      // Backend API format: { success: true, data: [...], meta: {...} }
-      if (response.data && response.data.data && Array.isArray(response.data.data)) {
-        return {
-          data: response.data.data,
-          meta: response.data.meta || {
-            current_page: 1,
-            per_page: response.data.data.length,
-            total: response.data.data.length,
-            last_page: 1
-          }
-        };
-      }
-
-      // If response.data is directly an array
-      if (Array.isArray(response.data)) {
+      // Backend API format: { success: true, message: "...", data: [...], pagination: {...} }
+      if (response.data && Array.isArray(response.data)) {
         return {
           data: response.data,
-          meta: {
-            current_page: 1,
-            per_page: response.data.length,
+          pagination: response.pagination || {
             total: response.data.length,
-            last_page: 1
+            per_page: response.data.length,
+            current_page: 1,
+            last_page: 1,
+            from: 1,
+            to: response.data.length
           }
         };
       }
@@ -78,11 +56,13 @@ class OrganizationsService {
       if (Array.isArray(response)) {
         return {
           data: response,
-          meta: {
-            current_page: 1,
-            per_page: response.length,
+          pagination: {
             total: response.length,
-            last_page: 1
+            per_page: response.length,
+            current_page: 1,
+            last_page: 1,
+            from: 1,
+            to: response.length
           }
         };
       }
@@ -90,11 +70,13 @@ class OrganizationsService {
       // Empty fallback
       return {
         data: [],
-        meta: {
-          current_page: 1,
-          per_page: 0,
+        pagination: {
           total: 0,
-          last_page: 1
+          per_page: 0,
+          current_page: 1,
+          last_page: 1,
+          from: 0,
+          to: 0
         }
       };
     } catch (error) {

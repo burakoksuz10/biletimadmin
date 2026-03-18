@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Building2, Loader2 } from "lucide-react";
@@ -38,18 +38,18 @@ export function OrganizationForm({
 
   const isEditing = !!organization;
 
-  // Use the same schema for both create and update (name is always required for display)
   const form = useForm<OrganizationFormValues>({
     resolver: zodResolver(organizationSchema),
     defaultValues: {
       name: organization?.name || "",
       description: organization?.description || "",
+      tax_number: organization?.tax_number || "",
+      tax_administration: organization?.tax_administration || "",
+      city: organization?.city || "",
+      district: organization?.district || "",
       address: organization?.address || "",
       phone: organization?.phone || "",
-      email: organization?.email || "",
       website: organization?.website || "",
-      city: organization?.city || "",
-      country: organization?.country || "",
     },
   });
 
@@ -62,12 +62,13 @@ export function OrganizationForm({
       const cleanedValues: CreateOrganizationRequest | UpdateOrganizationRequest = {
         name: values.name,
         description: values.description || null,
+        tax_number: values.tax_number || null,
+        tax_administration: values.tax_administration || null,
+        city: values.city || null,
+        district: values.district || null,
         address: values.address || null,
         phone: values.phone || null,
-        email: values.email || null,
         website: values.website || null,
-        city: values.city || null,
-        country: values.country || null,
       };
 
       let result: Organization;
@@ -83,8 +84,8 @@ export function OrganizationForm({
       console.error("Failed to save organization:", err);
       
       // Handle validation errors from API
-      if (err?.response?.data?.errors) {
-        const apiErrors = err.response.data.errors;
+      if (err?.errors) {
+        const apiErrors = err.errors;
         Object.keys(apiErrors).forEach((field) => {
           if (field in form.getValues()) {
             form.setError(field as keyof OrganizationFormValues, {
@@ -98,7 +99,7 @@ export function OrganizationForm({
       }
       
       // Handle general error message
-      const errorMessage = err?.response?.data?.message || err?.message || "Bir hata oluştu";
+      const errorMessage = err?.message || "Bir hata oluştu";
       setError(errorMessage);
     } finally {
       setIsLoading(false);
@@ -155,6 +156,47 @@ export function OrganizationForm({
           )}
         />
 
+        {/* Tax Information */}
+        <div className="grid grid-cols-2 gap-4">
+          <FormField
+            control={form.control}
+            name="tax_number"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Vergi Numarası</FormLabel>
+                <FormControl>
+                  <Input
+                    placeholder="Örn: 1234567890"
+                    error={!!form.formState.errors.tax_number}
+                    {...field}
+                    value={field.value ?? ""}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          <FormField
+            control={form.control}
+            name="tax_administration"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Vergi Dairesi</FormLabel>
+                <FormControl>
+                  <Input
+                    placeholder="Örn: Beşiktaş Vergi Dairesi"
+                    error={!!form.formState.errors.tax_administration}
+                    {...field}
+                    value={field.value ?? ""}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        </div>
+
         {/* Address */}
         <FormField
           control={form.control}
@@ -175,7 +217,7 @@ export function OrganizationForm({
           )}
         />
 
-        {/* City and Country */}
+        {/* City and District */}
         <div className="grid grid-cols-2 gap-4">
           <FormField
             control={form.control}
@@ -198,14 +240,14 @@ export function OrganizationForm({
 
           <FormField
             control={form.control}
-            name="country"
+            name="district"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Ülke</FormLabel>
+                <FormLabel>İlçe</FormLabel>
                 <FormControl>
                   <Input
-                    placeholder="Örn: Türkiye"
-                    error={!!form.formState.errors.country}
+                    placeholder="Örn: Beşiktaş"
+                    error={!!form.formState.errors.district}
                     {...field}
                     value={field.value ?? ""}
                   />
@@ -232,26 +274,6 @@ export function OrganizationForm({
                   <Input
                     placeholder="+90 212 123 4567"
                     error={!!form.formState.errors.phone}
-                    {...field}
-                    value={field.value ?? ""}
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-
-          <FormField
-            control={form.control}
-            name="email"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>E-posta</FormLabel>
-                <FormControl>
-                  <Input
-                    type="email"
-                    placeholder="info@ornek.com"
-                    error={!!form.formState.errors.email}
                     {...field}
                     value={field.value ?? ""}
                   />
