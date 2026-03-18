@@ -185,6 +185,55 @@ class UsersService {
 
     return response;
   }
+
+  /**
+   * Get users by role
+   * Uses /users/by-role/{role} endpoint
+   */
+  async getByRole(role: string): Promise<BackendUser[]> {
+    try {
+      const response = await apiClient.get<any>(`/users/by-role/${role}`);
+
+      // Backend API format: { success: true, data: [...] }
+      if (response.data && Array.isArray(response.data)) {
+        return response.data;
+      }
+
+      // If response is directly an array
+      if (Array.isArray(response)) {
+        return response;
+      }
+
+      return [];
+    } catch (error) {
+      console.error(`❌ [USERS SERVICE] getByRole(${role}) hatası:`, error);
+      throw error;
+    }
+  }
+
+  /**
+   * Create a new user
+   * Uses POST /users endpoint
+   */
+  async createUser(data: {
+    name: string;
+    email: string;
+    password: string;
+    role: string;
+  }): Promise<BackendUser> {
+    const response = await apiClient.post<any>("/users", data);
+
+    // Backend API format: { success: true, data: { ...user }, message: "..." }
+    if (response.data && response.data.id) {
+      return response.data;
+    }
+
+    if (response.id) {
+      return response;
+    }
+
+    throw new Error("Kullanıcı oluşturulamadı");
+  }
 }
 
 // Export singleton instance

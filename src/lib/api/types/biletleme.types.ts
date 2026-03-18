@@ -42,6 +42,7 @@ export interface Organization {
   phone?: string | null;
   website?: string | null;
   is_active: boolean;
+  operator_id?: number | null;
   settings?: unknown | null;
   created_at: string;
   updated_at: string;
@@ -58,6 +59,7 @@ export interface CreateOrganizationRequest {
   phone?: string | null;
   website?: string | null;
   is_active?: boolean;
+  operator_id?: number | null;
 }
 
 export interface UpdateOrganizationRequest extends Partial<CreateOrganizationRequest> {}

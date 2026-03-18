@@ -1,10 +1,10 @@
 "use client";
 
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import Image from "next/image";
-import { Building2, Loader2, Upload, X } from "lucide-react";
+import { Building2, Loader2, Upload, X, UserPlus, Users } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -17,17 +17,26 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import {
   organizationSchema,
   type OrganizationFormValues,
 } from "@/lib/validations/organization.schema";
-import { organizationsService } from "@/lib/api/services";
-import type { Organization, CreateOrganizationRequest, UpdateOrganizationRequest } from "@/lib/api/types/biletleme.types";
+import { organizationsService, usersService } from "@/lib/api/services";
+import type { Organization, CreateOrganizationRequest, UpdateOrganizationRequest, BackendUser } from "@/lib/api/types/biletleme.types";
 
 interface OrganizationFormProps {
   organization?: Organization;
   onSuccess?: (organization: Organization) => void;
   onCancel?: () => void;
 }
+
+type OperatorSelectionType = "none" | "existing" | "new";
 
 export function OrganizationForm({
   organization,
@@ -42,6 +51,14 @@ export function OrganizationForm({
   );
   const [removeLogo, setRemoveLogo] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
+
+  // Operator selection states
+  const [operatorType, setOperatorType] = useState<OperatorSelectionType>("none");
+  const [operators, setOperators] = useState<BackendUser[]>([]);
+  const [isLoadingOperators, setIsLoadingOperators] = useState(false);
+  const [selectedOperatorId, setSelectedOperatorId] = useState<number | null>(
+    organization?.operator_id || null
+  );
 
   const isEditing = !!organization;
 
@@ -59,6 +76,32 @@ export function OrganizationForm({
       website: organization?.website || "",
     },
   });
+
+  // New operator form state
+  const [newOperator, setNewOperator] = useState({
+    name: "",
+    email: "",
+    password: "",
+  });
+
+  // Load operators when switching to "existing" mode
+  useEffect(() => {
+    if (operatorType === "existing" && operators.length === 0) {
+      const loadOperators = async () => {
+        try {
+          setIsLoadingOperators(true);
+          const data = await usersService.getByRole("operator");
+          setOperators(data);
+        } catch (error) {
+          console.error("Failed to load operators:", error);
+        } finally {
+          setIsLoadingOperators(false);
+        }
+      };
+
+      loadOperators();
+    }
+  }, [operatorType, operators.length]);
 
   const handleLogoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -101,6 +144,36 @@ export function OrganizationForm({
       setIsLoading(true);
       setError(null);
 
+      let operatorId: number | null = null;
+
+      // Handle operator selection
+      if (operatorType === "existing" && selectedOperatorId) {
+        operatorId = selectedOperatorId;
+      } else if (operatorType === "new") {
+        // Validate new operator fields
+        if (!newOperator.name || !newOperator.email || !newOperator.password) {
+          setError("Yeni yetkili için tüm alanları doldurun");
+          setIsLoading(false);
+          return;
+        }
+
+        // Create new operator user first
+        try {
+          const createdUser = await usersService.createUser({
+            name: newOperator.name,
+            email: newOperator.email,
+            password: newOperator.password,
+            role: "operator",
+          });
+          operatorId = createdUser.id;
+        } catch (userError: any) {
+          const userErrorMessage = userError?.message || "Yetkili oluşturulamadı";
+          setError(`Yetkili oluşturma hatası: ${userErrorMessage}`);
+          setIsLoading(false);
+          return;
+        }
+      }
+
       // Use FormData when there's a logo file
       const formData = new FormData();
       formData.append("name", values.name);
@@ -112,6 +185,11 @@ export function OrganizationForm({
       if (values.address) formData.append("address", values.address);
       if (values.phone) formData.append("phone", values.phone);
       if (values.website) formData.append("website", values.website);
+
+      // Add operator_id if selected
+      if (operatorId) {
+        formData.append("operator_id", operatorId.toString());
+      }
 
       // Add logo file if selected
       if (logoFile) {
@@ -270,6 +348,127 @@ export function OrganizationForm({
             </FormItem>
           )}
         />
+
+        {/* Operator Selection */}
+        <div className="space-y-3">
+          <label className="text-sm font-medium text-[#0d0d12] dark:text-[#f9fafb]">
+            Yetkili
+          </label>
+          
+          <div className="flex gap-2">
+            <Button
+              type="button"
+              variant={operatorType === "none" ? "primary" : "secondary"}
+              size="small"
+              onClick={() => setOperatorType("none")}
+              className={operatorType === "none" ? "bg-[#09724a] text-white" : ""}
+            >
+              Seçim Yok
+            </Button>
+            <Button
+              type="button"
+              variant={operatorType === "existing" ? "primary" : "secondary"}
+              size="small"
+              onClick={() => setOperatorType("existing")}
+              className={operatorType === "existing" ? "bg-[#09724a] text-white" : ""}
+            >
+              <Users className="w-4 h-4 mr-1.5" />
+              Kayıtlı Seç
+            </Button>
+            <Button
+              type="button"
+              variant={operatorType === "new" ? "primary" : "secondary"}
+              size="small"
+              onClick={() => setOperatorType("new")}
+              className={operatorType === "new" ? "bg-[#09724a] text-white" : ""}
+            >
+              <UserPlus className="w-4 h-4 mr-1.5" />
+              Yeni Ekle
+            </Button>
+          </div>
+
+          {/* Existing Operator Selection */}
+          {operatorType === "existing" && (
+            <div className="space-y-2">
+              {isLoadingOperators ? (
+                <div className="flex items-center gap-2 text-sm text-[#9ca3af]">
+                  <Loader2 className="w-4 h-4 animate-spin" />
+                  Yetkililer yükleniyor...
+                </div>
+              ) : operators.length > 0 ? (
+                <Select
+                  value={selectedOperatorId?.toString() || ""}
+                  onValueChange={(value) => setSelectedOperatorId(Number(value))}
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder="Yetkili seçin" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {operators.map((op) => (
+                      <SelectItem key={op.id} value={op.id.toString()}>
+                        {op.name} ({op.email})
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              ) : (
+                <p className="text-sm text-[#9ca3af] dark:text-[#6b7280]">
+                  Kayıtlı yetkili bulunamadı
+                </p>
+              )}
+            </div>
+          )}
+
+          {/* New Operator Form */}
+          {operatorType === "new" && (
+            <div className="space-y-3 p-4 border border-[#e5e7eb] dark:border-[#374151] rounded-lg bg-[#f7f7f7] dark:bg-[#1f2937]">
+              <h4 className="text-sm font-medium text-[#0d0d12] dark:text-[#f9fafb]">
+                Yeni Yetkili Bilgileri
+              </h4>
+              <div className="space-y-3">
+                <div>
+                  <label className="text-xs font-medium text-[#666d80] dark:text-[#9ca3af]">
+                    Ad Soyad *
+                  </label>
+                  <Input
+                    type="text"
+                    placeholder="Ad Soyad"
+                    value={newOperator.name}
+                    onChange={(e) => setNewOperator({ ...newOperator, name: e.target.value })}
+                    className="mt-1"
+                  />
+                </div>
+                <div>
+                  <label className="text-xs font-medium text-[#666d80] dark:text-[#9ca3af]">
+                    E-posta *
+                  </label>
+                  <Input
+                    type="email"
+                    placeholder="ornek@email.com"
+                    value={newOperator.email}
+                    onChange={(e) => setNewOperator({ ...newOperator, email: e.target.value })}
+                    className="mt-1"
+                  />
+                </div>
+                <div>
+                  <label className="text-xs font-medium text-[#666d80] dark:text-[#9ca3af]">
+                    Şifre *
+                  </label>
+                  <Input
+                    type="password"
+                    placeholder="•••••••••"
+                    value={newOperator.password}
+                    onChange={(e) => setNewOperator({ ...newOperator, password: e.target.value })}
+                    className="mt-1"
+                  />
+                </div>
+                <p className="text-[11px] text-[#9ca3af] dark:text-[#6b7280]">
+                  Rol: Operator (sabit)
+                </p>
+              </div>
+            </div>
+          )}
+        </div>
 
         {/* Tax Information */}
         <div className="grid grid-cols-2 gap-4">
