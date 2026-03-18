@@ -1,9 +1,10 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Building2, Loader2 } from "lucide-react";
+import Image from "next/image";
+import { Building2, Loader2, Upload, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -35,6 +36,12 @@ export function OrganizationForm({
 }: OrganizationFormProps) {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [logoFile, setLogoFile] = useState<File | null>(null);
+  const [logoPreview, setLogoPreview] = useState<string | null>(
+    organization?.logo_path || null
+  );
+  const [removeLogo, setRemoveLogo] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   const isEditing = !!organization;
 
@@ -53,30 +60,80 @@ export function OrganizationForm({
     },
   });
 
+  const handleLogoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      // Validate file type
+      if (!file.type.startsWith("image/")) {
+        setError("Sadece resim dosyaları yüklenebilir");
+        return;
+      }
+      // Validate file size (max 2MB)
+      if (file.size > 2 * 1024 * 1024) {
+        setError("Logo dosyası en fazla 2MB olabilir");
+        return;
+      }
+
+      setLogoFile(file);
+      setRemoveLogo(false);
+      setError(null);
+
+      // Create preview URL
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        setLogoPreview(e.target?.result as string);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const handleRemoveLogo = () => {
+    setLogoFile(null);
+    setLogoPreview(null);
+    setRemoveLogo(true);
+    if (fileInputRef.current) {
+      fileInputRef.current.value = "";
+    }
+  };
+
   const onSubmit = async (values: OrganizationFormValues) => {
     try {
       setIsLoading(true);
       setError(null);
 
-      // Clean up empty strings to null for API compatibility
-      const cleanedValues: CreateOrganizationRequest | UpdateOrganizationRequest = {
-        name: values.name,
-        description: values.description || null,
-        tax_number: values.tax_number || null,
-        tax_administration: values.tax_administration || null,
-        city: values.city || null,
-        district: values.district || null,
-        address: values.address || null,
-        phone: values.phone || null,
-        website: values.website || null,
-      };
+      // Use FormData when there's a logo file
+      const formData = new FormData();
+      formData.append("name", values.name);
+      if (values.description) formData.append("description", values.description);
+      if (values.tax_number) formData.append("tax_number", values.tax_number);
+      if (values.tax_administration) formData.append("tax_administration", values.tax_administration);
+      if (values.city) formData.append("city", values.city);
+      if (values.district) formData.append("district", values.district);
+      if (values.address) formData.append("address", values.address);
+      if (values.phone) formData.append("phone", values.phone);
+      if (values.website) formData.append("website", values.website);
+
+      // Add logo file if selected
+      if (logoFile) {
+        formData.append("logo_path", logoFile);
+      }
+
+      // If editing and logo was removed, send empty value
+      if (isEditing && removeLogo && !logoFile) {
+        formData.append("logo_path", "");
+      }
+
+      // For PUT/PATCH via POST with _method override (Laravel convention)
+      if (isEditing) {
+        formData.append("_method", "PUT");
+      }
 
       let result: Organization;
 
       if (isEditing && organization) {
-        result = await organizationsService.update(organization.id, cleanedValues);
+        result = await organizationsService.update(organization.id, formData);
       } else {
-        result = await organizationsService.create(cleanedValues as CreateOrganizationRequest);
+        result = await organizationsService.create(formData);
       }
 
       onSuccess?.(result);
@@ -115,6 +172,64 @@ export function OrganizationForm({
             {error}
           </div>
         )}
+
+        {/* Logo Upload */}
+        <div className="space-y-2">
+          <label className="text-sm font-medium text-[#0d0d12] dark:text-[#f9fafb]">
+            Logo
+          </label>
+          <div className="flex items-center gap-4">
+            {/* Logo Preview */}
+            <div className="relative">
+              {logoPreview ? (
+                <div className="relative w-20 h-20 rounded-xl overflow-hidden border-2 border-[#e5e7eb] dark:border-[#374151] bg-[#f7f7f7] dark:bg-[#1f2937]">
+                  <Image
+                    src={logoPreview}
+                    alt="Logo önizleme"
+                    width={80}
+                    height={80}
+                    className="w-full h-full object-cover"
+                  />
+                  <button
+                    type="button"
+                    onClick={handleRemoveLogo}
+                    className="absolute -top-1 -right-1 w-5 h-5 bg-[#df1c41] text-white rounded-full flex items-center justify-center hover:bg-[#c4183a] transition-colors"
+                  >
+                    <X className="w-3 h-3" />
+                  </button>
+                </div>
+              ) : (
+                <div className="w-20 h-20 rounded-xl border-2 border-dashed border-[#e5e7eb] dark:border-[#374151] bg-[#f7f7f7] dark:bg-[#1f2937] flex items-center justify-center">
+                  <Building2 className="w-8 h-8 text-[#9ca3af] dark:text-[#6b7280]" />
+                </div>
+              )}
+            </div>
+
+            {/* Upload Button */}
+            <div className="flex flex-col gap-1.5">
+              <input
+                ref={fileInputRef}
+                type="file"
+                accept="image/*"
+                onChange={handleLogoChange}
+                className="hidden"
+              />
+              <Button
+                type="button"
+                variant="secondary"
+                size="small"
+                onClick={() => fileInputRef.current?.click()}
+                className="text-sm"
+              >
+                <Upload className="w-4 h-4 mr-1.5" />
+                Logo Yükle
+              </Button>
+              <p className="text-[11px] text-[#9ca3af] dark:text-[#6b7280]">
+                PNG, JPG, WEBP. Maks. 2MB
+              </p>
+            </div>
+          </div>
+        </div>
 
         {/* Organization Name */}
         <FormField

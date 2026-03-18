@@ -111,9 +111,16 @@ class OrganizationsService {
 
   /**
    * Create new organization (SUPER_ADMIN only)
+   * Supports both JSON and FormData (with file upload)
    */
-  async create(data: CreateOrganizationRequest): Promise<Organization> {
-    const response = await apiClient.post<any>("/organizations", data);
+  async create(data: CreateOrganizationRequest | FormData): Promise<Organization> {
+    const config = data instanceof FormData ? {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    } as any : undefined;
+
+    const response = await apiClient.post<any>("/organizations", data, config);
 
     // Backend API format: { success: true, data: { ...organization }, message: "..." }
     if (response.data && response.data.data && response.data.data.id) {
@@ -135,9 +142,16 @@ class OrganizationsService {
 
   /**
    * Update organization
+   * Supports both JSON and FormData (with file upload)
    */
-  async update(id: number, data: UpdateOrganizationRequest): Promise<Organization> {
-    const response = await apiClient.put<any>(`/organizations/${id}`, data);
+  async update(id: number, data: UpdateOrganizationRequest | FormData): Promise<Organization> {
+    const config = data instanceof FormData ? {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    } as any : undefined;
+
+    const response = await apiClient.post<any>(`/organizations/${id}`, data, config);
 
     // Backend API format: { success: true, data: { ...organization }, message: "..." }
     if (response.data && response.data.data && response.data.data.id) {
