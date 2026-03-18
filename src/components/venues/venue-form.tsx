@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { MapPin, Loader2 } from "lucide-react";
@@ -15,17 +15,9 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import { venueSchema, type VenueFormValues } from "@/lib/validations/venue.schema";
 import { venuesService } from "@/lib/api/services";
-import { organizationsService } from "@/lib/api/services";
-import type { Venue, Organization } from "@/lib/api/types/biletleme.types";
+import type { Venue, CreateVenueRequest, UpdateVenueRequest } from "@/lib/api/types/biletleme.types";
 
 interface VenueFormProps {
   venue?: Venue;
@@ -35,32 +27,13 @@ interface VenueFormProps {
 
 export function VenueForm({ venue, onSuccess, onCancel }: VenueFormProps) {
   const [isLoading, setIsLoading] = useState(false);
-  const [organizations, setOrganizations] = useState<Organization[]>([]);
-  const [isLoadingOrgs, setIsLoadingOrgs] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   const isEditing = !!venue;
-
-  // Load organizations
-  useEffect(() => {
-    const loadOrganizations = async () => {
-      try {
-        setIsLoadingOrgs(true);
-        const data = await organizationsService.getAll();
-        setOrganizations(data);
-      } catch (error) {
-        console.error("Failed to load organizations:", error);
-      } finally {
-        setIsLoadingOrgs(false);
-      }
-    };
-
-    loadOrganizations();
-  }, []);
 
   const form = useForm<VenueFormValues>({
     resolver: zodResolver(venueSchema),
     defaultValues: {
-      organization_id: venue?.organization_id || 0,
       name: venue?.name || "",
       address: venue?.address || "",
       city: venue?.city || "",
@@ -75,27 +48,50 @@ export function VenueForm({ venue, onSuccess, onCancel }: VenueFormProps) {
   const onSubmit = async (values: VenueFormValues) => {
     try {
       setIsLoading(true);
+      setError(null);
 
-      // Convert null to undefined for API compatibility
-      const apiValues = {
-        ...values,
-        latitude: values.latitude ?? undefined,
-        longitude: values.longitude ?? undefined,
-        description: values.description ?? undefined,
+      // Clean up values for API compatibility
+      const cleanedValues: CreateVenueRequest | UpdateVenueRequest = {
+        name: values.name,
+        address: values.address,
+        city: values.city,
+        country: values.country,
+        capacity: values.capacity,
+        latitude: values.latitude ?? null,
+        longitude: values.longitude ?? null,
+        description: values.description || null,
       };
 
       let result: Venue;
 
       if (isEditing && venue) {
-        result = await venuesService.update(venue.id, apiValues);
+        result = await venuesService.update(venue.id, cleanedValues);
       } else {
-        result = await venuesService.create(apiValues);
+        result = await venuesService.create(cleanedValues as CreateVenueRequest);
       }
 
       onSuccess?.(result);
-    } catch (error) {
-      console.error("Failed to save venue:", error);
-      // TODO: Show error toast
+    } catch (err: any) {
+      console.error("Failed to save venue:", err);
+      
+      // Handle validation errors from API
+      if (err?.response?.data?.errors) {
+        const apiErrors = err.response.data.errors;
+        Object.keys(apiErrors).forEach((field) => {
+          if (field in form.getValues()) {
+            form.setError(field as keyof VenueFormValues, {
+              type: "server",
+              message: Array.isArray(apiErrors[field]) 
+                ? apiErrors[field][0] 
+                : apiErrors[field],
+            });
+          }
+        });
+      }
+      
+      // Handle general error message
+      const errorMessage = err?.response?.data?.message || err?.message || "Bir hata oluştu";
+      setError(errorMessage);
     } finally {
       setIsLoading(false);
     }
@@ -104,41 +100,12 @@ export function VenueForm({ venue, onSuccess, onCancel }: VenueFormProps) {
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-        {/* Organization Selection */}
-        <FormField
-          control={form.control}
-          name="organization_id"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Organizatör</FormLabel>
-              <Select
-                disabled={isLoadingOrgs || isEditing}
-                onValueChange={(value) => field.onChange(Number(value))}
-                defaultValue={field.value ? field.value.toString() : ""}
-              >
-                <FormControl>
-                  <SelectTrigger error={!!form.formState.errors.organization_id}>
-                    <SelectValue placeholder="Organizatör seçin" />
-                  </SelectTrigger>
-                </FormControl>
-                <SelectContent>
-                  {isLoadingOrgs ? (
-                    <div className="flex items-center justify-center py-4">
-                      <Loader2 className="h-4 w-4 animate-spin text-[#666d80]" />
-                    </div>
-                  ) : (
-                    organizations.map((org) => (
-                      <SelectItem key={org.id} value={org.id.toString()}>
-                        {org.name}
-                      </SelectItem>
-                    ))
-                  )}
-                </SelectContent>
-              </Select>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
+        {/* Error message */}
+        {error && (
+          <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 text-red-700 dark:text-red-400 px-4 py-3 rounded-lg text-sm">
+            {error}
+          </div>
+        )}
 
         {/* Venue Name */}
         <FormField
@@ -146,7 +113,7 @@ export function VenueForm({ venue, onSuccess, onCancel }: VenueFormProps) {
           name="name"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Mekan Adı</FormLabel>
+              <FormLabel>Mekan Adı *</FormLabel>
               <FormControl>
                 <Input
                   placeholder="Örn: Harbiye Açık Hava Tiyatrosu"
@@ -165,7 +132,7 @@ export function VenueForm({ venue, onSuccess, onCancel }: VenueFormProps) {
           name="address"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Adres</FormLabel>
+              <FormLabel>Adres *</FormLabel>
               <FormControl>
                 <Input
                   placeholder="Mekanın tam adresi"
@@ -185,7 +152,7 @@ export function VenueForm({ venue, onSuccess, onCancel }: VenueFormProps) {
             name="city"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Şehir</FormLabel>
+                <FormLabel>Şehir *</FormLabel>
                 <FormControl>
                   <Input
                     placeholder="Örn: İstanbul"
@@ -203,7 +170,7 @@ export function VenueForm({ venue, onSuccess, onCancel }: VenueFormProps) {
             name="country"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Ülke</FormLabel>
+                <FormLabel>Ülke *</FormLabel>
                 <FormControl>
                   <Input
                     placeholder="Örn: Türkiye"
@@ -223,7 +190,7 @@ export function VenueForm({ venue, onSuccess, onCancel }: VenueFormProps) {
           name="capacity"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Kapasite</FormLabel>
+              <FormLabel>Kapasite *</FormLabel>
               <FormControl>
                 <Input
                   type="number"

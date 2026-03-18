@@ -109,9 +109,10 @@ export default function OrganizationsPage() {
         setIsLoading(true);
         // Try to load from API first, fallback to mock data
         try {
-          const data = await organizationsService.getAll();
-          setOrganizations(data);
-        } catch {
+          const response = await organizationsService.getAll();
+          setOrganizations(response.data);
+        } catch (error) {
+          console.error("Organizatörler yüklenirken hata:", error);
           // Fallback to mock data if API is not available
           setOrganizations(mockOrganizations);
         }
@@ -180,14 +181,21 @@ export default function OrganizationsPage() {
 
     try {
       setIsDeleting(true);
-      await organizationsService.delete(deletingOrganization.id);
-      setOrganizations((prev) =>
-        prev.filter((o) => o.id !== deletingOrganization.id)
-      );
-      setDeletingOrganization(null);
-    } catch (error) {
+      const response = await organizationsService.delete(deletingOrganization.id);
+      
+      if (response.success) {
+        setOrganizations((prev) =>
+          prev.filter((o) => o.id !== deletingOrganization.id)
+        );
+        setDeletingOrganization(null);
+        // TODO: Show success toast with message: response.message
+      }
+    } catch (error: any) {
       console.error("Failed to delete organization:", error);
-      // TODO: Show error toast
+      // Extract error message from API response
+      const errorMessage = error?.response?.data?.message || "Organizatör silinirken bir hata oluştu";
+      // TODO: Show error toast with errorMessage
+      alert(errorMessage); // Temporary until toast is implemented
     } finally {
       setIsDeleting(false);
     }

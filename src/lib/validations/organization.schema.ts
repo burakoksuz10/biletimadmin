@@ -2,7 +2,8 @@
 
 import { z } from "zod";
 
-export const organizationSchema = z.object({
+// Base schema with all fields
+const organizationBaseSchema = {
   name: z
     .string()
     .min(2, "Organizatör adı en az 2 karakter olmalıdır")
@@ -26,12 +27,14 @@ export const organizationSchema = z.object({
     .string()
     .email("Geçerli bir e-posta adresi girin")
     .max(255, "E-posta en fazla 255 karakter olabilir")
+    .or(z.literal(""))
     .optional()
     .nullable(),
   website: z
     .string()
     .url("Geçerli bir website adresi girin")
     .max(255, "Website en fazla 255 karakter olabilir")
+    .or(z.literal(""))
     .optional()
     .nullable(),
   city: z
@@ -44,11 +47,61 @@ export const organizationSchema = z.object({
     .max(100, "Ülke en fazla 100 karakter olabilir")
     .optional()
     .nullable(),
+};
+
+// Schema for creating organizations (name is required)
+export const organizationSchema = z.object({
+  ...organizationBaseSchema,
+});
+
+// Schema for updating organizations (all fields optional, including name)
+export const updateOrganizationSchema = z.object({
+  name: z
+    .string()
+    .min(2, "Organizatör adı en az 2 karakter olmalıdır")
+    .max(255, "Organizatör adı en fazla 255 karakter olabilir")
+    .optional(),
+  description: z
+    .string()
+    .max(1000, "Açıklama en fazla 1000 karakter olabilir")
+    .optional()
+    .nullable(),
+  address: z
+    .string()
+    .max(500, "Adres en fazla 500 karakter olabilir")
+    .optional()
+    .nullable(),
+  phone: z
+    .string()
+    .max(20, "Telefon numarası en fazla 20 karakter olabilir")
+    .optional()
+    .nullable(),
+  email: z
+    .string()
+    .email("Geçerli bir e-posta adresi girin")
+    .max(255, "E-posta en fazla 255 karakter olabilir")
+    .or(z.literal(""))
+    .optional()
+    .nullable(),
+  website: z
+    .string()
+    .url("Geçerli bir website adresi girin")
+    .max(255, "Website en fazla 255 karakter olabilir")
+    .or(z.literal(""))
+    .optional()
+    .nullable(),
+  city: z
+    .string()
+    .max(100, "Şehir en fazla 100 karakter olabilir")
+    .optional()
+    .nullable(),
+  country: z
+    .string()
+    .max(100, "Ülke en fazla 100 karakter olabilir")
+    .optional()
+    .nullable(),
+  status: z.enum(["active", "inactive", "suspended"]).optional(),
 });
 
 export type OrganizationFormValues = z.infer<typeof organizationSchema>;
-
-// Schema for updating organizations (all fields optional)
-export const updateOrganizationSchema = organizationSchema.partial();
-
 export type UpdateOrganizationFormValues = z.infer<typeof updateOrganizationSchema>;

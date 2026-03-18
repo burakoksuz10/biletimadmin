@@ -2,10 +2,8 @@
 
 import { z } from "zod";
 
+// Venues are now independent from organizations (no organization_id)
 export const venueSchema = z.object({
-  organization_id: z
-    .number()
-    .min(1, "Organizatör seçimi zorunludur"),
   name: z
     .string()
     .min(2, "Mekan adı en az 2 karakter olmalıdır")
@@ -47,7 +45,7 @@ export const venueSchema = z.object({
 
 export type VenueFormValues = z.infer<typeof venueSchema>;
 
-// Schema for updating venues (all fields optional except organization_id)
-export const updateVenueSchema = venueSchema.partial().required({ organization_id: true });
+// Schema for updating venues (all fields optional)
+export const updateVenueSchema = venueSchema.partial();
 
 export type UpdateVenueFormValues = z.infer<typeof updateVenueSchema>;

@@ -9,7 +9,6 @@ import {
   Edit,
   Trash2,
   MapPin,
-  Building2,
   CheckCircle,
   Users,
   TrendingUp,
@@ -53,11 +52,10 @@ export default function VenuesPage() {
   const [deletingVenue, setDeletingVenue] = useState<Venue | null>(null);
   const [isDeleting, setIsDeleting] = useState(false);
 
-  // Mock data for now - will be replaced with API call
+  // Mock data for fallback
   const mockVenues: Venue[] = [
     {
       id: 1,
-      organization_id: 1,
       name: "Harbiye Açık Hava Tiyatrosu",
       slug: "harbiye-acik-hava-tiyatrosu",
       address: "Harbiye Mahallesi, Şükrü Sina Güzel Sokak",
@@ -70,7 +68,6 @@ export default function VenuesPage() {
     },
     {
       id: 2,
-      organization_id: 1,
       name: "İstanbul Lütfi Kırdar Kongre Merkezi",
       slug: "istanbul-lutfi-kirdar-kongre-merkezi",
       address: "Harbiye Mahallesi, Şükrü Sina Güzel Sokak",
@@ -83,7 +80,6 @@ export default function VenuesPage() {
     },
     {
       id: 3,
-      organization_id: 2,
       name: "Zorlu PSM Turkcell Platinum Sahne",
       slug: "zorlu-psm-turkcell-platinum-sahne",
       address: "Bağdat Caddesi, Zorlu Center",
@@ -96,7 +92,6 @@ export default function VenuesPage() {
     },
     {
       id: 4,
-      organization_id: 3,
       name: "Ankara Congresium",
       slug: "ankara-congresium",
       address: "Söğütözü Mahallesi, Bilkent",
@@ -109,7 +104,6 @@ export default function VenuesPage() {
     },
     {
       id: 5,
-      organization_id: 4,
       name: "İzmir Arena",
       slug: "izmir-arena",
       address: "Gaziemir Mahallesi, Arena Caddesi",
@@ -127,11 +121,11 @@ export default function VenuesPage() {
     const loadVenues = async () => {
       try {
         setIsLoading(true);
-        // Try to load from API first, fallback to mock data
         try {
-          const data = await venuesService.getAll();
-          setVenues(data);
-        } catch {
+          const response = await venuesService.getAll();
+          setVenues(response.data);
+        } catch (error) {
+          console.error("Mekanlar yüklenirken hata:", error);
           // Fallback to mock data if API is not available
           setVenues(mockVenues);
         }
@@ -142,14 +136,6 @@ export default function VenuesPage() {
 
     loadVenues();
   }, []);
-
-  // Organization names mapping
-  const organizationNames: Record<number, string> = {
-    1: "BKM",
-    2: "Zorlu PSM",
-    3: "Anadolu Gösteri",
-    4: "Ege Etkinlik",
-  };
 
   // Filter venues
   const filteredVenues = useMemo(() => {
@@ -198,12 +184,16 @@ export default function VenuesPage() {
 
     try {
       setIsDeleting(true);
-      await venuesService.delete(deletingVenue.id);
-      setVenues((prev) => prev.filter((v) => v.id !== deletingVenue.id));
-      setDeletingVenue(null);
-    } catch (error) {
+      const response = await venuesService.delete(deletingVenue.id);
+      
+      if (response.success) {
+        setVenues((prev) => prev.filter((v) => v.id !== deletingVenue.id));
+        setDeletingVenue(null);
+      }
+    } catch (error: any) {
       console.error("Failed to delete venue:", error);
-      // TODO: Show error toast
+      const errorMessage = error?.response?.data?.message || "Mekan silinirken bir hata oluştu";
+      alert(errorMessage); // Temporary until toast is implemented
     } finally {
       setIsDeleting(false);
     }
@@ -350,9 +340,6 @@ export default function VenuesPage() {
                     Mekan
                   </th>
                   <th className="text-left py-3 px-4 text-[14px] font-medium text-[#0d0d12] dark:text-[#f9fafb]">
-                    Organizatör
-                  </th>
-                  <th className="text-left py-3 px-4 text-[14px] font-medium text-[#0d0d12] dark:text-[#f9fafb]">
                     Konum
                   </th>
                   <th className="text-left py-3 px-4 text-[14px] font-medium text-[#0d0d12] dark:text-[#f9fafb]">
@@ -370,7 +357,7 @@ export default function VenuesPage() {
                 {isLoading ? (
                   <tr>
                     <td
-                      colSpan={6}
+                      colSpan={5}
                       className="py-8 text-center text-[#666d80] dark:text-[#9ca3af]"
                     >
                       Yükleniyor...
@@ -379,7 +366,7 @@ export default function VenuesPage() {
                 ) : filteredVenues.length === 0 ? (
                   <tr>
                     <td
-                      colSpan={6}
+                      colSpan={5}
                       className="py-8 text-center text-[#666d80] dark:text-[#9ca3af]"
                     >
                       Mekan bulunamadı
@@ -396,19 +383,19 @@ export default function VenuesPage() {
                           <p className="text-[14px] font-medium text-[#0d0d12] dark:text-[#f9fafb]">
                             {venue.name}
                           </p>
-                        </div>
-                      </td>
-                      <td className="py-3 px-4">
-                        <div className="flex items-center gap-2">
-                          <Building2 className="w-4 h-4 text-[#666d80] dark:text-[#9ca3af]" />
-                          <p className="text-[14px] text-[#0d0d12] dark:text-[#f9fafb]">
-                            {organizationNames[venue.organization_id] || "-"}
-                          </p>
+                          {venue.description && (
+                            <p className="text-[12px] text-[#666d80] dark:text-[#9ca3af] mt-0.5 truncate max-w-xs">
+                              {venue.description}
+                            </p>
+                          )}
                         </div>
                       </td>
                       <td className="py-3 px-4">
                         <p className="text-[14px] text-[#0d0d12] dark:text-[#f9fafb]">
                           {venue.city}, {venue.country}
+                        </p>
+                        <p className="text-[12px] text-[#666d80] dark:text-[#9ca3af] mt-0.5 truncate max-w-xs">
+                          {venue.address}
                         </p>
                       </td>
                       <td className="py-3 px-4">
@@ -443,7 +430,7 @@ export default function VenuesPage() {
                           <Button
                             variant="ghost"
                             size="small"
-                            className="h-8 w-8 p-0 text-[#666d80] hover:text-[#df1c41]"
+                            className="h-8 w-8 p-0 text-[#666d80] dark:text-[#9ca3af] hover:text-[#df1c41] dark:hover:text-[#ff6b8a]"
                             onClick={() => setDeletingVenue(venue)}
                           >
                             <Trash2 className="w-4 h-4" />

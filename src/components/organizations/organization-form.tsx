@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Building2, Loader2 } from "lucide-react";
@@ -15,9 +15,12 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import { organizationSchema, type OrganizationFormValues } from "@/lib/validations/organization.schema";
+import {
+  organizationSchema,
+  type OrganizationFormValues,
+} from "@/lib/validations/organization.schema";
 import { organizationsService } from "@/lib/api/services";
-import type { Organization } from "@/lib/api/types/biletleme.types";
+import type { Organization, CreateOrganizationRequest, UpdateOrganizationRequest } from "@/lib/api/types/biletleme.types";
 
 interface OrganizationFormProps {
   organization?: Organization;
@@ -31,9 +34,11 @@ export function OrganizationForm({
   onCancel,
 }: OrganizationFormProps) {
   const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   const isEditing = !!organization;
 
+  // Use the same schema for both create and update (name is always required for display)
   const form = useForm<OrganizationFormValues>({
     resolver: zodResolver(organizationSchema),
     defaultValues: {
@@ -51,31 +56,50 @@ export function OrganizationForm({
   const onSubmit = async (values: OrganizationFormValues) => {
     try {
       setIsLoading(true);
+      setError(null);
 
-      // Convert null to undefined for API compatibility
-      const apiValues = {
-        ...values,
-        description: values.description ?? undefined,
-        address: values.address ?? undefined,
-        phone: values.phone ?? undefined,
-        email: values.email ?? undefined,
-        website: values.website ?? undefined,
-        city: values.city ?? undefined,
-        country: values.country ?? undefined,
+      // Clean up empty strings to null for API compatibility
+      const cleanedValues: CreateOrganizationRequest | UpdateOrganizationRequest = {
+        name: values.name,
+        description: values.description || null,
+        address: values.address || null,
+        phone: values.phone || null,
+        email: values.email || null,
+        website: values.website || null,
+        city: values.city || null,
+        country: values.country || null,
       };
 
       let result: Organization;
 
       if (isEditing && organization) {
-        result = await organizationsService.update(organization.id, apiValues);
+        result = await organizationsService.update(organization.id, cleanedValues);
       } else {
-        result = await organizationsService.create(apiValues);
+        result = await organizationsService.create(cleanedValues as CreateOrganizationRequest);
       }
 
       onSuccess?.(result);
-    } catch (error) {
-      console.error("Failed to save organization:", error);
-      // TODO: Show error toast
+    } catch (err: any) {
+      console.error("Failed to save organization:", err);
+      
+      // Handle validation errors from API
+      if (err?.response?.data?.errors) {
+        const apiErrors = err.response.data.errors;
+        Object.keys(apiErrors).forEach((field) => {
+          if (field in form.getValues()) {
+            form.setError(field as keyof OrganizationFormValues, {
+              type: "server",
+              message: Array.isArray(apiErrors[field]) 
+                ? apiErrors[field][0] 
+                : apiErrors[field],
+            });
+          }
+        });
+      }
+      
+      // Handle general error message
+      const errorMessage = err?.response?.data?.message || err?.message || "Bir hata oluştu";
+      setError(errorMessage);
     } finally {
       setIsLoading(false);
     }
@@ -84,13 +108,20 @@ export function OrganizationForm({
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+        {/* Error message */}
+        {error && (
+          <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 text-red-700 dark:text-red-400 px-4 py-3 rounded-lg text-sm">
+            {error}
+          </div>
+        )}
+
         {/* Organization Name */}
         <FormField
           control={form.control}
           name="name"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Organizatör Adı</FormLabel>
+              <FormLabel>Organizatör Adı *</FormLabel>
               <FormControl>
                 <Input
                   placeholder="Örn: BKM"
@@ -109,7 +140,7 @@ export function OrganizationForm({
           name="description"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Açıklama (Opsiyonel)</FormLabel>
+              <FormLabel>Açıklama</FormLabel>
               <FormControl>
                 <Textarea
                   placeholder="Organizatör hakkında açıklama"
@@ -130,7 +161,7 @@ export function OrganizationForm({
           name="address"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Adres (Opsiyonel)</FormLabel>
+              <FormLabel>Adres</FormLabel>
               <FormControl>
                 <Input
                   placeholder="Organizatör adresi"
@@ -151,7 +182,7 @@ export function OrganizationForm({
             name="city"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Şehir (Opsiyonel)</FormLabel>
+                <FormLabel>Şehir</FormLabel>
                 <FormControl>
                   <Input
                     placeholder="Örn: İstanbul"
@@ -170,7 +201,7 @@ export function OrganizationForm({
             name="country"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Ülke (Opsiyonel)</FormLabel>
+                <FormLabel>Ülke</FormLabel>
                 <FormControl>
                   <Input
                     placeholder="Örn: Türkiye"
@@ -187,14 +218,16 @@ export function OrganizationForm({
 
         {/* Contact Information */}
         <div className="space-y-4">
-          <h3 className="text-sm font-medium text-[#0d0d12]">İletişim Bilgileri</h3>
+          <h3 className="text-sm font-medium text-[#0d0d12] dark:text-[#f9fafb]">
+            İletişim Bilgileri
+          </h3>
 
           <FormField
             control={form.control}
             name="phone"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Telefon (Opsiyonel)</FormLabel>
+                <FormLabel>Telefon</FormLabel>
                 <FormControl>
                   <Input
                     placeholder="+90 212 123 4567"
@@ -213,7 +246,7 @@ export function OrganizationForm({
             name="email"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>E-posta (Opsiyonel)</FormLabel>
+                <FormLabel>E-posta</FormLabel>
                 <FormControl>
                   <Input
                     type="email"
@@ -233,7 +266,7 @@ export function OrganizationForm({
             name="website"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Website (Opsiyonel)</FormLabel>
+                <FormLabel>Website</FormLabel>
                 <FormControl>
                   <Input
                     type="url"

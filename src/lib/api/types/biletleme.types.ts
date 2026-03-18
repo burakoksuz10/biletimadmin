@@ -32,14 +32,14 @@ export interface Organization {
   id: number;
   name: string;
   slug: string;
-  description?: string;
-  logo?: string;
-  address?: string;
-  phone?: string;
-  email?: string;
-  website?: string;
-  city?: string;
-  country?: string;
+  description?: string | null;
+  logo?: string | null;
+  address?: string | null;
+  phone?: string | null;
+  email?: string | null;
+  website?: string | null;
+  city?: string | null;
+  country?: string | null;
   status: "active" | "inactive" | "suspended";
   created_at: string;
   updated_at: string;
@@ -47,53 +47,55 @@ export interface Organization {
 
 export interface CreateOrganizationRequest {
   name: string;
-  description?: string;
-  address?: string;
-  phone?: string;
-  email?: string;
-  website?: string;
-  city?: string;
-  country?: string;
+  description?: string | null;
+  address?: string | null;
+  phone?: string | null;
+  email?: string | null;
+  website?: string | null;
+  city?: string | null;
+  country?: string | null;
 }
 
-export interface UpdateOrganizationRequest extends Partial<CreateOrganizationRequest> {}
+export interface UpdateOrganizationRequest extends Partial<CreateOrganizationRequest> {
+  status?: "active" | "inactive" | "suspended";
+}
 
 // ============================================
 // Venue Types
 // ============================================
+// Note: Venues are now independent from organizations (no organization_id)
 
 export interface Venue {
   id: number;
-  organization_id: number;
-  organization?: Organization;
   name: string;
   slug: string;
   address: string;
   city: string;
   country: string;
   capacity: number;
-  latitude?: number;
-  longitude?: number;
-  description?: string;
-  image?: string;
+  latitude?: number | null;
+  longitude?: number | null;
+  description?: string | null;
+  image?: string | null;
   status: "active" | "inactive" | "maintenance";
   created_at: string;
   updated_at: string;
 }
 
 export interface CreateVenueRequest {
-  organization_id: number;
   name: string;
   address: string;
   city: string;
   country: string;
   capacity: number;
-  latitude?: number;
-  longitude?: number;
-  description?: string;
+  latitude?: number | null;
+  longitude?: number | null;
+  description?: string | null;
 }
 
-export interface UpdateVenueRequest extends Partial<CreateVenueRequest> {}
+export interface UpdateVenueRequest extends Partial<CreateVenueRequest> {
+  status?: "active" | "inactive" | "maintenance";
+}
 
 // ============================================
 // Event Types
@@ -253,10 +255,10 @@ export interface EventFilters {
 }
 
 export interface VenueFilters {
-  organization_id?: number;
   city?: string;
   country?: string;
   search?: string;
+  status?: "active" | "inactive" | "maintenance";
   page?: number;
   per_page?: number;
 }
