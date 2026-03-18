@@ -53,7 +53,9 @@ export function OrganizationForm({
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   // Operator selection states
-  const [operatorType, setOperatorType] = useState<OperatorSelectionType>("none");
+  const [operatorType, setOperatorType] = useState<OperatorSelectionType>(
+    organization?.operator_id ? "existing" : "none"
+  );
   const [operators, setOperators] = useState<BackendUser[]>([]);
   const [isLoadingOperators, setIsLoadingOperators] = useState(false);
   const [selectedOperatorId, setSelectedOperatorId] = useState<number | null>(
@@ -84,7 +86,7 @@ export function OrganizationForm({
     password: "",
   });
 
-  // Load operators when switching to "existing" mode
+  // Load operators when switching to "existing" mode or when editing
   useEffect(() => {
     if (operatorType === "existing" && operators.length === 0) {
       const loadOperators = async () => {
