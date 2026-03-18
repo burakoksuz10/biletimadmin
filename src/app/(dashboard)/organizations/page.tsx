@@ -2,6 +2,7 @@
 
 import { useState, useMemo, useEffect } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import {
   Plus,
   Search,
@@ -285,15 +286,32 @@ export default function OrganizationsPage() {
                       className="border-b border-[#e5e7eb] dark:border-[#374151] hover:bg-[#f7f7f7] dark:hover:bg-[#1f2937] transition-colors"
                     >
                       <td className="py-3 px-4">
-                        <div>
-                          <p className="text-[14px] font-medium text-[#0d0d12] dark:text-[#f9fafb]">
-                            {org.name}
-                          </p>
-                          {org.description && (
-                            <p className="text-[12px] text-[#666d80] dark:text-[#9ca3af] mt-0.5 line-clamp-1">
-                              {org.description}
-                            </p>
+                        <div className="flex items-center gap-3">
+                          {org.logo_path ? (
+                            <div className="w-10 h-10 rounded-lg overflow-hidden flex-shrink-0 bg-[#f7f7f7] dark:bg-[#1f2937]">
+                              <Image
+                                src={org.logo_path}
+                                alt={org.name}
+                                width={40}
+                                height={40}
+                                className="w-full h-full object-cover"
+                              />
+                            </div>
+                          ) : (
+                            <div className="w-10 h-10 rounded-lg bg-[#e1eee3] dark:bg-[#1a2e1f] flex items-center justify-center flex-shrink-0">
+                              <Building2 className="w-5 h-5 text-[#09724a] dark:text-[#00fb90]" />
+                            </div>
                           )}
+                          <div>
+                            <p className="text-[14px] font-medium text-[#0d0d12] dark:text-[#f9fafb]">
+                              {org.name}
+                            </p>
+                            {org.description && (
+                              <p className="text-[12px] text-[#666d80] dark:text-[#9ca3af] mt-0.5 line-clamp-1">
+                                {org.description}
+                              </p>
+                            )}
+                          </div>
                         </div>
                       </td>
                       <td className="py-3 px-4">
