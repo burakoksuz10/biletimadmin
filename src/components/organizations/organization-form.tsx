@@ -144,31 +144,10 @@ export function OrganizationForm({
       setIsLoading(true);
       setError(null);
 
-      let operatorId: number | null = null;
-
-      // Handle operator selection
-      if (operatorType === "existing" && selectedOperatorId) {
-        operatorId = selectedOperatorId;
-      } else if (operatorType === "new") {
-        // Validate new operator fields
+      // Validate new operator fields if creating new operator
+      if (operatorType === "new") {
         if (!newOperator.name || !newOperator.email || !newOperator.password) {
           setError("Yeni yetkili için tüm alanları doldurun");
-          setIsLoading(false);
-          return;
-        }
-
-        // Create new operator user first
-        try {
-          const createdUser = await usersService.createUser({
-            name: newOperator.name,
-            email: newOperator.email,
-            password: newOperator.password,
-            role: "operator",
-          });
-          operatorId = createdUser.id;
-        } catch (userError: any) {
-          const userErrorMessage = userError?.message || "Yetkili oluşturulamadı";
-          setError(`Yetkili oluşturma hatası: ${userErrorMessage}`);
           setIsLoading(false);
           return;
         }
@@ -186,9 +165,14 @@ export function OrganizationForm({
       if (values.phone) formData.append("phone", values.phone);
       if (values.website) formData.append("website", values.website);
 
-      // Add operator_id if selected
-      if (operatorId) {
-        formData.append("operator_id", operatorId.toString());
+      // Handle operator selection
+      if (operatorType === "existing" && selectedOperatorId) {
+        formData.append("operator_id", selectedOperatorId.toString());
+      } else if (operatorType === "new") {
+        // Send admin fields directly with organization creation
+        formData.append("admin_name", newOperator.name);
+        formData.append("admin_email", newOperator.email);
+        formData.append("admin_password", newOperator.password);
       }
 
       // Add logo file if selected

@@ -60,6 +60,10 @@ export interface CreateOrganizationRequest {
   website?: string | null;
   is_active?: boolean;
   operator_id?: number | null;
+  // New admin fields (sent together with organization)
+  admin_name?: string;
+  admin_email?: string;
+  admin_password?: string;
 }
 
 export interface UpdateOrganizationRequest extends Partial<CreateOrganizationRequest> {}
