@@ -90,7 +90,7 @@ export function OrganizationForm({
       const loadOperators = async () => {
         try {
           setIsLoadingOperators(true);
-          const data = await usersService.getByRole("operator");
+          const data = await usersService.getByRole("operators");
           setOperators(data);
         } catch (error) {
           console.error("Failed to load operators:", error);
