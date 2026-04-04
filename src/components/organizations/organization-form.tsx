@@ -92,10 +92,10 @@ export function OrganizationForm({
       const loadOperators = async () => {
         try {
           setIsLoadingOperators(true);
-          const data = await usersService.getByRole("operators");
+          const data = await usersService.getByRole("org-admins");
           setOperators(data);
         } catch (error) {
-          console.error("Failed to load operators:", error);
+          console.error("Failed to load org-admins:", error);
         } finally {
           setIsLoadingOperators(false);
         }
@@ -149,7 +149,7 @@ export function OrganizationForm({
       // Validate new operator fields if creating new operator
       if (operatorType === "new") {
         if (!newOperator.name || !newOperator.email || !newOperator.password) {
-          setError("Yeni yetkili için tüm alanları doldurun");
+          setError("Yeni organizatör yöneticisi için tüm alanları doldurun");
           setIsLoading(false);
           return;
         }
@@ -338,7 +338,7 @@ export function OrganizationForm({
         {/* Operator Selection */}
         <div className="space-y-3">
           <label className="text-sm font-medium text-[#0d0d12] dark:text-[#f9fafb]">
-            Yetkili
+            Organizatör Yöneticisi
           </label>
           
           <div className="flex gap-2">
@@ -379,7 +379,7 @@ export function OrganizationForm({
               {isLoadingOperators ? (
                 <div className="flex items-center gap-2 text-sm text-[#9ca3af]">
                   <Loader2 className="w-4 h-4 animate-spin" />
-                  Yetkililer yükleniyor...
+                  Organizatör yöneticileri yükleniyor...
                 </div>
               ) : operators.length > 0 ? (
                 <Select
@@ -387,7 +387,7 @@ export function OrganizationForm({
                   onValueChange={(value) => setSelectedOperatorId(Number(value))}
                 >
                   <SelectTrigger>
-                    <SelectValue placeholder="Yetkili seçin" />
+                    <SelectValue placeholder="Organizatör yöneticisi seçin" />
                   </SelectTrigger>
                   <SelectContent>
                     {operators.map((op) => (
@@ -399,7 +399,7 @@ export function OrganizationForm({
                 </Select>
               ) : (
                 <p className="text-sm text-[#9ca3af] dark:text-[#6b7280]">
-                  Kayıtlı yetkili bulunamadı
+                  Kayıtlı organizatör yöneticisi bulunamadı
                 </p>
               )}
             </div>
@@ -409,7 +409,7 @@ export function OrganizationForm({
           {operatorType === "new" && (
             <div className="space-y-3 p-4 border border-[#e5e7eb] dark:border-[#374151] rounded-lg bg-[#f7f7f7] dark:bg-[#1f2937]">
               <h4 className="text-sm font-medium text-[#0d0d12] dark:text-[#f9fafb]">
-                Yeni Yetkili Bilgileri
+                Yeni Organizatör Yöneticisi Bilgileri
               </h4>
               <div className="space-y-3">
                 <div>
@@ -449,12 +449,14 @@ export function OrganizationForm({
                   />
                 </div>
                 <p className="text-[11px] text-[#9ca3af] dark:text-[#6b7280]">
-                  Rol: Operator (sabit)
+                  Rol: Org-Admin (sabit)
                 </p>
               </div>
             </div>
           )}
         </div>
+
+        {/* Tax Information */}
 
         {/* Tax Information */}
         <div className="grid grid-cols-2 gap-4">

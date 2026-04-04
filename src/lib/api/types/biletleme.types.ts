@@ -71,39 +71,33 @@ export interface UpdateOrganizationRequest extends Partial<CreateOrganizationReq
 // ============================================
 // Venue Types
 // ============================================
-// Note: Venues are now independent from organizations (no organization_id)
 
 export interface Venue {
   id: number;
   name: string;
   slug: string;
-  address: string;
   city: string;
-  country: string;
-  capacity: number;
-  latitude?: number | null;
-  longitude?: number | null;
+  district: string;
+  address: string;
+  map_url?: string | null;
   description?: string | null;
   image?: string | null;
-  status: "active" | "inactive" | "maintenance";
+  is_active: boolean;
   created_at: string;
   updated_at: string;
 }
 
 export interface CreateVenueRequest {
   name: string;
-  address: string;
   city: string;
-  country: string;
-  capacity: number;
-  latitude?: number | null;
-  longitude?: number | null;
+  district: string;
+  address: string;
+  map_url?: string | null;
   description?: string | null;
+  is_active?: boolean;
 }
 
-export interface UpdateVenueRequest extends Partial<CreateVenueRequest> {
-  status?: "active" | "inactive" | "maintenance";
-}
+export interface UpdateVenueRequest extends Partial<CreateVenueRequest> {}
 
 // ============================================
 // Event Types
@@ -264,9 +258,9 @@ export interface EventFilters {
 
 export interface VenueFilters {
   city?: string;
-  country?: string;
+  district?: string;
   search?: string;
-  status?: "active" | "inactive" | "maintenance";
+  is_active?: boolean;
   page?: number;
   per_page?: number;
 }
@@ -276,4 +270,34 @@ export interface OrganizationFilters {
   status?: "active" | "inactive" | "suspended";
   page?: number;
   per_page?: number;
+}
+
+// ============================================
+// Paginated Response Types
+// ============================================
+
+export interface PaginatedResponse<T> {
+  data: T[];
+  current_page: number;
+  last_page: number;
+  per_page: number;
+  total: number;
+  from: number;
+  to: number;
+  links?: {
+    first: string;
+    last: string;
+    prev: string | null;
+    next: string | null;
+  };
+}
+
+// ============================================
+// Event with Relations Type
+// ============================================
+
+export interface EventWithRelations extends Event {
+  organization?: Organization;
+  venue?: Venue;
+  category?: EventCategory;
 }

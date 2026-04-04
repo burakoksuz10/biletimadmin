@@ -34,7 +34,11 @@ class AuthService {
    */
   async login(credentials: LoginCredentials): Promise<BackendUser> {
     console.log("🔑 [AUTH SERVICE] Login başlıyor:", credentials.email);
-    
+
+    // First, fetch CSRF token for cookie-based auth
+    console.log("🔐 [AUTH SERVICE] CSRF token alınıyor...");
+    await apiClient.fetchCsrfToken();
+
     // Login to /api/v1/login endpoint
     const response = await apiClient.post<LoginResponse>(
       "/login",
@@ -43,12 +47,12 @@ class AuthService {
 
     console.log("📦 [AUTH SERVICE] Backend yanıtı:", response);
 
-    // Store the Bearer token
+    // Store the Bearer token (if returned by backend)
     if (response.success && response.data?.token) {
       console.log("💾 [AUTH SERVICE] Token saklanıyor:", response.data.token.substring(0, 20) + "...");
       apiClient.setToken(response.data.token);
     } else {
-      console.error("❌ [AUTH SERVICE] Token bulunamadı! Response:", response);
+      console.log("ℹ️ [AUTH SERVICE] Token cookie-based auth kullanılıyor");
     }
 
     // Return the user data
@@ -61,13 +65,16 @@ class AuthService {
    * Returns user data and stores the Bearer token
    */
   async register(data: RegisterData): Promise<BackendUser> {
+    // First, fetch CSRF token for cookie-based auth
+    await apiClient.fetchCsrfToken();
+
     // Register to /api/v1/register endpoint
     const response = await apiClient.post<LoginResponse>(
       "/register",
       data
     );
 
-    // Store the Bearer token
+    // Store the Bearer token (if returned by backend)
     if (response.success && response.data?.token) {
       apiClient.setToken(response.data.token);
     }

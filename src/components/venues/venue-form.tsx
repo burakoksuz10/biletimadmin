@@ -35,13 +35,12 @@ export function VenueForm({ venue, onSuccess, onCancel }: VenueFormProps) {
     resolver: zodResolver(venueSchema),
     defaultValues: {
       name: venue?.name || "",
-      address: venue?.address || "",
       city: venue?.city || "",
-      country: venue?.country || "",
-      capacity: venue?.capacity || 0,
-      latitude: venue?.latitude || null,
-      longitude: venue?.longitude || null,
+      district: venue?.district || "",
+      address: venue?.address || "",
+      map_url: venue?.map_url || null,
       description: venue?.description || "",
+      is_active: venue?.is_active ?? true,
     },
   });
 
@@ -50,16 +49,14 @@ export function VenueForm({ venue, onSuccess, onCancel }: VenueFormProps) {
       setIsLoading(true);
       setError(null);
 
-      // Clean up values for API compatibility
       const cleanedValues: CreateVenueRequest | UpdateVenueRequest = {
         name: values.name,
-        address: values.address,
         city: values.city,
-        country: values.country,
-        capacity: values.capacity,
-        latitude: values.latitude ?? null,
-        longitude: values.longitude ?? null,
+        district: values.district,
+        address: values.address,
+        map_url: values.map_url ?? null,
         description: values.description || null,
+        is_active: values.is_active,
       };
 
       let result: Venue;
@@ -73,24 +70,22 @@ export function VenueForm({ venue, onSuccess, onCancel }: VenueFormProps) {
       onSuccess?.(result);
     } catch (err: any) {
       console.error("Failed to save venue:", err);
-      
-      // Handle validation errors from API
-      if (err?.response?.data?.errors) {
-        const apiErrors = err.response.data.errors;
+
+      if (err?.errors) {
+        const apiErrors = err.errors;
         Object.keys(apiErrors).forEach((field) => {
           if (field in form.getValues()) {
             form.setError(field as keyof VenueFormValues, {
               type: "server",
-              message: Array.isArray(apiErrors[field]) 
-                ? apiErrors[field][0] 
+              message: Array.isArray(apiErrors[field])
+                ? apiErrors[field][0]
                 : apiErrors[field],
             });
           }
         });
       }
-      
-      // Handle general error message
-      const errorMessage = err?.response?.data?.message || err?.message || "Bir hata oluştu";
+
+      const errorMessage = err?.message || "Bir hata oluştu";
       setError(errorMessage);
     } finally {
       setIsLoading(false);
@@ -107,7 +102,7 @@ export function VenueForm({ venue, onSuccess, onCancel }: VenueFormProps) {
           </div>
         )}
 
-        {/* Venue Name */}
+        {/* Mekan Adı */}
         <FormField
           control={form.control}
           name="name"
@@ -126,33 +121,14 @@ export function VenueForm({ venue, onSuccess, onCancel }: VenueFormProps) {
           )}
         />
 
-        {/* Address */}
-        <FormField
-          control={form.control}
-          name="address"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Adres *</FormLabel>
-              <FormControl>
-                <Input
-                  placeholder="Mekanın tam adresi"
-                  error={!!form.formState.errors.address}
-                  {...field}
-                />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-
-        {/* City and Country */}
+        {/* İl ve İlçe */}
         <div className="grid grid-cols-2 gap-4">
           <FormField
             control={form.control}
             name="city"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Şehir *</FormLabel>
+                <FormLabel>İl *</FormLabel>
                 <FormControl>
                   <Input
                     placeholder="Örn: İstanbul"
@@ -167,14 +143,14 @@ export function VenueForm({ venue, onSuccess, onCancel }: VenueFormProps) {
 
           <FormField
             control={form.control}
-            name="country"
+            name="district"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Ülke *</FormLabel>
+                <FormLabel>İlçe *</FormLabel>
                 <FormControl>
                   <Input
-                    placeholder="Örn: Türkiye"
-                    error={!!form.formState.errors.country}
+                    placeholder="Örn: Beşiktaş"
+                    error={!!form.formState.errors.district}
                     {...field}
                   />
                 </FormControl>
@@ -184,20 +160,18 @@ export function VenueForm({ venue, onSuccess, onCancel }: VenueFormProps) {
           />
         </div>
 
-        {/* Capacity */}
+        {/* Açık Adres */}
         <FormField
           control={form.control}
-          name="capacity"
+          name="address"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Kapasite *</FormLabel>
+              <FormLabel>Açık Adres *</FormLabel>
               <FormControl>
                 <Input
-                  type="number"
-                  placeholder="Mekanın kapasitesi"
-                  error={!!form.formState.errors.capacity}
+                  placeholder="Mekanın tam adresi"
+                  error={!!form.formState.errors.address}
                   {...field}
-                  onChange={(e) => field.onChange(Number(e.target.value))}
                 />
               </FormControl>
               <FormMessage />
@@ -205,64 +179,34 @@ export function VenueForm({ venue, onSuccess, onCancel }: VenueFormProps) {
           )}
         />
 
-        {/* Coordinates (Optional) */}
-        <div className="grid grid-cols-2 gap-4">
-          <FormField
-            control={form.control}
-            name="latitude"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Enlem (Opsiyonel)</FormLabel>
-                <FormControl>
-                  <Input
-                    type="number"
-                    step="any"
-                    placeholder="Örn: 41.046488"
-                    error={!!form.formState.errors.latitude}
-                    {...field}
-                    onChange={(e) =>
-                      field.onChange(e.target.value ? Number(e.target.value) : null)
-                    }
-                    value={field.value ?? ""}
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
+        {/* Map URL */}
+        <FormField
+          control={form.control}
+          name="map_url"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Harita URL</FormLabel>
+              <FormControl>
+                <Input
+                  placeholder="https://maps.google.com/..."
+                  error={!!form.formState.errors.map_url}
+                  {...field}
+                  value={field.value ?? ""}
+                  onChange={(e) => field.onChange(e.target.value || null)}
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
 
-          <FormField
-            control={form.control}
-            name="longitude"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Boylam (Opsiyonel)</FormLabel>
-                <FormControl>
-                  <Input
-                    type="number"
-                    step="any"
-                    placeholder="Örn: 28.994238"
-                    error={!!form.formState.errors.longitude}
-                    {...field}
-                    onChange={(e) =>
-                      field.onChange(e.target.value ? Number(e.target.value) : null)
-                    }
-                    value={field.value ?? ""}
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-        </div>
-
-        {/* Description */}
+        {/* Mekan Açıklaması */}
         <FormField
           control={form.control}
           name="description"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Açıklama (Opsiyonel)</FormLabel>
+              <FormLabel>Mekan Açıklaması</FormLabel>
               <FormControl>
                 <Textarea
                   placeholder="Mekan hakkında açıklama"
@@ -270,9 +214,40 @@ export function VenueForm({ venue, onSuccess, onCancel }: VenueFormProps) {
                   error={!!form.formState.errors.description}
                   {...field}
                   value={field.value ?? ""}
+                  onChange={(e) => field.onChange(e.target.value || null)}
                 />
               </FormControl>
               <FormMessage />
+            </FormItem>
+          )}
+        />
+
+        {/* Durum (is_active) */}
+        <FormField
+          control={form.control}
+          name="is_active"
+          render={({ field }) => (
+            <FormItem className="flex items-center justify-between rounded-lg border border-[#e5e7eb] dark:border-[#374151] p-4">
+              <div className="space-y-0.5">
+                <FormLabel className="text-base">Durum</FormLabel>
+              </div>
+              <FormControl>
+                <button
+                  type="button"
+                  role="switch"
+                  aria-checked={field.value}
+                  onClick={() => field.onChange(!field.value)}
+                  className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
+                    field.value ? "bg-[#09724a]" : "bg-[#d1d5db] dark:bg-[#4b5563]"
+                  }`}
+                >
+                  <span
+                    className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
+                      field.value ? "translate-x-6" : "translate-x-1"
+                    }`}
+                  />
+                </button>
+              </FormControl>
             </FormItem>
           )}
         />

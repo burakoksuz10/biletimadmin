@@ -1,6 +1,9 @@
 // API Client Configuration with Axios
-// Configured for Laravel Sanctum Token-based Authentication
+// Configured for Laravel Sanctum Cookie-based Authentication
 // Backend: Biletleme Platform (Laravel 12)
+//
+// Local Development: Uses Next.js API proxy to avoid CORS/CSRF issues
+// Production: Direct connection to backend
 
 import axios, { AxiosInstance, AxiosError, InternalAxiosRequestConfig } from "axios";
 
@@ -8,8 +11,19 @@ import axios, { AxiosInstance, AxiosError, InternalAxiosRequestConfig } from "ax
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || "https://biletim.simgesoft.com";
 const API_VERSION = process.env.NEXT_PUBLIC_API_VERSION || "v1";
 
-// Token storage key
+// Use Next.js API proxy in development to avoid CORS/CSRF issues
+const USE_PROXY = process.env.NODE_ENV === "development";
+const PROXY_BASE_URL = "/api";
+const DIRECT_BASE_URL = `${API_BASE_URL}/api/${API_VERSION}`;
+
+// Determine base URL
+const getBaseURL = () => USE_PROXY ? PROXY_BASE_URL : DIRECT_BASE_URL;
+
+// Token storage key (fallback/legacy)
 const TOKEN_STORAGE_KEY = "auth_token";
+
+// CSRF token state (only needed for direct connection)
+let csrfToken: string | null = null;
 
 // Error types
 export interface ApiValidationError {
@@ -28,14 +42,24 @@ class ApiClient {
   private client: AxiosInstance;
 
   constructor() {
+    const baseURL = getBaseURL();
+
+    console.log(`🔗 [API CLIENT] Using ${USE_PROXY ? "PROXY" : "DIRECT"} mode: ${baseURL}`);
+
     // Main API client - for all API requests
     this.client = axios.create({
-      baseURL: `${API_BASE_URL}/api/${API_VERSION}`,
+      baseURL,
       timeout: 30000,
+      withCredentials: !USE_PROXY, // Only for direct connection
       headers: {
         "Content-Type": "application/json",
         "Accept": "application/json",
       },
+      // CSRF token configuration for Laravel Sanctum (only for direct connection)
+      ...(USE_PROXY ? {} : {
+        xsrfCookieName: "XSRF-TOKEN",
+        xsrfHeaderName: "X-XSRF-TOKEN",
+      }),
     });
 
     // Request interceptor - Add Bearer token from localStorage
@@ -45,6 +69,12 @@ class ApiClient {
         if (token) {
           config.headers.Authorization = `Bearer ${token}`;
         }
+
+        // Add CSRF token if available
+        if (csrfToken) {
+          config.headers["X-XSRF-TOKEN"] = decodeURIComponent(csrfToken);
+        }
+
         return config;
       },
       (error: AxiosError) => {
@@ -163,6 +193,51 @@ class ApiClient {
 
   hasValidToken(): boolean {
     return this.getToken() !== null;
+  }
+
+  /**
+   * Fetch CSRF token from Sanctum
+   * Only needed for direct connection (production)
+   * In development, proxy handles CSRF automatically
+   */
+  async fetchCsrfToken(): Promise<void> {
+    if (USE_PROXY) {
+      console.log("🔐 [API CLIENT] Proxy mode - CSRF handled by Next.js API route");
+      return;
+    }
+
+    try {
+      // Create a separate instance for CSRF fetching (no baseURL)
+      const csrfClient = axios.create({
+        baseURL: API_BASE_URL,
+        timeout: 10000,
+        withCredentials: true,
+        // CSRF token configuration for Laravel Sanctum
+        xsrfCookieName: "XSRF-TOKEN",
+        xsrfHeaderName: "X-XSRF-TOKEN",
+      });
+
+      const response = await csrfClient.get("/sanctum/csrf-cookie");
+
+      // Try to extract CSRF token from cookie
+      const cookies = document.cookie.split("; ");
+      for (const cookie of cookies) {
+        if (cookie.startsWith("XSRF-TOKEN=")) {
+          csrfToken = cookie.split("=")[1];
+          break;
+        }
+      }
+
+      // Also try to get from response headers (some servers send it there)
+      if (!csrfToken && response.headers["x-xsrf-token"]) {
+        csrfToken = response.headers["x-xsrf-token"];
+      }
+
+      console.log("🔐 [API CLIENT] CSRF token fetched:", csrfToken?.substring(0, 20) + "...");
+    } catch (error) {
+      console.warn("⚠️ [API CLIENT] CSRF token fetch failed, continuing...", error);
+      // Don't throw - let the request proceed
+    }
   }
 
   // HTTP Methods
