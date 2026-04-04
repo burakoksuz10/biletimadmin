@@ -218,7 +218,7 @@ export default function VenuesPage() {
       </div>
 
       {/* Stats Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         <Card className="border-[#e5e7eb]">
           <CardContent className="p-6">
             <div className="flex items-center justify-between">

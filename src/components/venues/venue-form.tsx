@@ -15,7 +15,8 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import { venueSchema, type VenueFormValues } from "@/lib/validations/venue.schema";
+import { venueSchema } from "@/lib/validations/venue.schema";
+import type { VenueFormValues } from "@/lib/validations/venue.schema";
 import { venuesService } from "@/lib/api/services";
 import type { Venue, CreateVenueRequest, UpdateVenueRequest } from "@/lib/api/types/biletleme.types";
 
@@ -31,7 +32,7 @@ export function VenueForm({ venue, onSuccess, onCancel }: VenueFormProps) {
 
   const isEditing = !!venue;
 
-  const form = useForm<VenueFormValues>({
+  const form = useForm({
     resolver: zodResolver(venueSchema),
     defaultValues: {
       name: venue?.name || "",
@@ -40,11 +41,11 @@ export function VenueForm({ venue, onSuccess, onCancel }: VenueFormProps) {
       address: venue?.address || "",
       map_url: venue?.map_url || null,
       description: venue?.description || "",
-      is_active: venue?.is_active ?? true,
+      is_active: true,
     },
   });
 
-  const onSubmit = async (values: VenueFormValues) => {
+  const onSubmit = async (values: any) => {
     try {
       setIsLoading(true);
       setError(null);
@@ -56,7 +57,7 @@ export function VenueForm({ venue, onSuccess, onCancel }: VenueFormProps) {
         address: values.address,
         map_url: values.map_url ?? null,
         description: values.description || null,
-        is_active: values.is_active,
+        is_active: values.is_active ?? true,
       };
 
       let result: Venue;

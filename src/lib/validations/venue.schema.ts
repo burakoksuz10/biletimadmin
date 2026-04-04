@@ -30,8 +30,7 @@ export const venueSchema = z.object({
     .optional()
     .nullable(),
   is_active: z
-    .boolean()
-    .default(true),
+    .boolean(),
 });
 
 export type VenueFormValues = z.infer<typeof venueSchema>;
