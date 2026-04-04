@@ -40,7 +40,9 @@ export default function LoginPage() {
       await login(data);
       console.log("✅ [LOGIN] Başarılı! User ve token set edildi");
       console.log("🔄 [LOGIN] Dashboard'a yönlendiriliyor...");
-      router.push("/");
+      // Use window.location.href instead of router.push to avoid race condition
+      // This ensures the page fully reloads and reads from localStorage
+      window.location.href = "/";
     } catch (error: unknown) {
       console.error("❌ [LOGIN] Hata:", error);
       if (error && typeof error === "object" && "message" in error) {
