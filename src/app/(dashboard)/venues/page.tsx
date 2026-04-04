@@ -1,16 +1,13 @@
 "use client";
 
 import { useState, useMemo, useEffect } from "react";
-import Link from "next/link";
 import {
   Plus,
   Search,
-  Eye,
   Edit,
   Trash2,
   MapPin,
   CheckCircle,
-  Users,
   TrendingUp,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -43,7 +40,7 @@ export default function VenuesPage() {
   const [isLoading, setIsLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
   const [statusFilter, setStatusFilter] = useState<
-    "all" | "active" | "inactive" | "maintenance"
+    "all" | "active" | "inactive"
   >("all");
 
   // Dialog states
@@ -60,9 +57,11 @@ export default function VenuesPage() {
       slug: "harbiye-acik-hava-tiyatrosu",
       address: "Harbiye Mahallesi, Şükrü Sina Güzel Sokak",
       city: "İstanbul",
-      country: "Türkiye",
-      capacity: 7000,
-      status: "active",
+      district: "Şişli",
+      map_url: null,
+      description: null,
+      image: null,
+      is_active: true,
       created_at: "2024-01-01T00:00:00Z",
       updated_at: "2024-01-01T00:00:00Z",
     },
@@ -72,9 +71,11 @@ export default function VenuesPage() {
       slug: "istanbul-lutfi-kirdar-kongre-merkezi",
       address: "Harbiye Mahallesi, Şükrü Sina Güzel Sokak",
       city: "İstanbul",
-      country: "Türkiye",
-      capacity: 3500,
-      status: "active",
+      district: "Şişli",
+      map_url: null,
+      description: null,
+      image: null,
+      is_active: true,
       created_at: "2024-01-01T00:00:00Z",
       updated_at: "2024-01-01T00:00:00Z",
     },
@@ -84,9 +85,11 @@ export default function VenuesPage() {
       slug: "zorlu-psm-turkcell-platinum-sahne",
       address: "Bağdat Caddesi, Zorlu Center",
       city: "İstanbul",
-      country: "Türkiye",
-      capacity: 2500,
-      status: "active",
+      district: "Kadıköy",
+      map_url: null,
+      description: null,
+      image: null,
+      is_active: true,
       created_at: "2024-01-01T00:00:00Z",
       updated_at: "2024-01-01T00:00:00Z",
     },
@@ -96,9 +99,11 @@ export default function VenuesPage() {
       slug: "ankara-congresium",
       address: "Söğütözü Mahallesi, Bilkent",
       city: "Ankara",
-      country: "Türkiye",
-      capacity: 2000,
-      status: "active",
+      district: "Çankaya",
+      map_url: null,
+      description: null,
+      image: null,
+      is_active: true,
       created_at: "2024-01-01T00:00:00Z",
       updated_at: "2024-01-01T00:00:00Z",
     },
@@ -108,9 +113,11 @@ export default function VenuesPage() {
       slug: "izmir-arena",
       address: "Gaziemir Mahallesi, Arena Caddesi",
       city: "İzmir",
-      country: "Türkiye",
-      capacity: 1500,
-      status: "active",
+      district: "Gaziemir",
+      map_url: null,
+      description: null,
+      image: null,
+      is_active: true,
       created_at: "2024-01-01T00:00:00Z",
       updated_at: "2024-01-01T00:00:00Z",
     },
@@ -146,23 +153,13 @@ export default function VenuesPage() {
         venue.city.toLowerCase().includes(searchQuery.toLowerCase());
 
       const matchesStatus =
-        statusFilter === "all" || venue.status === statusFilter;
+        statusFilter === "all" ||
+        (statusFilter === "active" && venue.is_active) ||
+        (statusFilter === "inactive" && !venue.is_active);
 
       return matchesSearch && matchesStatus;
     });
   }, [venues, searchQuery, statusFilter]);
-
-  const statusVariantMap: Record<string, "success" | "warning" | "danger"> = {
-    active: "success",
-    inactive: "warning",
-    maintenance: "danger",
-  };
-
-  const statusLabels: Record<string, string> = {
-    active: "Aktif",
-    inactive: "Pasif",
-    maintenance: "Bakımda",
-  };
 
   // Handle venue creation success
   const handleCreateSuccess = (newVenue: Venue) => {
@@ -221,7 +218,7 @@ export default function VenuesPage() {
       </div>
 
       {/* Stats Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <Card className="border-[#e5e7eb]">
           <CardContent className="p-6">
             <div className="flex items-center justify-between">
@@ -244,7 +241,7 @@ export default function VenuesPage() {
               <div>
                 <p className="text-[14px] text-[#666d80] dark:text-[#9ca3af]">Aktif</p>
                 <p className="text-[28px] font-semibold text-[#0d0d12] dark:text-[#f9fafb] mt-1">
-                  {venues.filter((v) => v.status === "active").length}
+                  {venues.filter((v) => v.is_active).length}
                 </p>
               </div>
               <div className="w-12 h-12 rounded-full bg-[#ecfdf3] dark:bg-[#1a2e1f] flex items-center justify-center">
@@ -258,32 +255,9 @@ export default function VenuesPage() {
           <CardContent className="p-6">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-[14px] text-[#666d80] dark:text-[#9ca3af]">Toplam Kapasite</p>
+                <p className="text-[14px] text-[#666d80] dark:text-[#9ca3af]">Pasif</p>
                 <p className="text-[28px] font-semibold text-[#0d0d12] dark:text-[#f9fafb] mt-1">
-                  {venues
-                    .reduce((sum, v) => sum + v.capacity, 0)
-                    .toLocaleString()}
-                </p>
-              </div>
-              <div className="w-12 h-12 rounded-full bg-[#eff6ff] dark:bg-[#1a242e] flex items-center justify-center">
-                <Users className="w-6 h-6 text-[#3b82f6] dark:text-[#60a5fa]" />
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card className="border-[#e5e7eb]">
-          <CardContent className="p-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-[14px] text-[#666d80] dark:text-[#9ca3af]">Ort. Kapasite</p>
-                <p className="text-[28px] font-semibold text-[#0d0d12] dark:text-[#f9fafb] mt-1">
-                  {venues.length > 0
-                    ? Math.round(
-                        venues.reduce((sum, v) => sum + v.capacity, 0) /
-                          venues.length
-                      ).toLocaleString()
-                    : "0"}
+                  {venues.filter((v) => !v.is_active).length}
                 </p>
               </div>
               <div className="w-12 h-12 rounded-full bg-[#fffbeb] dark:bg-[#2e2a1a] flex items-center justify-center">
@@ -307,7 +281,7 @@ export default function VenuesPage() {
         </div>
 
         <div className="flex gap-2">
-          {(["all", "active", "inactive", "maintenance"] as const).map(
+          {(["all", "active", "inactive"] as const).map(
             (status) => (
               <Button
                 key={status}
@@ -322,7 +296,6 @@ export default function VenuesPage() {
                 {status === "all" && "Tümü"}
                 {status === "active" && "Aktif"}
                 {status === "inactive" && "Pasif"}
-                {status === "maintenance" && "Bakımda"}
               </Button>
             )
           )}
@@ -343,9 +316,6 @@ export default function VenuesPage() {
                     Konum
                   </th>
                   <th className="text-left py-3 px-4 text-[14px] font-medium text-[#0d0d12] dark:text-[#f9fafb]">
-                    Kapasite
-                  </th>
-                  <th className="text-left py-3 px-4 text-[14px] font-medium text-[#0d0d12] dark:text-[#f9fafb]">
                     Durum
                   </th>
                   <th className="text-right py-3 px-4 text-[14px] font-medium text-[#0d0d12] dark:text-[#f9fafb]">
@@ -357,7 +327,7 @@ export default function VenuesPage() {
                 {isLoading ? (
                   <tr>
                     <td
-                      colSpan={5}
+                      colSpan={4}
                       className="py-8 text-center text-[#666d80] dark:text-[#9ca3af]"
                     >
                       Yükleniyor...
@@ -366,7 +336,7 @@ export default function VenuesPage() {
                 ) : filteredVenues.length === 0 ? (
                   <tr>
                     <td
-                      colSpan={5}
+                      colSpan={4}
                       className="py-8 text-center text-[#666d80] dark:text-[#9ca3af]"
                     >
                       Mekan bulunamadı
@@ -392,33 +362,19 @@ export default function VenuesPage() {
                       </td>
                       <td className="py-3 px-4">
                         <p className="text-[14px] text-[#0d0d12] dark:text-[#f9fafb]">
-                          {venue.city}, {venue.country}
+                          {venue.city}, {venue.district}
                         </p>
                         <p className="text-[12px] text-[#666d80] dark:text-[#9ca3af] mt-0.5 truncate max-w-xs">
                           {venue.address}
                         </p>
                       </td>
                       <td className="py-3 px-4">
-                        <p className="text-[14px] text-[#0d0d12] dark:text-[#f9fafb]">
-                          {venue.capacity.toLocaleString()} kişi
-                        </p>
-                      </td>
-                      <td className="py-3 px-4">
-                        <Badge variant={statusVariantMap[venue.status]}>
-                          {statusLabels[venue.status]}
+                        <Badge variant={venue.is_active ? "success" : "warning"}>
+                          {venue.is_active ? "Aktif" : "Pasif"}
                         </Badge>
                       </td>
                       <td className="py-3 px-4">
                         <div className="flex items-center justify-end gap-2">
-                          <Link href={`/venues/${venue.id}`}>
-                            <Button
-                              variant="ghost"
-                              size="small"
-                              className="h-8 w-8 p-0 text-[#666d80] dark:text-[#9ca3af] hover:text-[#09724a] dark:hover:text-[#00fb90]"
-                            >
-                              <Eye className="w-4 h-4" />
-                            </Button>
-                          </Link>
                           <Button
                             variant="ghost"
                             size="small"

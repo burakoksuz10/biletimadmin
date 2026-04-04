@@ -14,6 +14,7 @@ async function handleProxy(
       : `${BACKEND_API_URL}/api/v1`;
 
     console.log(`[API PROXY] ${request.method} ${url}`);
+    console.log(`[API PROXY] Headers:`, Object.fromEntries(request.headers.entries()));
 
     // Prepare request options
     const options: RequestInit = {
@@ -29,6 +30,7 @@ async function handleProxy(
 
       if (contentType?.includes("application/json")) {
         const jsonBody = await request.json();
+        console.log(`[API PROXY] Request body:`, jsonBody);
         options.body = JSON.stringify(jsonBody);
         (options.headers as Record<string, string>)["Content-Type"] = "application/json";
       } else if (contentType?.includes("multipart/form-data")) {
@@ -73,7 +75,7 @@ async function handleProxy(
       nextResponse.headers.append("Set-Cookie", setCookie);
     }
 
-    console.log(`[API PROXY] Response: ${response.status}`);
+    console.log(`[API PROXY] Response: ${response.status}`, responseData);
 
     return nextResponse;
   } catch (error) {

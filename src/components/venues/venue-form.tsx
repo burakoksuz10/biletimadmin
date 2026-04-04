@@ -69,7 +69,14 @@ export function VenueForm({ venue, onSuccess, onCancel }: VenueFormProps) {
 
       onSuccess?.(result);
     } catch (err: any) {
-      console.error("Failed to save venue:", err);
+      console.error("Failed to save venue:", JSON.stringify(err, null, 2));
+      console.error("Error details:", {
+        message: err?.message,
+        status: err?.status,
+        data: err?.data,
+        errors: err?.errors,
+        response: err?.response?.data,
+      });
 
       if (err?.errors) {
         const apiErrors = err.errors;
