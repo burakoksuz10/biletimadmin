@@ -118,6 +118,8 @@ class ApiClient {
           return Promise.reject({
             message: "İstenen kaynak bulunamadı.",
             status: 404,
+            response: error.response,
+            responseData,
           } as ApiError);
         }
 
@@ -129,6 +131,8 @@ class ApiClient {
             message,
             errors,
             status: 422,
+            response: error.response,
+            responseData,
           } as ApiValidationError);
         }
 
@@ -137,14 +141,42 @@ class ApiClient {
           return Promise.reject({
             message: "Çok fazla istek gönderildi. Lütfen biraz bekleyin.",
             status: 429,
+            response: error.response,
+            responseData,
           } as ApiError);
         }
 
         // Handle 500+ - Server Error
         if (status && status >= 500) {
-          return Promise.reject({
-            message: "Sunucu hatası oluştu. Lütfen daha sonra tekrar deneyin.",
+          // Log full 500 error details for debugging
+          console.error("[API CLIENT] 500 Error Details:", {
             status,
+            statusText: error.response?.statusText,
+            data: responseData,
+            url: error.config?.url,
+            method: error.config?.method,
+            requestData: error.config?.data,
+          });
+
+          // Extract detailed message from response if available
+          let detailedMessage = "Sunucu hatası oluştu. Lütfen daha sonra tekrar deneyin.";
+          if (responseData) {
+            if (typeof responseData === 'string') {
+              detailedMessage = responseData;
+            } else if (typeof responseData.message === 'string') {
+              detailedMessage = responseData.message;
+            } else if (typeof responseData.error === 'string') {
+              detailedMessage = responseData.error;
+            } else if (typeof responseData.exception === 'string') {
+              detailedMessage = `Backend hatası: ${responseData.exception}`;
+            }
+          }
+
+          return Promise.reject({
+            message: detailedMessage,
+            status,
+            response: error.response,
+            responseData,
           } as ApiError);
         }
 
@@ -166,6 +198,8 @@ class ApiClient {
           message: errorMessage,
           status,
           data: responseData,
+          response: error.response,
+          responseData,
         } as ApiError);
       }
     );

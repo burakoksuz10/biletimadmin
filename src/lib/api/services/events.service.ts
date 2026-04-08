@@ -14,7 +14,9 @@ import type {
 } from "../types/biletleme.types";
 
 class EventsService {
-  private basePath = "/public/events";
+  // Use /events for admin panel (authenticated), /public/events for public
+  private basePath = "/events";
+  private publicPath = "/public/events";
 
   /**
    * Get all events (simple list)

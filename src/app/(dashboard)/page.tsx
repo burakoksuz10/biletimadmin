@@ -2,6 +2,7 @@
 
 export const dynamic = 'force-dynamic';
 
+import { useState, useEffect } from "react";
 import {
   TrendingUp,
   TrendingDown,
@@ -9,71 +10,173 @@ import {
   Ticket,
   RefreshCw,
   CreditCard,
+  Calendar,
+  MapPin,
+  Users,
+  Building2,
+  Loader2,
 } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { formatCurrency, formatDate } from "@/lib/utils";
-import {
-  mockDashboardStats,
-  mockSalesData,
-  mockBestVisited,
-  mockRecentPayouts,
-} from "@/lib/mock-data/dashboard";
+import { dashboardService } from "@/lib/api/services";
+import type { SalesDataPoint, BestVisitedLocation, RecentPayout } from "@/types/dashboard.types";
 import { AreaChart, Area, ResponsiveContainer, XAxis, YAxis, Tooltip } from "recharts";
 
+// Mock data for features not yet available in API
+const mockSalesData: SalesDataPoint[] = [
+  { month: "Oca", income: 20000 },
+  { month: "Şub", income: 45000 },
+  { month: "Mar", income: 30000 },
+  { month: "Nis", income: 55000 },
+  { month: "May", income: 40000 },
+  { month: "Haz", income: 65000 },
+];
+
+const mockBestVisited: BestVisitedLocation[] = [
+  { country: "İstanbul, Türkiye", amount: 32580, percentage: 34 },
+  { country: "Antalya, Türkiye", amount: 24890, percentage: 26 },
+  { country: "Ankara, Türkiye", amount: 18756, percentage: 20 },
+  { country: "İzmir, Türkiye", amount: 12340, percentage: 13 },
+  { country: "Bursa, Türkiye", amount: 6780, percentage: 7 },
+];
+
+const mockRecentPayouts: RecentPayout[] = [
+  {
+    id: "pay-001",
+    organizer: "Ahmet Yılmaz",
+    amount: 25000,
+    contact: "+905321234567",
+    requestedOn: "2025-01-15",
+    status: "pending",
+  },
+  {
+    id: "pay-002",
+    organizer: "Ayşe Demir",
+    amount: 15000,
+    contact: "+905321234568",
+    requestedOn: "2025-01-14",
+    status: "approved",
+    processedOn: "2025-01-15",
+  },
+];
+
 export default function DashboardPage() {
-  const stats = mockDashboardStats;
+  const [loading, setLoading] = useState(true);
+  const [stats, setStats] = useState({
+    totalRevenue: 0,
+    ticketsSold: 0,
+    activeEvents: 0,
+    totalEvents: 0,
+    venuesCount: 0,
+    usersCount: 0,
+    customersCount: 0,
+  });
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    loadDashboardData();
+  }, []);
+
+  const loadDashboardData = async () => {
+    try {
+      setLoading(true);
+      setError(null);
+
+      const data = await dashboardService.getDashboardData();
+
+      setStats({
+        totalRevenue: data.stats.totalRevenue,
+        ticketsSold: data.stats.ticketsSold,
+        activeEvents: data.eventsCount.active,
+        totalEvents: data.eventsCount.total,
+        venuesCount: data.venuesCount,
+        usersCount: data.usersCount,
+        customersCount: data.customersCount,
+      });
+    } catch (err: any) {
+      console.error("Dashboard yüklenirken hata:", err);
+      setError(err?.message || "Veriler yüklenirken bir hata oluştu");
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const statCards = [
     {
       title: "Toplam Gelir",
       value: formatCurrency(stats.totalRevenue),
-      change: stats.revenueChange,
       icon: DollarSign,
       color: "bg-[#e1eee3]",
       iconColor: "text-[#09724a]",
     },
     {
-      title: "Satılan Biletler",
-      value: stats.ticketsSold.toLocaleString(),
-      change: stats.ticketsChange,
-      icon: Ticket,
+      title: "Aktif Etkinlikler",
+      value: `${stats.activeEvents}/${stats.totalEvents}`,
+      subtitle: `${stats.totalEvents} toplam`,
+      icon: Calendar,
       color: "bg-[#e8f4fd]",
       iconColor: "text-[#0177fb]",
     },
     {
-      title: "İade Tutarı",
-      value: formatCurrency(stats.refundedAmount),
-      change: stats.refundsChange,
-      icon: RefreshCw,
-      color: "bg-[#fff0f3]",
-      iconColor: "text-[#df1c41]",
+      title: "Müşteriler",
+      value: stats.customersCount.toLocaleString(),
+      icon: Users,
+      color: "bg-[#f3e8fd]",
+      iconColor: "text-[#9333ea]",
     },
     {
-      title: "Ödemeler",
-      value: stats.payoutsIssued.toLocaleString(),
-      change: stats.payoutsChange,
-      icon: CreditCard,
+      title: "Mekanlar",
+      value: stats.venuesCount.toLocaleString(),
+      icon: MapPin,
       color: "bg-[#fff8e6]",
-      iconColor: "text-[#f5a623]",
+      iconColor: "text-[#f59e0b]",
     },
   ];
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center min-h-[400px]">
+        <div className="text-center">
+          <Loader2 className="w-8 h-8 animate-spin mx-auto mb-4 text-[#09724a]" />
+          <p className="text-[#666d80]">Dashboard yükleniyor...</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-6">
       {/* Page Title */}
-      <div>
-        <h1 className="text-[24px] font-semibold text-[#0d0d12] dark:text-[#f9fafb]">Dashboard</h1>
-        <p className="text-[14px] text-[#666d80] dark:text-[#9ca3af] mt-1">
-          Hoş geldiniz! Etkinliklerinizle ilgili son gelişmeler.
-        </p>
+      <div className="flex items-center justify-between">
+        <div>
+          <h1 className="text-[24px] font-semibold text-[#0d0d12] dark:text-[#f9fafb]">Dashboard</h1>
+          <p className="text-[14px] text-[#666d80] dark:text-[#9ca3af] mt-1">
+            Etkinliklerinizle ilgili son gelişmeler.
+          </p>
+        </div>
+        {error && (
+          <button
+            onClick={loadDashboardData}
+            className="flex items-center gap-2 px-4 py-2 text-sm text-[#09724a] bg-[#e1eee3] rounded-lg hover:bg-[#c8e0ca] transition-colors"
+          >
+            <RefreshCw className="w-4 h-4" />
+            Yenile
+          </button>
+        )}
       </div>
+
+      {/* Error Message */}
+      {error && (
+        <div className="p-4 bg-[#fef2f2] border border-[#fecaca] rounded-lg">
+          <p className="text-[#dc2626] text-sm">{error}</p>
+        </div>
+      )}
 
       {/* Stats Cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         {statCards.map((stat) => {
           const Icon = stat.icon;
-          const isPositive = stat.change >= 0;
 
           return (
             <Card key={stat.title} className="border-[#e5e7eb] dark:border-[#374151] dark:bg-[#1f2937]">
@@ -86,24 +189,11 @@ export default function DashboardPage() {
                     <p className="text-[24px] font-semibold text-[#0d0d12] dark:text-[#f9fafb]">
                       {stat.value}
                     </p>
-                    <div className="flex items-center gap-1 mt-2">
-                      {isPositive ? (
-                        <TrendingUp className="w-4 h-4 text-[#09724a] dark:text-[#00fb90]" />
-                      ) : (
-                        <TrendingDown className="w-4 h-4 text-[#df1c41]" />
-                      )}
-                      <span
-                        className={`text-[12px] font-medium ${
-                          isPositive ? "text-[#09724a] dark:text-[#00fb90]" : "text-[#df1c41]"
-                        }`}
-                      >
-                        {isPositive ? "+" : ""}
-                        {Math.abs(stat.change)}%
-                      </span>
-                      <span className="text-[12px] text-[#818898] dark:text-[#6b7280] ml-1">
-                        geçen aya göre
-                      </span>
-                    </div>
+                    {stat.subtitle && (
+                      <p className="text-[12px] text-[#818898] dark:text-[#6b7280] mt-1">
+                        {stat.subtitle}
+                      </p>
+                    )}
                   </div>
                   <div className={`w-12 h-12 rounded-xl ${stat.color} dark:bg-opacity-20 flex items-center justify-center`}>
                     <Icon className={`w-6 h-6 ${stat.iconColor}`} />
@@ -180,8 +270,8 @@ export default function DashboardPage() {
         {/* Best Visited Locations */}
         <Card className="border-[#e5e7eb] dark:border-[#374151] dark:bg-[#1f2937]">
           <CardHeader className="pb-4">
-            <CardTitle className="text-[16px] font-semibold text-[#0d0d0d12] dark:text-[#f9fafb]">
-              En Çok Ziyaret Edilen Lokasyonlar
+            <CardTitle className="text-[16px] font-semibold text-[#0d0d12] dark:text-[#f9fafb]">
+              En Çok Satış Yapılan Şehirler
             </CardTitle>
           </CardHeader>
           <CardContent>
