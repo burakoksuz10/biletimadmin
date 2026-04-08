@@ -4,7 +4,7 @@
 export { authService } from "./auth.service";
 export { organizationsService } from "./organizations.service";
 export { venuesService } from "./venues.service";
-export { stagesService } from "./stages.service";
+export { stagesService, type ApiStage, type CreateStageRequest, type UpdateStageRequest } from "./stages.service";
 export { seatTypesService } from "./seat-types.service";
 export { eventsService } from "./events.service";
 export { categoriesService } from "./categories.service";

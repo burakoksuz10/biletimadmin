@@ -100,6 +100,38 @@ export interface CreateVenueRequest {
 export interface UpdateVenueRequest extends Partial<CreateVenueRequest> {}
 
 // ============================================
+// Stage Types
+// ============================================
+
+export type SeatingType = "seated" | "standing" | "mixed";
+
+export interface Stage {
+  id: number;
+  venue_id: number;
+  name: string;
+  capacity: number;
+  seating_type: { value: SeatingType; label: string };
+  gate_info?: string | null;
+  seats_count: number;
+  venue?: {
+    id: number;
+    name: string;
+    city: string;
+  };
+  created_at: string;
+  updated_at: string;
+}
+
+export interface CreateStageRequest {
+  name: string;
+  capacity: number;
+  seating_type: SeatingType;
+  gate_info?: string | null;
+}
+
+export interface UpdateStageRequest extends Partial<CreateStageRequest> {}
+
+// ============================================
 // Event Types
 // ============================================
 
@@ -261,6 +293,13 @@ export interface VenueFilters {
   district?: string;
   search?: string;
   is_active?: boolean;
+  page?: number;
+  per_page?: number;
+}
+
+export interface StageFilters {
+  search?: string;
+  seating_type?: SeatingType;
   page?: number;
   per_page?: number;
 }

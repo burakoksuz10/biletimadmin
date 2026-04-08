@@ -8,7 +8,7 @@ import { cn } from "@/lib/utils";
 
 const buttonVariants = cva(
   // Base styles
-  "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-[52px] text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50",
+  "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-[52px] text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 dark:focus-visible:ring-offset-[#111827] disabled:pointer-events-none disabled:opacity-50",
   {
     variants: {
       variant: {
@@ -16,13 +16,13 @@ const buttonVariants = cva(
         primary: "bg-[#09724a] text-white hover:bg-[#066d41] focus-visible:ring-[#09724a]",
         
         // Secondary - White with border
-        secondary: "bg-white text-[#0d0d12] border border-[#e5e7eb] hover:bg-[#f7f7f7] hover:text-[#0d0d12]",
+        secondary: "bg-white dark:bg-[#1f2937] text-[#0d0d12] dark:text-[#f9fafb] border border-[#e5e7eb] dark:border-[#374151] hover:bg-[#f7f7f7] dark:hover:bg-[#374151]",
         
         // Outline - No background, border only
-        outline: "border border-[#e5e7eb] bg-transparent text-[#0d0d12] hover:bg-[#f7f7f7]",
+        outline: "border border-[#e5e7eb] dark:border-[#374151] bg-transparent text-[#0d0d12] dark:text-[#f9fafb] hover:bg-[#f7f7f7] dark:hover:bg-[#374151]",
         
         // Ghost - No background, no border
-        ghost: "text-[#0d0d12] hover:bg-[#f7f7f7]",
+        ghost: "text-[#0d0d12] dark:text-[#f9fafb] hover:bg-[#f7f7f7] dark:hover:bg-[#374151]",
         
         // Success - Green background for success actions
         success: "bg-[#09724a] text-white hover:bg-[#066d41]",
@@ -31,7 +31,7 @@ const buttonVariants = cva(
         danger: "bg-[#df1c41] text-white hover:bg-[#c4183a]",
         
         // Link - Text only, no background
-        link: "text-[#09724a] underline-offset-4 hover:underline",
+        link: "text-[#09724a] dark:text-[#00fb90] underline-offset-4 hover:underline",
       },
       size: {
         // Large - Login button (52px height)

@@ -2,17 +2,42 @@
 // Handles all stage (salon) related API operations
 
 import { apiClient } from "../client";
-import type {
-  Stage,
-  CreateStageRequest,
-  UpdateStageRequest,
-} from "../types/biletleme.types";
+import type { SeatingType } from "../types/biletleme.types";
+
+// API Stage types (raw backend response)
+export interface ApiStage {
+  id: number;
+  venue_id: number;
+  name: string;
+  capacity: number;
+  seating_type: SeatingType;
+  gate_info?: string | null;
+  stage_image?: string | null;
+  seating_plan?: unknown;
+  seats_count?: number;
+  venue?: {
+    id: number;
+    name: string;
+    city: string;
+  };
+  created_at: string;
+  updated_at: string;
+}
+
+export interface CreateStageRequest {
+  name: string;
+  capacity: number;
+  seating_type: SeatingType;
+  gate_info?: string | null;
+}
+
+export interface UpdateStageRequest extends Partial<CreateStageRequest> {}
 
 class StagesService {
   /**
    * Get stages by venue
    */
-  async getByVenue(venueId: number): Promise<Stage[]> {
+  async getByVenue(venueId: number): Promise<ApiStage[]> {
     const response = await apiClient.get<any>(`/venues/${venueId}/stages`);
 
     // Backend API format: { success: true, data: [...stages] }
@@ -32,7 +57,7 @@ class StagesService {
    * Get stage by ID
    * Route: GET /api/v1/venues/{venue}/stages/{stage}
    */
-  async getById(venueId: number, stageId: number): Promise<Stage> {
+  async getById(venueId: number, stageId: number): Promise<ApiStage> {
     const response = await apiClient.get<any>(`/venues/${venueId}/stages/${stageId}`);
 
     if (response.data?.data?.id) {
@@ -49,7 +74,7 @@ class StagesService {
   /**
    * Create new stage for a venue
    */
-  async create(venueId: number, data: CreateStageRequest): Promise<Stage> {
+  async create(venueId: number, data: CreateStageRequest): Promise<ApiStage> {
     try {
       const responseData = await apiClient.post<any>(`/venues/${venueId}/stages`, data);
 
@@ -74,7 +99,7 @@ class StagesService {
    * Update stage - uses PUT as per API documentation
    * Route: PUT /api/v1/venues/{venue}/stages/{stage}
    */
-  async update(venueId: number, stageId: number, data: UpdateStageRequest): Promise<Stage> {
+  async update(venueId: number, stageId: number, data: UpdateStageRequest): Promise<ApiStage> {
     try {
       const responseData = await apiClient.put<any>(`/venues/${venueId}/stages/${stageId}`, data);
 

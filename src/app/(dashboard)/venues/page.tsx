@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useMemo, useEffect } from "react";
+import Link from "next/link";
 import {
   Plus,
   Search,
@@ -9,6 +10,7 @@ import {
   MapPin,
   CheckCircle,
   TrendingUp,
+  DoorOpen,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -375,6 +377,16 @@ export default function VenuesPage() {
                       </td>
                       <td className="py-3 px-4">
                         <div className="flex items-center justify-end gap-2">
+                          <Link href={`/venues/${venue.id}/stages`}>
+                            <Button
+                              variant="primary"
+                              size="small"
+                              className="h-9 px-4 bg-[#09724a] hover:bg-[#0d8a52] text-white font-medium transition-colors"
+                            >
+                              <DoorOpen className="w-4 h-4 mr-1.5" />
+                              Salonlar
+                            </Button>
+                          </Link>
                           <Button
                             variant="ghost"
                             size="small"

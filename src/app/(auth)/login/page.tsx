@@ -58,7 +58,7 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen w-full bg-white flex flex-col lg:flex-row">
+    <div className="min-h-screen w-full bg-white dark:bg-[#111827] flex flex-col lg:flex-row">
       {/* Left Panel - Login Form */}
       <div className="w-full lg:w-1/2 flex items-center justify-center px-6 sm:px-12 lg:px-16 xl:px-24 py-12">
         <div className="w-full max-w-[420px]">
@@ -67,17 +67,17 @@ export default function LoginPage() {
             <div className="w-10 h-10 rounded-[9.85px] bg-[#09724a] flex items-center justify-center flex-shrink-0">
               <div className="w-6 h-6 rounded-full bg-[#e1eee3] border border-[#09724a]" />
             </div>
-            <span className="text-[24.6px] font-bold text-[#0d0d12] leading-[33.23px]">
+            <span className="text-[24.6px] font-bold text-[#0d0d12] dark:text-[#f9fafb] leading-[33.23px]">
               Biletim
             </span>
           </Link>
 
           {/* Header */}
           <div className="mb-8">
-            <h1 className="text-[28px] font-bold text-[#0d0d12] leading-[1.2] mb-2">
+            <h1 className="text-[28px] font-bold text-[#0d0d12] dark:text-[#f9fafb] leading-[1.2] mb-2">
               Tekrar Hoş Geldiniz
             </h1>
-            <p className="text-[16px] text-[#666d80] leading-[1.5]">
+            <p className="text-[16px] text-[#666d80] dark:text-[#9ca3af] leading-[1.5]">
               Sizi tekrar görmek güzel. Hesabınıza giriş yapın.
             </p>
           </div>
@@ -86,11 +86,11 @@ export default function LoginPage() {
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
             {/* Email Field */}
             <div>
-              <label className="block text-[14px] font-medium text-[#666d80] leading-[21px] mb-2">
+              <label className="block text-[14px] font-medium text-[#666d80] dark:text-[#9ca3af] leading-[21px] mb-2">
                 E-posta Adresi
               </label>
               <div className="relative">
-                <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-[#818898] pointer-events-none" />
+                <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-[#818898] dark:text-[#9ca3af] pointer-events-none" />
                 <Input
                   {...register("email")}
                   type="email"
@@ -107,11 +107,11 @@ export default function LoginPage() {
 
             {/* Password Field */}
             <div>
-              <label className="block text-[14px] font-medium text-[#666d80] leading-[21px] mb-2">
+              <label className="block text-[14px] font-medium text-[#666d80] dark:text-[#9ca3af] leading-[21px] mb-2">
                 Şifre
               </label>
               <div className="relative">
-                <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-[#818898] pointer-events-none" />
+                <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-[#818898] dark:text-[#9ca3af] pointer-events-none" />
                 <Input
                   {...register("password")}
                   type={showPassword ? "text" : "password"}
@@ -123,7 +123,7 @@ export default function LoginPage() {
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-[#818898] hover:text-[#0d0d12] transition-colors focus:outline-none"
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-[#818898] dark:text-[#9ca3af] hover:text-[#0d0d12] dark:hover:text-[#f9fafb] transition-colors focus:outline-none"
                   tabIndex={-1}
                 >
                   {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
@@ -151,14 +151,14 @@ export default function LoginPage() {
                 />
                 <label
                   htmlFor="remember"
-                  className="text-[14px] text-[#0d0d12] leading-[21px] cursor-pointer select-none"
+                  className="text-[14px] text-[#0d0d12] dark:text-[#f9fafb] leading-[21px] cursor-pointer select-none"
                 >
                   Beni hatırla
                 </label>
               </div>
               <Link
                 href="/forgot-password"
-                className="text-[14px] font-medium text-[#09724a] leading-[21px] hover:text-[#07653f] transition-colors"
+                className="text-[14px] font-medium text-[#09724a] dark:text-[#00fb90] leading-[21px] hover:text-[#07653f] dark:hover:text-[#00d976] transition-colors"
               >
                 Şifremi Unuttum?
               </Link>
@@ -176,11 +176,11 @@ export default function LoginPage() {
             </Button>
 
             {/* Register Link */}
-            <p className="text-center text-[16px] text-[#666d80] leading-[24px] pt-2">
+            <p className="text-center text-[16px] text-[#666d80] dark:text-[#9ca3af] leading-[24px] pt-2">
               Hesabınız yok mu?{" "}
               <Link
                 href="/register"
-                className="font-semibold text-[#09724a] hover:text-[#07653f] transition-colors"
+                className="font-semibold text-[#09724a] dark:text-[#00fb90] hover:text-[#07653f] dark:hover:text-[#00d976] transition-colors"
               >
                 Kayıt Ol
               </Link>

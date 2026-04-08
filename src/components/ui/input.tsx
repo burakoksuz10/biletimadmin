@@ -16,9 +16,9 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
         type={type}
         className={cn(
           // Base styles from Figma
-          "flex h-[52px] w-full rounded-xl bg-white/30 border-0.5 border-white text-[#818898] text-base",
-          "placeholder:text-[#818898]",
-          "focus:outline-none focus:ring-2 focus:ring-[#09724a] focus:ring-offset-2",
+          "flex h-[52px] w-full rounded-xl bg-[#f7f7f7] dark:bg-[#374151] border border-[#e5e7eb] dark:border-[#374151] text-[#0d0d12] dark:text-[#f9fafb] text-base",
+          "placeholder:text-[#818898] dark:placeholder:text-[#6b7280]",
+          "focus:outline-none focus:ring-2 focus:ring-[#09724a] focus:ring-offset-2 dark:focus:ring-offset-[#111827]",
           "disabled:cursor-not-allowed disabled:opacity-50",
           // Error state
           error && "ring-2 ring-[#df1c41]",
