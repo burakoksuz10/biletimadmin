@@ -58,39 +58,39 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen w-full bg-white dark:bg-[#111827] flex flex-col lg:flex-row">
+    <div className="min-h-screen w-full flex flex-col lg:flex-row">
       {/* Left Panel - Login Form */}
       <div className="w-full lg:w-1/2 flex items-center justify-center px-6 sm:px-12 lg:px-16 xl:px-24 py-12">
         <div className="w-full max-w-[420px]">
           {/* Logo */}
           <Link href="/" className="flex items-center gap-3 mb-10">
-            <div className="w-10 h-10 rounded-[9.85px] bg-[#09724a] flex items-center justify-center flex-shrink-0">
-              <div className="w-6 h-6 rounded-full bg-[#e1eee3] border border-[#09724a]" />
+            <div className="w-10 h-10 rounded-xl bg-gradient-primary flex items-center justify-center flex-shrink-0 shadow-glow">
+              <div className="w-5 h-5 rounded-full bg-white/90" />
             </div>
-            <span className="text-[24.6px] font-bold text-[#0d0d12] dark:text-[#f9fafb] leading-[33.23px]">
+            <span className="text-2xl font-semibold text-on-surface">
               Biletim
             </span>
           </Link>
 
           {/* Header */}
           <div className="mb-8">
-            <h1 className="text-[28px] font-bold text-[#0d0d12] dark:text-[#f9fafb] leading-[1.2] mb-2">
+            <h1 className="display-sm text-on-surface mb-3">
               Tekrar Hoş Geldiniz
             </h1>
-            <p className="text-[16px] text-[#666d80] dark:text-[#9ca3af] leading-[1.5]">
+            <p className="body-lg text-on-surface-variant">
               Sizi tekrar görmek güzel. Hesabınıza giriş yapın.
             </p>
           </div>
 
           {/* Form */}
-          <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
+          <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
             {/* Email Field */}
             <div>
-              <label className="block text-[14px] font-medium text-[#666d80] dark:text-[#9ca3af] leading-[21px] mb-2">
+              <label className="block label-md text-on-surface-variant mb-2">
                 E-posta Adresi
               </label>
               <div className="relative">
-                <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-[#818898] dark:text-[#9ca3af] pointer-events-none" />
+                <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-on-surface-variant/50 pointer-events-none" />
                 <Input
                   {...register("email")}
                   type="email"
@@ -101,17 +101,17 @@ export default function LoginPage() {
                 />
               </div>
               {errors.email && (
-                <p className="text-[13px] text-[#df1c41] mt-1.5">{errors.email.message}</p>
+                <p className="body-sm text-danger mt-1.5">{errors.email.message}</p>
               )}
             </div>
 
             {/* Password Field */}
             <div>
-              <label className="block text-[14px] font-medium text-[#666d80] dark:text-[#9ca3af] leading-[21px] mb-2">
+              <label className="block label-md text-on-surface-variant mb-2">
                 Şifre
               </label>
               <div className="relative">
-                <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-[#818898] dark:text-[#9ca3af] pointer-events-none" />
+                <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-on-surface-variant/50 pointer-events-none" />
                 <Input
                   {...register("password")}
                   type={showPassword ? "text" : "password"}
@@ -123,21 +123,21 @@ export default function LoginPage() {
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-[#818898] dark:text-[#9ca3af] hover:text-[#0d0d12] dark:hover:text-[#f9fafb] transition-colors focus:outline-none"
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-on-surface-variant hover:text-on-surface transition-colors focus:outline-none"
                   tabIndex={-1}
                 >
                   {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
                 </button>
               </div>
               {errors.password && (
-                <p className="text-[13px] text-[#df1c41] mt-1.5">{errors.password.message}</p>
+                <p className="body-sm text-danger mt-1.5">{errors.password.message}</p>
               )}
             </div>
 
             {/* Error Message */}
             {errorMessage && (
-              <div className="p-3.5 bg-[#fff0f3] border border-[#df1c41] rounded-lg">
-                <p className="text-[13px] text-[#df1c41] text-center">{errorMessage}</p>
+              <div className="p-4 bg-danger/10 border border-danger/20 rounded-xl">
+                <p className="body-sm text-danger text-center">{errorMessage}</p>
               </div>
             )}
 
@@ -151,14 +151,14 @@ export default function LoginPage() {
                 />
                 <label
                   htmlFor="remember"
-                  className="text-[14px] text-[#0d0d12] dark:text-[#f9fafb] leading-[21px] cursor-pointer select-none"
+                  className="body-md text-on-surface leading-relaxed cursor-pointer select-none"
                 >
                   Beni hatırla
                 </label>
               </div>
               <Link
                 href="/forgot-password"
-                className="text-[14px] font-medium text-[#09724a] dark:text-[#00fb90] leading-[21px] hover:text-[#07653f] dark:hover:text-[#00d976] transition-colors"
+                className="body-md text-primary hover:text-primary-dark transition-colors"
               >
                 Şifremi Unuttum?
               </Link>
@@ -169,18 +169,18 @@ export default function LoginPage() {
               type="submit"
               variant="primary"
               size="default"
-              className="w-full mt-6"
+              className="w-full"
               disabled={isLoading}
             >
               {isLoading ? "Giriş yapılıyor..." : "Giriş Yap"}
             </Button>
 
             {/* Register Link */}
-            <p className="text-center text-[16px] text-[#666d80] dark:text-[#9ca3af] leading-[24px] pt-2">
+            <p className="text-center body-lg text-on-surface-variant pt-2">
               Hesabınız yok mu?{" "}
               <Link
                 href="/register"
-                className="font-semibold text-[#09724a] dark:text-[#00fb90] hover:text-[#07653f] dark:hover:text-[#00d976] transition-colors"
+                className="font-semibold text-primary hover:text-primary-dark transition-colors"
               >
                 Kayıt Ol
               </Link>
@@ -190,12 +190,12 @@ export default function LoginPage() {
       </div>
 
       {/* Right Panel - Decorative - Hidden on mobile */}
-      <div className="hidden lg:flex w-1/2 bg-[#09724a] items-center justify-center px-8 xl:px-16 py-12 relative overflow-hidden">
-        {/* Subtle gradient overlay */}
-        <div className="absolute inset-0 bg-gradient-to-br from-[#09724a] to-[#0d5c3e] opacity-100" />
-        
+      <div className="hidden lg:flex w-1/2 items-center justify-center px-8 xl:px-16 py-12 relative overflow-hidden bg-gradient-primary">
+        {/* Mesh gradient overlay */}
+        <div className="absolute inset-0 bg-mesh-gradient mesh-animated opacity-30" />
+
         {/* Subtle pattern overlay */}
-        <div className="absolute inset-0 opacity-5">
+        <div className="absolute inset-0 opacity-10">
           <div className="absolute w-[600px] h-[600px] rounded-full bg-white/20 -translate-x-1/2 -translate-y-1/2"
                style={{ left: '20%', top: '10%' }} />
           <div className="absolute w-[400px] h-[400px] rounded-full bg-white/10 translate-x-1/2 translate-y-1/2"
@@ -205,52 +205,33 @@ export default function LoginPage() {
         {/* Content */}
         <div className="relative z-10 w-full max-w-[500px] text-center">
           {/* Logo */}
-          <div className="w-[82px] h-[82px] rounded-[9.85px] bg-white/10 backdrop-blur-sm flex items-center justify-center mb-8 mx-auto">
-            <div className="w-12 h-12 rounded-full bg-[#e1eee3] border border-[#09724a]" />
+          <div className="w-20 h-20 rounded-2xl bg-white/10 backdrop-blur-sm flex items-center justify-center mb-8 mx-auto">
+            <div className="w-12 h-12 rounded-full bg-white/20" />
           </div>
 
           {/* Text Content */}
-          <h2 className="text-[28px] lg:text-[32px] font-semibold text-white leading-[1.3] tracking-[-0.96px] mb-4">
+          <h2 className="display-md text-white leading-tight mb-4">
             Etkinlik Yönetimi ve Takım İşbirliği İçin Optimize Edilmiş CRM
           </h2>
-          <p className="text-[15px] lg:text-[16px] text-white/80 leading-[1.6] mb-8">
+          <p className="body-lg text-white/80 leading-relaxed mb-8">
             Biletim ile çalışma alanınızı kurun, görev atayın ve ekibinizin verimliliğini ilk günden itibaren artıran araçlara erişin.
           </p>
 
           {/* Feature List */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-left">
-            <div className="flex items-start gap-3">
-              <div className="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center flex-shrink-0">
-                <svg className="w-4 h-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                </svg>
+            {[
+              { icon: "✓", text: "Kolay Etkinlik Yönetimi" },
+              { icon: "✓", text: "Gelişmiş Raporlama" },
+              { icon: "✓", text: "Güvenli Ödeme" },
+              { icon: "✓", text: "7/24 Destek" },
+            ].map((feature, index) => (
+              <div key={index} className="flex items-start gap-3">
+                <div className="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center flex-shrink-0">
+                  <span className="text-white text-sm">{feature.icon}</span>
+                </div>
+                <span className="body-md text-white/90">{feature.text}</span>
               </div>
-              <span className="text-[14px] text-white/90">Kolay Etkinlik Yönetimi</span>
-            </div>
-            <div className="flex items-start gap-3">
-              <div className="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center flex-shrink-0">
-                <svg className="w-4 h-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                </svg>
-              </div>
-              <span className="text-[14px] text-white/90">Gelişmiş Raporlama</span>
-            </div>
-            <div className="flex items-start gap-3">
-              <div className="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center flex-shrink-0">
-                <svg className="w-4 h-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                </svg>
-              </div>
-              <span className="text-[14px] text-white/90">Güvenli Ödeme</span>
-            </div>
-            <div className="flex items-start gap-3">
-              <div className="w-8 h-8 h-8 rounded-full bg-white/10 flex items-center justify-center flex-shrink-0">
-                <svg className="w-4 h-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                </svg>
-              </div>
-              <span className="text-[14px] text-white/90">7/24 Destek</span>
-            </div>
+            ))}
           </div>
         </div>
       </div>

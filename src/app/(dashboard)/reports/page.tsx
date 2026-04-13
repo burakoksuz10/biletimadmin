@@ -48,11 +48,11 @@ const monthlyTicketData = [
 ];
 
 const categoryData = [
-  { name: "Müzik", value: 35, color: "#09724a" },
-  { name: "Teknoloji", value: 25, color: "#0177fb" },
-  { name: "Sanat", value: 18, color: "#d39c3d" },
-  { name: "Spor", value: 12, color: "#df1c41" },
-  { name: "Diğer", value: 10, color: "#818898" },
+  { name: "Müzik", value: 35, color: "#00c853" },
+  { name: "Teknoloji", value: 25, color: "#42a5f5" },
+  { name: "Sanat", value: 18, color: "#ffa726" },
+  { name: "Spor", value: 12, color: "#ef5350" },
+  { name: "Diğer", value: 10, color: "#494454" },
 ];
 
 const userGrowthData = [
@@ -86,28 +86,30 @@ export default function ReportsPage() {
       {/* Page Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-[24px] font-semibold text-[#0d0d12]">Raporlar</h1>
-          <p className="text-[14px] text-[#666d80] mt-1">
+          <h1 className="headline-lg text-on-surface">
+            Raporlar
+          </h1>
+          <p className="body-md text-on-surface-variant mt-1">
             Platformunuz için kapsamlı analizler ve raporlar
           </p>
         </div>
         <div className="flex items-center gap-3">
-          <div className="flex items-center gap-1 bg-[#f7f7f7] rounded-lg p-1">
+          <div className="flex items-center gap-1 bg-surface-low rounded-xl p-1">
             {(["weekly", "monthly", "yearly"] as const).map((range) => (
               <button
                 key={range}
                 onClick={() => setDateRange(range)}
-                className={`px-3 py-1.5 rounded-md text-[14px] font-medium transition-colors ${
+                className={`px-4 py-2 rounded-lg body-sm font-medium transition-colors ${
                   dateRange === range
-                    ? "bg-white text-[#0d0d12] shadow-sm"
-                    : "text-[#666d80] hover:text-[#0d0d12]"
+                    ? "bg-gradient-primary text-white shadow-glow"
+                    : "text-on-surface-variant hover:text-on-surface hover:bg-surface-low/80"
                 }`}
               >
-                {range.charAt(0).toUpperCase() + range.slice(1)}
+                {range === "weekly" ? "Haftalık" : range === "monthly" ? "Aylık" : "Yıllık"}
               </button>
             ))}
           </div>
-          <Button variant="secondary">
+          <Button variant="secondary" size="medium">
             <Download className="w-4 h-4 mr-2" />
             Dışa Aktar
           </Button>
@@ -115,75 +117,70 @@ export default function ReportsPage() {
       </div>
 
       {/* Summary Stats */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-        <Card className="border-[#e5e7eb]">
-          <CardContent className="p-6">
-            <div className="flex items-center gap-4">
-              <div className="w-12 h-12 rounded-xl bg-[#e1eee3] flex items-center justify-center">
-                <DollarSign className="w-6 h-6 text-[#09724a]" />
-              </div>
-              <div>
-                <p className="text-[12px] text-[#666d80]">Toplam Gelir</p>
-                <p className="text-[20px] font-semibold text-[#0d0d12]">
-                  {formatCurrency(985000)}
-                </p>
-              </div>
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-5">
+        <Card variant="stats" padding="md">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="label-sm text-on-surface-variant mb-3 uppercase tracking-wide font-semibold">Toplam Gelir</p>
+              <p className="display-lg text-on-surface leading-none">
+                {formatCurrency(985000)}
+              </p>
             </div>
-          </CardContent>
+            <div className="w-14 h-14 rounded-2xl bg-success/10 flex items-center justify-center shadow-sm">
+              <DollarSign className="w-7 h-7 text-success" />
+            </div>
+          </div>
         </Card>
-        <Card className="border-[#e5e7eb]">
-          <CardContent className="p-6">
-            <div className="flex items-center gap-4">
-              <div className="w-12 h-12 rounded-xl bg-[#e8f4fd] flex items-center justify-center">
-                <Ticket className="w-6 h-6 text-[#0177fb]" />
-              </div>
-              <div>
-                <p className="text-[12px] text-[#666d80]">Satılan Biletler</p>
-                <p className="text-[20px] font-semibold text-[#0d0d12]">
-                  30,000
-                </p>
-              </div>
+
+        <Card variant="stats" padding="md">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="label-sm text-on-surface-variant mb-3 uppercase tracking-wide font-semibold">Satılan Biletler</p>
+              <p className="display-lg text-on-surface leading-none">
+                30,000
+              </p>
             </div>
-          </CardContent>
+            <div className="w-14 h-14 rounded-2xl bg-primary/10 flex items-center justify-center shadow-sm">
+              <Ticket className="w-7 h-7 text-primary" />
+            </div>
+          </div>
         </Card>
-        <Card className="border-[#e5e7eb]">
-          <CardContent className="p-6">
-            <div className="flex items-center gap-4">
-              <div className="w-12 h-12 rounded-xl bg-[#fff8f0] flex items-center justify-center">
-                <Users className="w-6 h-6 text-[#d39c3d]" />
-              </div>
-              <div>
-                <p className="text-[12px] text-[#666d80]">Toplam Kullanıcı</p>
-                <p className="text-[20px] font-semibold text-[#0d0d12]">
-                  2,100
-                </p>
-              </div>
+
+        <Card variant="stats" padding="md">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="label-sm text-on-surface-variant mb-3 uppercase tracking-wide font-semibold">Toplam Kullanıcı</p>
+              <p className="display-lg text-on-surface leading-none">
+                2,100
+              </p>
             </div>
-          </CardContent>
+            <div className="w-14 h-14 rounded-2xl bg-info/10 flex items-center justify-center shadow-sm">
+              <Users className="w-7 h-7 text-info" />
+            </div>
+          </div>
         </Card>
-        <Card className="border-[#e5e7eb]">
-          <CardContent className="p-6">
-            <div className="flex items-center gap-4">
-              <div className="w-12 h-12 rounded-xl bg-[#fff0f3] flex items-center justify-center">
-                <FileText className="w-6 h-6 text-[#df1c41]" />
-              </div>
-              <div>
-                <p className="text-[12px] text-[#666d80]">Toplam Etkinlik</p>
-                <p className="text-[20px] font-semibold text-[#0d0d12]">
-                  156
-                </p>
-              </div>
+
+        <Card variant="stats" padding="md">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="label-sm text-on-surface-variant mb-3 uppercase tracking-wide font-semibold">Toplam Etkinlik</p>
+              <p className="display-lg text-on-surface leading-none">
+                156
+              </p>
             </div>
-          </CardContent>
+            <div className="w-14 h-14 rounded-2xl bg-warning/10 flex items-center justify-center shadow-sm">
+              <FileText className="w-7 h-7 text-warning" />
+            </div>
+          </div>
         </Card>
       </div>
 
       {/* Revenue & Ticket Sales Charts */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
         {/* Revenue Chart */}
-        <Card className="border-[#e5e7eb]">
+        <Card variant="default">
           <CardHeader className="pb-4">
-            <CardTitle className="text-[16px] font-semibold text-[#0d0d12]">
+            <CardTitle className="title-lg font-semibold text-on-surface">
               Gelir Trendi
             </CardTitle>
           </CardHeader>
@@ -192,28 +189,29 @@ export default function ReportsPage() {
               <AreaChart data={mockSalesData}>
                 <defs>
                   <linearGradient id="colorRevenueReport" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%" stopColor="#09724a" stopOpacity={0.3} />
-                    <stop offset="95%" stopColor="#09724a" stopOpacity={0} />
+                    <stop offset="5%" stopColor="#6b38d4" stopOpacity={0.3} />
+                    <stop offset="95%" stopColor="#6b38d4" stopOpacity={0} />
                   </linearGradient>
                 </defs>
-                <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
+                <CartesianGrid strokeDasharray="3 3" stroke="rgba(203, 195, 215, 0.3)" />
                 <XAxis
                   dataKey="month"
                   axisLine={false}
                   tickLine={false}
-                  tick={{ fill: "#818898", fontSize: 12 }}
+                  tick={{ fill: "#494454", fontSize: 12 }}
                 />
                 <YAxis
                   axisLine={false}
                   tickLine={false}
-                  tick={{ fill: "#818898", fontSize: 12 }}
+                  tick={{ fill: "#494454", fontSize: 12 }}
                   tickFormatter={(value) => `$${(value / 1000).toFixed(0)}k`}
                 />
                 <Tooltip
                   contentStyle={{
-                    backgroundColor: "#fff",
-                    border: "1px solid #e5e7eb",
-                    borderRadius: "8px",
+                    backgroundColor: "rgba(255, 255, 255, 0.95)",
+                    border: "1px solid rgba(203, 195, 215, 0.3)",
+                    borderRadius: "12px",
+                    backdropFilter: "blur(20px)",
                   }}
                   formatter={(value) => [
                     formatCurrency(Number(value)),
@@ -223,7 +221,7 @@ export default function ReportsPage() {
                 <Area
                   type="monotone"
                   dataKey="income"
-                  stroke="#09724a"
+                  stroke="#6b38d4"
                   strokeWidth={2}
                   fill="url(#colorRevenueReport)"
                 />
@@ -233,45 +231,46 @@ export default function ReportsPage() {
         </Card>
 
         {/* Ticket Sales Chart */}
-        <Card className="border-[#e5e7eb]">
+        <Card variant="default">
           <CardHeader className="pb-4">
-            <CardTitle className="text-[16px] font-semibold text-[#0d0d12]">
+            <CardTitle className="title-lg font-semibold text-on-surface">
               Bilet Satışları vs İadeler
             </CardTitle>
           </CardHeader>
           <CardContent>
             <ResponsiveContainer width="100%" height={300}>
               <BarChart data={monthlyTicketData}>
-                <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
+                <CartesianGrid strokeDasharray="3 3" stroke="rgba(203, 195, 215, 0.3)" />
                 <XAxis
                   dataKey="month"
                   axisLine={false}
                   tickLine={false}
-                  tick={{ fill: "#818898", fontSize: 12 }}
+                  tick={{ fill: "#494454", fontSize: 12 }}
                 />
                 <YAxis
                   axisLine={false}
                   tickLine={false}
-                  tick={{ fill: "#818898", fontSize: 12 }}
+                  tick={{ fill: "#494454", fontSize: 12 }}
                 />
                 <Tooltip
                   contentStyle={{
-                    backgroundColor: "#fff",
-                    border: "1px solid #e5e7eb",
-                    borderRadius: "8px",
+                    backgroundColor: "rgba(255, 255, 255, 0.95)",
+                    border: "1px solid rgba(203, 195, 215, 0.3)",
+                    borderRadius: "12px",
+                    backdropFilter: "blur(20px)",
                   }}
                 />
                 <Legend />
                 <Bar
                   dataKey="sold"
                   name="Satılan"
-                  fill="#09724a"
+                  fill="#00c853"
                   radius={[4, 4, 0, 0]}
                 />
                 <Bar
                   dataKey="refunded"
                   name="İade Edilen"
-                  fill="#df1c41"
+                  fill="#ef5350"
                   radius={[4, 4, 0, 0]}
                 />
               </BarChart>
@@ -281,11 +280,11 @@ export default function ReportsPage() {
       </div>
 
       {/* Category & User Growth */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
         {/* Event Categories */}
-        <Card className="border-[#e5e7eb]">
+        <Card variant="default">
           <CardHeader className="pb-4">
-            <CardTitle className="text-[16px] font-semibold text-[#0d0d12]">
+            <CardTitle className="title-lg font-semibold text-on-surface">
               Etkinlik Kategorileri
             </CardTitle>
           </CardHeader>
@@ -305,9 +304,10 @@ export default function ReportsPage() {
                 </Pie>
                 <Tooltip
                   contentStyle={{
-                    backgroundColor: "#fff",
-                    border: "1px solid #e5e7eb",
-                    borderRadius: "8px",
+                    backgroundColor: "rgba(255, 255, 255, 0.95)",
+                    border: "1px solid rgba(203, 195, 215, 0.3)",
+                    borderRadius: "12px",
+                    backdropFilter: "blur(20px)",
                   }}
                   formatter={(value) => [`${value}%`, "Oran"]}
                 />
@@ -320,7 +320,7 @@ export default function ReportsPage() {
                     className="w-3 h-3 rounded-full"
                     style={{ backgroundColor: cat.color }}
                   />
-                  <span className="text-[12px] text-[#666d80]">
+                  <span className="label-md text-on-surface-variant">
                     {cat.name} ({cat.value}%)
                   </span>
                 </div>
@@ -330,9 +330,9 @@ export default function ReportsPage() {
         </Card>
 
         {/* User Growth */}
-        <Card className="lg:col-span-2 border-[#e5e7eb]">
+        <Card variant="default" className="lg:col-span-2">
           <CardHeader className="pb-4">
-            <CardTitle className="text-[16px] font-semibold text-[#0d0d12]">
+            <CardTitle className="title-lg font-semibold text-on-surface">
               Kullanıcı Artışı
             </CardTitle>
           </CardHeader>
@@ -341,34 +341,35 @@ export default function ReportsPage() {
               <AreaChart data={userGrowthData}>
                 <defs>
                   <linearGradient id="colorUsers" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%" stopColor="#0177fb" stopOpacity={0.3} />
-                    <stop offset="95%" stopColor="#0177fb" stopOpacity={0} />
+                    <stop offset="5%" stopColor="#42a5f5" stopOpacity={0.3} />
+                    <stop offset="95%" stopColor="#42a5f5" stopOpacity={0} />
                   </linearGradient>
                 </defs>
-                <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
+                <CartesianGrid strokeDasharray="3 3" stroke="rgba(203, 195, 215, 0.3)" />
                 <XAxis
                   dataKey="month"
                   axisLine={false}
                   tickLine={false}
-                  tick={{ fill: "#818898", fontSize: 12 }}
+                  tick={{ fill: "#494454", fontSize: 12 }}
                 />
                 <YAxis
                   axisLine={false}
                   tickLine={false}
-                  tick={{ fill: "#818898", fontSize: 12 }}
+                  tick={{ fill: "#494454", fontSize: 12 }}
                 />
                 <Tooltip
                   contentStyle={{
-                    backgroundColor: "#fff",
-                    border: "1px solid #e5e7eb",
-                    borderRadius: "8px",
+                    backgroundColor: "rgba(255, 255, 255, 0.95)",
+                    border: "1px solid rgba(203, 195, 215, 0.3)",
+                    borderRadius: "12px",
+                    backdropFilter: "blur(20px)",
                   }}
                   formatter={(value) => [Number(value).toLocaleString(), "Kullanıcı"]}
                 />
                 <Area
                   type="monotone"
                   dataKey="users"
-                  stroke="#0177fb"
+                  stroke="#42a5f5"
                   strokeWidth={2}
                   fill="url(#colorUsers)"
                 />
@@ -379,9 +380,9 @@ export default function ReportsPage() {
       </div>
 
       {/* Top Events */}
-      <Card className="border-[#e5e7eb]">
+      <Card variant="default">
         <CardHeader className="pb-4">
-          <CardTitle className="text-[16px] font-semibold text-[#0d0d12]">
+          <CardTitle className="title-lg font-semibold text-on-surface">
             En Çok Performans Gösteren Etkinlikler
           </CardTitle>
         </CardHeader>
@@ -389,17 +390,17 @@ export default function ReportsPage() {
           <div className="overflow-x-auto">
             <table className="w-full">
               <thead>
-                <tr className="border-b border-[#e5e7eb]">
-                  <th className="text-left py-3 px-4 text-[12px] font-medium text-[#818898] uppercase tracking-wider">
+                <tr className="border-b border-outline/30 bg-surface-low/50">
+                  <th className="text-left py-4 px-6 label-sm font-semibold text-on-surface-variant uppercase tracking-wide">
                     #
                   </th>
-                  <th className="text-left py-3 px-4 text-[12px] font-medium text-[#818898] uppercase tracking-wider">
+                  <th className="text-left py-4 px-6 label-sm font-semibold text-on-surface-variant uppercase tracking-wide">
                     Etkinlik Adı
                   </th>
-                  <th className="text-left py-3 px-4 text-[12px] font-medium text-[#818898] uppercase tracking-wider">
+                  <th className="text-left py-4 px-6 label-sm font-semibold text-on-surface-variant uppercase tracking-wide">
                     Satılan Biletler
                   </th>
-                  <th className="text-left py-3 px-4 text-[12px] font-medium text-[#818898] uppercase tracking-wider">
+                  <th className="text-left py-4 px-6 label-sm font-semibold text-on-surface-variant uppercase tracking-wide">
                     Gelir
                   </th>
                 </tr>
@@ -408,20 +409,20 @@ export default function ReportsPage() {
                 {topEvents.map((event, index) => (
                   <tr
                     key={index}
-                    className="border-b border-[#e5e7eb] hover:bg-[#f7f7f7] transition-colors"
+                    className="border-b border-outline/30 last:border-0 hover:bg-surface-low/30 transition-colors"
                   >
-                    <td className="py-3 px-4">
-                      <div className="w-8 h-8 rounded-full bg-[#e1eee3] flex items-center justify-center text-[14px] font-semibold text-[#09724a]">
+                    <td className="py-4 px-6">
+                      <div className="w-8 h-8 rounded-full bg-success/10 flex items-center justify-center body-sm font-semibold text-success">
                         {index + 1}
                       </div>
                     </td>
-                    <td className="py-3 px-4 text-[14px] font-medium text-[#0d0d12]">
+                    <td className="py-4 px-6 body-md font-medium text-on-surface">
                       {event.name}
                     </td>
-                    <td className="py-3 px-4 text-[14px] text-[#666d80]">
+                    <td className="py-4 px-6 body-md text-on-surface-variant">
                       {event.tickets.toLocaleString()}
                     </td>
-                    <td className="py-3 px-4 text-[14px] font-semibold text-[#0d0d12]">
+                    <td className="py-4 px-6 body-md font-semibold text-on-surface">
                       {formatCurrency(event.revenue)}
                     </td>
                   </tr>

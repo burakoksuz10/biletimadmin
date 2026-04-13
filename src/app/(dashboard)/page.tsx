@@ -1,54 +1,192 @@
 "use client";
 
-export const dynamic = 'force-dynamic';
-
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback, useMemo, memo, useTransition } from "react";
+import { useSearchParams } from "next/navigation";
+import dynamic from "next/dynamic";
 import {
-  TrendingUp,
-  TrendingDown,
-  DollarSign,
-  Ticket,
   RefreshCw,
-  CreditCard,
   Calendar,
   MapPin,
   Users,
-  Building2,
+  DollarSign,
   Loader2,
 } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { formatCurrency, formatDate } from "@/lib/utils";
-import { dashboardService } from "@/lib/api/services";
+import { DashboardSkeleton } from "@/components/dashboard/skeleton-card";
 import type { SalesDataPoint, BestVisitedLocation, RecentPayout } from "@/types/dashboard.types";
-import { AreaChart, Area, ResponsiveContainer, XAxis, YAxis, Tooltip } from "recharts";
 
-// Mock data for features not yet available in API
-const mockSalesData: SalesDataPoint[] = [
+// Dynamic import for chart components (code splitting, no SSR)
+const ChartComponents = dynamic(
+  () => import("@/components/dashboard/revenue-chart").then(mod => ({ default: mod.RevenueChart })),
+  {
+    ssr: false,
+    loading: () => (
+      <div className="w-full h-64 flex items-center justify-center bg-surface-low rounded-xl animate-pulse" />
+    ),
+  }
+);
+
+// Memoized Stat Card Component
+const StatCard = memo(function StatCard({
+  title,
+  value,
+  subtitle,
+  icon: Icon,
+  iconColor,
+}: {
+  title: string;
+  value: string;
+  subtitle?: string;
+  icon: React.ComponentType<{ className?: string }>;
+  iconColor: string;
+}) {
+  return (
+    <Card variant="stats" padding="md">
+      <div className="flex items-center justify-between">
+        <div className="flex-1">
+          <p className="label-sm text-on-surface-variant mb-3 uppercase tracking-wide font-semibold">
+            {title}
+          </p>
+          <p className="display-lg text-on-surface leading-none">
+            {value}
+          </p>
+          {subtitle && (
+            <p className="body-sm text-on-surface-variant mt-1">
+              {subtitle}
+            </p>
+          )}
+        </div>
+        <div className="w-14 h-14 rounded-2xl bg-primary/10 flex items-center justify-center shadow-sm">
+          <Icon className={`w-7 h-7 ${iconColor}`} />
+        </div>
+      </div>
+    </Card>
+  );
+});
+
+// Memoized Location Item Component
+const LocationItem = memo(function LocationItem({
+  location,
+}: {
+  location: BestVisitedLocation;
+}) {
+  return (
+    <div className="flex items-center justify-between py-2">
+      <div className="flex items-center gap-3">
+        <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center">
+          <MapPin className="w-4 h-4 text-primary" />
+        </div>
+        <div>
+          <p className="body-md text-on-surface">{location.country}</p>
+          <p className="body-sm text-on-surface-variant">
+            ${location.amount.toLocaleString()}
+          </p>
+        </div>
+      </div>
+      <Badge variant="success">{location.percentage}%</Badge>
+    </div>
+  );
+});
+
+// Memoized Payout Item Component
+const PayoutItem = memo(function PayoutItem({
+  payout,
+}: {
+  payout: RecentPayout;
+}) {
+  const statusLabel = payout.status === "approved" ? "Onaylandı" : "Bekliyor";
+  const badgeVariant = payout.status === "approved" ? "success" : "warning" as const;
+
+  return (
+    <div className="flex items-center justify-between p-3 rounded-lg bg-surface-low/50">
+      <div className="flex items-center gap-3">
+        <div className="w-10 h-10 rounded-full bg-gradient-primary text-on-primary flex items-center justify-center font-semibold text-sm">
+          {payout.organizer.charAt(0)}
+        </div>
+        <div>
+          <p className="body-md text-on-surface font-medium">{payout.organizer}</p>
+          <p className="body-sm text-on-surface-variant">
+            ${payout.amount.toLocaleString()} • {new Date(payout.requestedOn).toLocaleDateString('tr-TR')}
+          </p>
+        </div>
+      </div>
+      <Badge variant={badgeVariant}>
+        {statusLabel}
+      </Badge>
+    </div>
+  );
+});
+
+// Inline components to avoid module loading overhead
+const BestVisitedLocations = memo(function BestVisitedLocations({
+  locations,
+}: {
+  locations: BestVisitedLocation[];
+}) {
+  return (
+    <Card variant="default" padding="lg">
+      <CardHeader>
+        <CardTitle>En Çok Ziyaret Edilen Mekanlar</CardTitle>
+      </CardHeader>
+      <CardContent>
+        <div className="space-y-1">
+          {locations.map((location, index) => (
+            <LocationItem key={`${location.country}-${index}`} location={location} />
+          ))}
+        </div>
+      </CardContent>
+    </Card>
+  );
+});
+
+const RecentPayouts = memo(function RecentPayouts({
+  payouts,
+}: {
+  payouts: RecentPayout[];
+}) {
+  return (
+    <Card variant="default" padding="lg">
+      <CardHeader>
+        <CardTitle>Son Ödemeler</CardTitle>
+      </CardHeader>
+      <CardContent>
+        <div className="space-y-3">
+          {payouts.map((payout) => (
+            <PayoutItem key={payout.id} payout={payout} />
+          ))}
+        </div>
+      </CardContent>
+    </Card>
+  );
+});
+
+// Mock data - frozen to prevent mutations
+const MOCK_SALES_DATA = Object.freeze([
   { month: "Oca", income: 20000 },
   { month: "Şub", income: 45000 },
   { month: "Mar", income: 30000 },
   { month: "Nis", income: 55000 },
   { month: "May", income: 40000 },
   { month: "Haz", income: 65000 },
-];
+] as const);
 
-const mockBestVisited: BestVisitedLocation[] = [
+const MOCK_BEST_VISITED = Object.freeze([
   { country: "İstanbul, Türkiye", amount: 32580, percentage: 34 },
   { country: "Antalya, Türkiye", amount: 24890, percentage: 26 },
   { country: "Ankara, Türkiye", amount: 18756, percentage: 20 },
   { country: "İzmir, Türkiye", amount: 12340, percentage: 13 },
   { country: "Bursa, Türkiye", amount: 6780, percentage: 7 },
-];
+] as const);
 
-const mockRecentPayouts: RecentPayout[] = [
+const MOCK_RECENT_PAYOUTS = Object.freeze([
   {
     id: "pay-001",
     organizer: "Ahmet Yılmaz",
     amount: 25000,
     contact: "+905321234567",
     requestedOn: "2025-01-15",
-    status: "pending",
+    status: "pending" as const,
   },
   {
     id: "pay-002",
@@ -56,13 +194,24 @@ const mockRecentPayouts: RecentPayout[] = [
     amount: 15000,
     contact: "+905321234568",
     requestedOn: "2025-01-14",
-    status: "approved",
+    status: "approved" as const,
     processedOn: "2025-01-15",
   },
-];
+] as const);
+
+// Simple formatter functions
+const formatCurrency = (value: number) => {
+  return new Intl.NumberFormat('tr-TR', {
+    style: 'currency',
+    currency: 'TRY',
+    minimumFractionDigits: 0,
+    maximumFractionDigits: 0,
+  }).format(value);
+};
 
 export default function DashboardPage() {
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
+  const [isPending, startTransition] = useTransition();
   const [stats, setStats] = useState({
     totalRevenue: 0,
     ticketsSold: 0,
@@ -72,309 +221,146 @@ export default function DashboardPage() {
     usersCount: 0,
     customersCount: 0,
   });
+  const [isInitialLoad, setIsInitialLoad] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  useEffect(() => {
-    loadDashboardData();
+  // Stable stat cards configuration
+  const statCards = useMemo(
+    () => [
+      {
+        title: "Toplam Gelir",
+        value: formatCurrency(stats.totalRevenue),
+        icon: DollarSign,
+        iconColor: "text-primary",
+      },
+      {
+        title: "Aktif Etkinlikler",
+        value: `${stats.activeEvents}/${stats.totalEvents}`,
+        subtitle: `${stats.totalEvents} toplam`,
+        icon: Calendar,
+        iconColor: "text-info",
+      },
+      {
+        title: "Etkinlikler",
+        value: stats.totalEvents.toString(),
+        subtitle: "Toplam kayıtlı",
+        icon: MapPin,
+        iconColor: "text-warning",
+      },
+      {
+        title: "Kullanıcılar",
+        value: stats.usersCount.toString(),
+        subtitle: "Kayıtlı kullanıcı",
+        icon: Users,
+        iconColor: "text-secondary",
+      },
+    ],
+    [stats.totalRevenue, stats.activeEvents, stats.totalEvents, stats.usersCount]
+  );
+
+  const loadDashboardData = useCallback((showLoading = false) => {
+    // Use transition for non-urgent updates
+    startTransition(async () => {
+      try {
+        if (showLoading) setLoading(true);
+        setError(null);
+
+        // Dynamic import the service only when needed
+        const { dashboardService } = await import("@/lib/api/services");
+        const data = await dashboardService.getDashboardData();
+
+        setStats({
+          totalRevenue: data.stats.totalRevenue,
+          ticketsSold: data.stats.ticketsSold,
+          activeEvents: data.eventsCount.active,
+          totalEvents: data.eventsCount.total,
+          venuesCount: data.venuesCount,
+          usersCount: data.usersCount,
+          customersCount: data.customersCount,
+        });
+      } catch (err: any) {
+        console.error("Dashboard yüklenirken hata:", err);
+        setError(err?.message || "Veriler yüklenirken bir hata oluştu");
+      } finally {
+        setLoading(false);
+        setIsInitialLoad(false);
+      }
+    });
   }, []);
 
-  const loadDashboardData = async () => {
-    try {
-      setLoading(true);
-      setError(null);
+  useEffect(() => {
+    // Load data immediately but show skeleton first
+    const timer = setTimeout(() => {
+      loadDashboardData(false);
+    }, 100); // Small delay to let skeleton render first
 
-      const data = await dashboardService.getDashboardData();
+    return () => clearTimeout(timer);
+  }, [loadDashboardData]);
 
-      setStats({
-        totalRevenue: data.stats.totalRevenue,
-        ticketsSold: data.stats.ticketsSold,
-        activeEvents: data.eventsCount.active,
-        totalEvents: data.eventsCount.total,
-        venuesCount: data.venuesCount,
-        usersCount: data.usersCount,
-        customersCount: data.customersCount,
-      });
-    } catch (err: any) {
-      console.error("Dashboard yüklenirken hata:", err);
-      setError(err?.message || "Veriler yüklenirken bir hata oluştu");
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const statCards = [
-    {
-      title: "Toplam Gelir",
-      value: formatCurrency(stats.totalRevenue),
-      icon: DollarSign,
-      color: "bg-[#e1eee3]",
-      iconColor: "text-[#09724a]",
-    },
-    {
-      title: "Aktif Etkinlikler",
-      value: `${stats.activeEvents}/${stats.totalEvents}`,
-      subtitle: `${stats.totalEvents} toplam`,
-      icon: Calendar,
-      color: "bg-[#e8f4fd]",
-      iconColor: "text-[#0177fb]",
-    },
-    {
-      title: "Müşteriler",
-      value: stats.customersCount.toLocaleString(),
-      icon: Users,
-      color: "bg-[#f3e8fd]",
-      iconColor: "text-[#9333ea]",
-    },
-    {
-      title: "Mekanlar",
-      value: stats.venuesCount.toLocaleString(),
-      icon: MapPin,
-      color: "bg-[#fff8e6]",
-      iconColor: "text-[#f59e0b]",
-    },
-  ];
-
-  if (loading) {
-    return (
-      <div className="flex items-center justify-center min-h-[400px]">
-        <div className="text-center">
-          <Loader2 className="w-8 h-8 animate-spin mx-auto mb-4 text-[#09724a]" />
-          <p className="text-[#666d80]">Dashboard yükleniyor...</p>
-        </div>
-      </div>
-    );
+  // Show skeleton on initial load
+  if (isInitialLoad) {
+    return <DashboardSkeleton />;
   }
 
   return (
     <div className="space-y-6">
-      {/* Page Title */}
+      {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-[24px] font-semibold text-[#0d0d12] dark:text-[#f9fafb]">Dashboard</h1>
-          <p className="text-[14px] text-[#666d80] dark:text-[#9ca3af] mt-1">
-            Etkinliklerinizle ilgili son gelişmeler.
+          <h1 className="headline-lg text-on-surface">
+            Dashboard
+          </h1>
+          <p className="body-md text-on-surface-variant mt-1">
+            Genel bakış ve istatistikler
           </p>
         </div>
-        {error && (
+        <div className="flex items-center gap-2">
+          {(loading || isPending) && <Loader2 className="w-4 h-4 animate-spin text-primary" />}
           <button
-            onClick={loadDashboardData}
-            className="flex items-center gap-2 px-4 py-2 text-sm text-[#09724a] bg-[#e1eee3] rounded-lg hover:bg-[#c8e0ca] transition-colors"
+            onClick={() => loadDashboardData(true)}
+            disabled={loading || isPending}
+            className="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-full font-medium transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/50 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-white/30 dark:bg-white/10 text-primary backdrop-blur-glass border border-white/20 hover:bg-white/40 dark:hover:bg-white/15 active:scale-[0.98] h-9 px-4 text-sm"
           >
-            <RefreshCw className="w-4 h-4" />
+            <RefreshCw className={`w-4 h-4 ${(loading || isPending) ? "animate-spin" : ""}`} />
             Yenile
           </button>
-        )}
+        </div>
       </div>
 
-      {/* Error Message */}
+      {/* Error State */}
       {error && (
-        <div className="p-4 bg-[#fef2f2] border border-[#fecaca] rounded-lg">
-          <p className="text-[#dc2626] text-sm">{error}</p>
-        </div>
+        <Card variant="default" padding="md">
+          <CardContent className="p-6">
+            <p className="body-md text-danger">{error}</p>
+          </CardContent>
+        </Card>
       )}
 
       {/* Stats Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        {statCards.map((stat) => {
-          const Icon = stat.icon;
-
-          return (
-            <Card key={stat.title} className="border-[#e5e7eb] dark:border-[#374151] dark:bg-[#1f2937]">
-              <CardContent className="p-6">
-                <div className="flex items-start justify-between">
-                  <div className="flex-1">
-                    <p className="text-[14px] text-[#666d80] dark:text-[#9ca3af] mb-1">
-                      {stat.title}
-                    </p>
-                    <p className="text-[24px] font-semibold text-[#0d0d12] dark:text-[#f9fafb]">
-                      {stat.value}
-                    </p>
-                    {stat.subtitle && (
-                      <p className="text-[12px] text-[#818898] dark:text-[#6b7280] mt-1">
-                        {stat.subtitle}
-                      </p>
-                    )}
-                  </div>
-                  <div className={`w-12 h-12 rounded-xl ${stat.color} dark:bg-opacity-20 flex items-center justify-center`}>
-                    <Icon className={`w-6 h-6 ${stat.iconColor}`} />
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-          );
-        })}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5">
+        {statCards.map((stat) => (
+          <StatCard key={stat.title} {...stat} />
+        ))}
       </div>
 
-      {/* Charts Row */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {/* Sales Chart */}
-        <Card className="lg:col-span-2 border-[#e5e7eb] dark:border-[#374151] dark:bg-[#1f2937]">
-          <CardHeader className="pb-4">
-            <CardTitle className="text-[16px] font-semibold text-[#0d0d12] dark:text-[#f9fafb]">
-              Satış Özeti
-            </CardTitle>
+      {/* Charts and Lists */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        {/* Revenue Chart - dynamically loaded */}
+        <Card variant="default" padding="lg">
+          <CardHeader>
+            <CardTitle>Gelir Grafiği</CardTitle>
           </CardHeader>
           <CardContent>
-            <ResponsiveContainer width="100%" height={280}>
-              <AreaChart data={mockSalesData}>
-                <defs>
-                  <linearGradient id="colorIncome" x1="0" y1="0" x2="0" y2="1">
-                    <stop
-                      offset="5%"
-                      stopColor="#09724a"
-                      stopOpacity={0.3}
-                    />
-                    <stop
-                      offset="95%"
-                      stopColor="#09724a"
-                      stopOpacity={0}
-                    />
-                  </linearGradient>
-                </defs>
-                <XAxis
-                  dataKey="month"
-                  axisLine={false}
-                  tickLine={false}
-                  tick={{ fill: "#818898", fontSize: 12 }}
-                  dy={10}
-                />
-                <YAxis
-                  axisLine={false}
-                  tickLine={false}
-                  tick={{ fill: "#818898", fontSize: 12 }}
-                  tickFormatter={(value) => `₺${(value / 1000).toFixed(0)}k`}
-                />
-                <Tooltip
-                  contentStyle={{
-                    backgroundColor: "#fff",
-                    border: "1px solid #e5e7eb",
-                    borderRadius: "8px",
-                  }}
-                  formatter={(value) => [
-                    formatCurrency(Number(value)),
-                    "Gelir",
-                  ]}
-                />
-                <Area
-                  type="monotone"
-                  dataKey="income"
-                  stroke="#09724a"
-                  strokeWidth={2}
-                  fill="url(#colorIncome)"
-                />
-              </AreaChart>
-            </ResponsiveContainer>
+            <ChartComponents data={MOCK_SALES_DATA} />
           </CardContent>
         </Card>
 
         {/* Best Visited Locations */}
-        <Card className="border-[#e5e7eb] dark:border-[#374151] dark:bg-[#1f2937]">
-          <CardHeader className="pb-4">
-            <CardTitle className="text-[16px] font-semibold text-[#0d0d12] dark:text-[#f9fafb]">
-              En Çok Satış Yapılan Şehirler
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-4">
-              {mockBestVisited.map((location, index) => (
-                <div key={index} className="space-y-2">
-                  <div className="flex items-center justify-between">
-                    <span className="text-[14px] text-[#0d0d12] dark:text-[#f9fafb]">
-                      {location.country}
-                    </span>
-                    <span className="text-[14px] font-semibold text-[#0d0d12] dark:text-[#f9fafb]">
-                      {formatCurrency(location.amount)}
-                    </span>
-                  </div>
-                  <div className="h-2 bg-[#f7f7f7] dark:bg-[#374151] rounded-full overflow-hidden">
-                    <div
-                      className="h-full bg-[#09724a] dark:bg-[#00fb90] rounded-full transition-all duration-500"
-                      style={{ width: `${location.percentage}%` }}
-                    />
-                  </div>
-                </div>
-              ))}
-            </div>
-          </CardContent>
-        </Card>
+        <BestVisitedLocations locations={MOCK_BEST_VISITED} />
       </div>
 
-      {/* Recent Payouts Table */}
-      <Card className="border-[#e5e7eb] dark:border-[#374151] dark:bg-[#1f2937]">
-        <CardHeader className="pb-4">
-          <div className="flex items-center justify-between">
-            <CardTitle className="text-[16px] font-semibold text-[#0d0d12] dark:text-[#f9fafb]">
-              Son Ödemeler
-            </CardTitle>
-            <button className="text-[14px] text-[#09724a] dark:text-[#00fb90] font-medium hover:underline">
-              Tümünü Gör
-            </button>
-          </div>
-        </CardHeader>
-        <CardContent>
-          <div className="overflow-x-auto">
-            <table className="w-full">
-              <thead>
-                <tr className="border-b border-[#e5e7eb] dark:border-[#374151]">
-                  <th className="text-left py-3 px-4 text-[12px] font-medium text-[#818898] dark:text-[#9ca3af] uppercase tracking-wider">
-                    Organizatör
-                  </th>
-                  <th className="text-left py-3 px-4 text-[12px] font-medium text-[#818898] dark:text-[#9ca3af] uppercase tracking-wider">
-                    Tutar
-                  </th>
-                  <th className="text-left py-3 px-4 text-[12px] font-medium text-[#818898] dark:text-[#9ca3af] uppercase tracking-wider">
-                    İletişim
-                  </th>
-                  <th className="text-left py-3 px-4 text-[12px] font-medium text-[#818898] dark:text-[#9ca3af] uppercase tracking-wider">
-                    Talep Tarihi
-                  </th>
-                  <th className="text-left py-3 px-4 text-[12px] font-medium text-[#818898] dark:text-[#9ca3af] uppercase tracking-wider">
-                    Durum
-                  </th>
-                </tr>
-              </thead>
-              <tbody>
-                {mockRecentPayouts.map((payout) => (
-                  <tr
-                    key={payout.id}
-                    className="border-b border-[#e5e7eb] dark:border-[#374151] hover:bg-[#f7f7f7] dark:hover:bg-[#374151] transition-colors"
-                  >
-                    <td className="py-3 px-4">
-                      <p className="text-[14px] font-medium text-[#0d0d12] dark:text-[#f9fafb]">
-                        {payout.organizer}
-                      </p>
-                    </td>
-                    <td className="py-3 px-4">
-                      <p className="text-[14px] font-semibold text-[#0d0d12] dark:text-[#f9fafb]">
-                        {formatCurrency(payout.amount)}
-                      </p>
-                    </td>
-                    <td className="py-3 px-4">
-                      <p className="text-[14px] text-[#666d80] dark:text-[#9ca3af]">
-                        {payout.contact}
-                      </p>
-                    </td>
-                    <td className="py-3 px-4">
-                      <p className="text-[14px] text-[#666d80] dark:text-[#9ca3af]">
-                        {formatDate(payout.requestedOn)}
-                      </p>
-                    </td>
-                    <td className="py-3 px-4">
-                      <Badge
-                        variant={
-                          payout.status === "approved" ? "success" : "warning"
-                        }
-                      >
-                        {payout.status === "approved" ? "Onaylandı" : "Beklemede"}
-                      </Badge>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        </CardContent>
-      </Card>
+      {/* Recent Payouts */}
+      <RecentPayouts payouts={MOCK_RECENT_PAYOUTS} />
     </div>
   );
 }

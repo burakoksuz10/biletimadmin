@@ -24,15 +24,19 @@ import {
   Edit,
   Trash2,
   ArrowUpDown,
-  Filter,
   Calendar,
   MapPin,
-  Building,
+  Building2,
   Loader2,
+  Ticket,
+  CheckCircle,
+  XCircle,
+  Clock,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
 import { EventStatusBadge } from "@/components/events/event-status-badge";
 import { useEvents, useEventMutations } from "@/lib/hooks/use-events";
 import { formatDate, formatCurrency } from "@/lib/utils";
@@ -46,10 +50,17 @@ import {
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
-  AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 
 const statusList: (EventStatus | "all")[] = ["all", "draft", "published", "cancelled", "completed", "ongoing"];
+
+const statusConfig = {
+  draft: { label: "Taslak", color: "text-warning", bg: "bg-warning/10", icon: Clock },
+  published: { label: "Yayında", color: "text-success", bg: "bg-success/10", icon: CheckCircle },
+  cancelled: { label: "İptal", color: "text-danger", bg: "bg-danger/10", icon: XCircle },
+  completed: { label: "Tamamlandı", color: "text-info", bg: "bg-info/10", icon: CheckCircle },
+  ongoing: { label: "Devam Ediyor", color: "text-primary", bg: "bg-primary/10", icon: Calendar },
+};
 
 export default function EventsPage() {
   const [sorting, setSorting] = useState<SortingState>([]);
@@ -75,7 +86,7 @@ export default function EventsPage() {
         accessorKey: "title",
         header: ({ column }) => (
           <button
-            className="flex items-center gap-1 text-[12px] font-medium text-[#818898] uppercase tracking-wider"
+            className="flex items-center gap-1 label-sm font-semibold text-on-surface-variant uppercase tracking-wide"
             onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
           >
             Etkinlik Adı
@@ -84,14 +95,14 @@ export default function EventsPage() {
         ),
         cell: ({ row }) => (
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-lg bg-[#e1eee3] flex items-center justify-center flex-shrink-0">
-              <Calendar className="w-5 h-5 text-[#09724a]" />
+            <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center flex-shrink-0">
+              <Calendar className="w-5 h-5 text-primary" />
             </div>
             <div>
-              <p className="text-[14px] font-medium text-[#0d0d12]">
+              <p className="body-md font-medium text-on-surface">
                 {row.original.title}
               </p>
-              <p className="text-[12px] text-[#666d80]">
+              <p className="body-sm text-on-surface-variant">
                 {row.original.category?.name}
               </p>
             </div>
@@ -102,7 +113,7 @@ export default function EventsPage() {
         accessorKey: "start_date",
         header: ({ column }) => (
           <button
-            className="flex items-center gap-1 text-[12px] font-medium text-[#818898] uppercase tracking-wider"
+            className="flex items-center gap-1 label-sm font-semibold text-on-surface-variant uppercase tracking-wide"
             onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
           >
             Tarih & Saat
@@ -110,7 +121,7 @@ export default function EventsPage() {
           </button>
         ),
         cell: ({ row }) => (
-          <p className="text-[14px] text-[#666d80]">
+          <p className="body-md text-on-surface-variant">
             {formatDate(row.original.start_date)}
           </p>
         ),
@@ -118,14 +129,14 @@ export default function EventsPage() {
       {
         accessorKey: "venue",
         header: () => (
-          <span className="text-[12px] font-medium text-[#818898] uppercase tracking-wider">
+          <span className="label-sm font-semibold text-on-surface-variant uppercase tracking-wide">
             Konum
           </span>
         ),
         cell: ({ row }) => (
           <div className="flex items-center gap-2">
-            <MapPin className="w-4 h-4 text-[#818898]" />
-            <p className="text-[14px] text-[#666d80]">
+            <MapPin className="w-4 h-4 text-on-surface-variant" />
+            <p className="body-md text-on-surface-variant">
               {row.original.venue?.name} - {row.original.venue?.city}
             </p>
           </div>
@@ -134,14 +145,14 @@ export default function EventsPage() {
       {
         accessorKey: "organization",
         header: () => (
-          <span className="text-[12px] font-medium text-[#818898] uppercase tracking-wider">
+          <span className="label-sm font-semibold text-on-surface-variant uppercase tracking-wide">
             Organizasyon
           </span>
         ),
         cell: ({ row }) => (
           <div className="flex items-center gap-2">
-            <Building className="w-4 h-4 text-[#818898]" />
-            <p className="text-[14px] text-[#666d80]">
+            <Building2 className="w-4 h-4 text-on-surface-variant" />
+            <p className="body-md text-on-surface-variant">
               {row.original.organization?.name}
             </p>
           </div>
@@ -151,7 +162,7 @@ export default function EventsPage() {
         accessorKey: "sold_tickets",
         header: ({ column }) => (
           <button
-            className="flex items-center gap-1 text-[12px] font-medium text-[#818898] uppercase tracking-wider"
+            className="flex items-center gap-1 label-sm font-semibold text-on-surface-variant uppercase tracking-wide"
             onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
           >
             Biletler
@@ -162,15 +173,15 @@ export default function EventsPage() {
           const sold = row.original.sold_tickets || 0;
           const total = row.original.total_tickets || 0;
           const percentage = total > 0 ? Math.round((sold / total) * 100) : 0;
-          
+
           return (
             <div>
-              <p className="text-[14px] font-medium text-[#0d0d12]">
+              <p className="body-md font-medium text-on-surface">
                 {sold}/{total}
               </p>
-              <div className="w-full h-1.5 bg-[#f7f7f7] rounded-full mt-1 overflow-hidden">
+              <div className="w-full h-1.5 bg-surface-low rounded-full mt-1 overflow-hidden">
                 <div
-                  className="h-full bg-[#09724a] rounded-full"
+                  className="h-full bg-gradient-primary rounded-full transition-all duration-500"
                   style={{ width: `${percentage}%` }}
                 />
               </div>
@@ -182,7 +193,7 @@ export default function EventsPage() {
         accessorKey: "ticket_price",
         header: ({ column }) => (
           <button
-            className="flex items-center gap-1 text-[12px] font-medium text-[#818898] uppercase tracking-wider"
+            className="flex items-center gap-1 label-sm font-semibold text-on-surface-variant uppercase tracking-wide"
             onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
           >
             Fiyat
@@ -190,7 +201,7 @@ export default function EventsPage() {
           </button>
         ),
         cell: ({ row }) => (
-          <p className="text-[14px] font-semibold text-[#0d0d12]">
+          <p className="body-md font-semibold text-on-surface">
             {row.original.ticket_price ? formatCurrency(row.original.ticket_price) : "Ücretsiz"}
           </p>
         ),
@@ -198,7 +209,7 @@ export default function EventsPage() {
       {
         accessorKey: "status",
         header: () => (
-          <span className="text-[12px] font-medium text-[#818898] uppercase tracking-wider">
+          <span className="label-sm font-semibold text-on-surface-variant uppercase tracking-wide">
             Durum
           </span>
         ),
@@ -209,7 +220,7 @@ export default function EventsPage() {
       {
         id: "actions",
         header: () => (
-          <span className="text-[12px] font-medium text-[#818898] uppercase tracking-wider">
+          <span className="label-sm font-semibold text-on-surface-variant uppercase tracking-wide">
             İşlemler
           </span>
         ),
@@ -221,16 +232,16 @@ export default function EventsPage() {
                   showActionsId === row.original.id ? null : row.original.id
                 )
               }
-              className="w-8 h-8 rounded-lg flex items-center justify-center hover:bg-[#f7f7f7] transition-colors"
+              className="w-8 h-8 rounded-lg flex items-center justify-center hover:bg-surface-low transition-colors"
             >
-              <MoreHorizontal className="w-4 h-4 text-[#666d80]" />
+              <MoreHorizontal className="w-4 h-4 text-on-surface-variant" />
             </button>
 
             {showActionsId === row.original.id && (
-              <div className="absolute right-0 top-full mt-1 w-48 bg-white rounded-lg border border-[#e5e7eb] shadow-lg py-1 z-10">
+              <div className="absolute right-0 top-full mt-1 w-48 bg-white dark:bg-surface-higher rounded-xl border border-outline/30 shadow-glow py-1 z-10">
                 <Link
                   href={`/events/${row.original.id}`}
-                  className="flex items-center gap-2 px-3 py-2 text-[14px] text-[#0d0d12] hover:bg-[#f7f7f7]"
+                  className="flex items-center gap-2 px-3 py-2 body-md text-on-surface hover:bg-surface-low transition-colors"
                   onClick={() => setShowActionsId(null)}
                 >
                   <Eye className="w-4 h-4" />
@@ -238,7 +249,7 @@ export default function EventsPage() {
                 </Link>
                 <Link
                   href={`/events/${row.original.id}/edit`}
-                  className="flex items-center gap-2 px-3 py-2 text-[14px] text-[#0d0d12] hover:bg-[#f7f7f7]"
+                  className="flex items-center gap-2 px-3 py-2 body-md text-on-surface hover:bg-surface-low transition-colors"
                   onClick={() => setShowActionsId(null)}
                 >
                   <Edit className="w-4 h-4" />
@@ -250,7 +261,7 @@ export default function EventsPage() {
                     setDeleteDialogOpen(true);
                     setShowActionsId(null);
                   }}
-                  className="flex items-center gap-2 w-full px-3 py-2 text-[14px] text-[#df1c41] hover:bg-[#fff0f3]"
+                  className="flex items-center gap-2 w-full px-3 py-2 body-md text-danger hover:bg-danger/10 transition-colors"
                 >
                   <Trash2 className="w-4 h-4" />
                   Sil
@@ -308,67 +319,129 @@ export default function EventsPage() {
       {/* Page Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-[24px] font-semibold text-[#0d0d12]">Etkinlikler</h1>
-          <p className="text-[14px] text-[#666d80] mt-1">
+          <h1 className="headline-lg text-on-surface">
+            Etkinlikler
+          </h1>
+          <p className="body-md text-on-surface-variant mt-1">
             Tüm etkinliklerinizi ve detaylarını yönetin
           </p>
         </div>
         <Link href="/events/create">
-          <Button>
+          <Button variant="primary">
             <Plus className="w-4 h-4 mr-2" />
             Etkinlik Oluştur
           </Button>
         </Link>
       </div>
 
+      {/* Stats Cards */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5">
+        <Card variant="stats" padding="md">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="label-sm text-on-surface-variant mb-3 uppercase tracking-wide font-semibold">Toplam</p>
+              <p className="display-lg text-on-surface leading-none">
+                {statusCounts.all}
+              </p>
+            </div>
+            <div className="w-14 h-14 rounded-2xl bg-primary/10 flex items-center justify-center shadow-sm">
+              <Ticket className="w-7 h-7 text-primary" />
+            </div>
+          </div>
+        </Card>
+
+        <Card variant="stats" padding="md">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="label-sm text-on-surface-variant mb-3 uppercase tracking-wide font-semibold">Yayında</p>
+              <p className="display-lg text-on-surface leading-none">
+                {statusCounts.published}
+              </p>
+            </div>
+            <div className="w-14 h-14 rounded-2xl bg-success/10 flex items-center justify-center shadow-sm">
+              <CheckCircle className="w-7 h-7 text-success" />
+            </div>
+          </div>
+        </Card>
+
+        <Card variant="stats" padding="md">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="label-sm text-on-surface-variant mb-3 uppercase tracking-wide font-semibold">Taslak</p>
+              <p className="display-lg text-on-surface leading-none">
+                {statusCounts.draft}
+              </p>
+            </div>
+            <div className="w-14 h-14 rounded-2xl bg-warning/10 flex items-center justify-center shadow-sm">
+              <Clock className="w-7 h-7 text-warning" />
+            </div>
+          </div>
+        </Card>
+
+        <Card variant="stats" padding="md">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="label-sm text-on-surface-variant mb-3 uppercase tracking-wide font-semibold">Tamamlandı</p>
+              <p className="display-lg text-on-surface leading-none">
+                {statusCounts.completed}
+              </p>
+            </div>
+            <div className="w-14 h-14 rounded-2xl bg-info/10 flex items-center justify-center shadow-sm">
+              <XCircle className="w-7 h-7 text-info" />
+            </div>
+          </div>
+        </Card>
+      </div>
+
       {/* Status Tabs */}
-      <div className="flex items-center gap-2 border-b border-[#e5e7eb]">
-        {statusList.map((status) => (
-          <button
-            key={status}
-            onClick={() => setStatusFilter(status)}
-            className={`px-4 py-3 text-[14px] font-medium border-b-2 transition-colors ${
-              statusFilter === status
-                ? "border-[#09724a] text-[#09724a]"
-                : "border-transparent text-[#666d80] hover:text-[#0d0d12]"
-            }`}
-          >
-            {status === "all" ? "Tümü" : status.charAt(0).toUpperCase() + status.slice(1)}
-            <span className="ml-2 text-[12px] text-[#818898]">
-              ({statusCounts[status]})
-            </span>
-          </button>
-        ))}
+      <div className="flex items-center gap-2 border-b border-outline/30">
+        {statusList.map((status) => {
+          const config = status !== "all" ? statusConfig[status] : null;
+          const Icon = config?.icon;
+          return (
+            <button
+              key={status}
+              onClick={() => setStatusFilter(status)}
+              className={`flex items-center gap-2 px-4 py-3 body-md font-medium border-b-2 transition-colors ${
+                statusFilter === status
+                  ? "border-primary text-primary"
+                  : "border-transparent text-on-surface-variant hover:text-on-surface hover:border-outline/50"
+              }`}
+            >
+              {Icon && <Icon className="w-4 h-4" />}
+              {status === "all" ? "Tümü" : config.label}
+              <span className="label-sm text-on-surface-variant">
+                ({statusCounts[status]})
+              </span>
+            </button>
+          );
+        })}
       </div>
 
       {/* Search & Filters */}
       <div className="flex items-center gap-4">
         <div className="relative flex-1 max-w-sm">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-[#818898]" />
+          <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-on-surface-variant" />
           <Input
             type="search"
             placeholder="Etkinlik ara..."
             value={globalFilter}
             onChange={(e) => setGlobalFilter(e.target.value)}
-            className="pl-10 h-10 rounded-lg bg-[#f7f7f7] border-[#e5e7eb]"
+            className="pl-11"
           />
         </div>
-        <Button variant="secondary" className="h-10">
-          <Filter className="w-4 h-4 mr-2" />
-          Filtreler
-        </Button>
       </div>
 
       {/* Table */}
-      <Card className="border-[#e5e7eb]">
+      <Card variant="default" padding="none">
         <CardContent className="p-0">
           {loading ? (
             <div className="flex items-center justify-center py-12">
-              <Loader2 className="w-6 h-6 animate-spin text-[#09724a]" />
+              <Loader2 className="w-6 h-6 animate-spin text-primary" />
             </div>
           ) : error ? (
             <div className="text-center py-12">
-              <p className="text-[14px] text-[#df1c41]">{error}</p>
+              <p className="body-md text-danger">{error}</p>
             </div>
           ) : (
             <>
@@ -378,12 +451,12 @@ export default function EventsPage() {
                     {table.getHeaderGroups().map((headerGroup) => (
                       <tr
                         key={headerGroup.id}
-                        className="border-b border-[#e5e7eb]"
+                        className="border-b border-outline/30 bg-surface-low/50"
                       >
                         {headerGroup.headers.map((header) => (
                           <th
                             key={header.id}
-                            className="text-left py-3 px-4"
+                            className="text-left py-4 px-6"
                           >
                             {header.isPlaceholder
                               ? null
@@ -401,19 +474,22 @@ export default function EventsPage() {
                       <tr>
                         <td
                           colSpan={columns.length}
-                          className="text-center py-12 text-[14px] text-[#666d80]"
+                          className="text-center py-12"
                         >
-                          Etkinlik bulunamadı.
+                          <div className="flex flex-col items-center justify-center gap-3">
+                            <Ticket className="w-12 h-12 text-on-surface-variant" />
+                            <p className="body-md text-on-surface-variant">Etkinlik bulunamadı</p>
+                          </div>
                         </td>
                       </tr>
                     ) : (
                       table.getRowModel().rows.map((row) => (
                         <tr
                           key={row.id}
-                          className="border-b border-[#e5e7eb] hover:bg-[#f7f7f7] transition-colors"
+                          className="border-b border-outline/30 last:border-0 hover:bg-surface-low/30 transition-colors"
                         >
                           {row.getVisibleCells().map((cell) => (
-                            <td key={cell.id} className="py-3 px-4">
+                            <td key={cell.id} className="py-4 px-6">
                               {flexRender(
                                 cell.column.columnDef.cell,
                                 cell.getContext()
@@ -428,8 +504,8 @@ export default function EventsPage() {
               </div>
 
               {/* Pagination */}
-              <div className="flex items-center justify-between p-4 border-t border-[#e5e7eb]">
-                <p className="text-[14px] text-[#666d80]">
+              <div className="flex items-center justify-between p-4 border-t border-outline/30">
+                <p className="body-md text-on-surface-variant">
                   {table.getFilteredRowModel().rows.length} sonuçtan{" "}
                   {table.getState().pagination.pageIndex *
                     table.getState().pagination.pageSize +
@@ -456,10 +532,10 @@ export default function EventsPage() {
                     <button
                       key={i}
                       onClick={() => table.setPageIndex(i)}
-                      className={`w-8 h-8 rounded-lg text-[14px] font-medium transition-colors ${
+                      className={`w-8 h-8 rounded-lg body-md font-medium transition-colors ${
                         table.getState().pagination.pageIndex === i
-                          ? "bg-[#09724a] text-white"
-                          : "text-[#666d80] hover:bg-[#f7f7f7]"
+                          ? "bg-gradient-primary text-white shadow-glow"
+                          : "text-on-surface-variant hover:bg-surface-low"
                       }`}
                     >
                       {i + 1}
@@ -492,7 +568,7 @@ export default function EventsPage() {
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogCancel>İptal</AlertDialogCancel>
-            <AlertDialogAction onClick={handleDelete} disabled={deleting}>
+            <AlertDialogAction onClick={handleDelete} disabled={deleting} className="bg-danger text-white hover:bg-danger/90">
               {deleting ? (
                 <>
                   <Loader2 className="w-4 h-4 mr-2 animate-spin" />

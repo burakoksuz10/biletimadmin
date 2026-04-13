@@ -8,6 +8,11 @@ const nextConfig: NextConfig = {
         hostname: "biletim.simgesoft.com",
         pathname: "/**",
       },
+      {
+        protocol: "https",
+        hostname: "www.simgesoft.com",
+        pathname: "/**",
+      },
     ],
   },
 };

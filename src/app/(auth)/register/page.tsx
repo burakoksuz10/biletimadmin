@@ -52,34 +52,32 @@ export default function RegisterPage() {
   };
 
   return (
-    <div className="min-h-screen w-full bg-white flex relative overflow-hidden">
+    <div className="min-h-screen w-full flex relative overflow-hidden">
       {/* Decorative Background Elements */}
-      <div className="absolute top-0 left-0 w-[1192px] h-[670px] rounded-full bg-[#09724a] opacity-100 -translate-x-1/2 -translate-y-1/2 -left-[525px] -top-[265px]" />
-      <div className="absolute bottom-0 right-0 w-[778px] h-[604px] rounded-full bg-[#09724a] opacity-80 translate-x-1/2 translate-y-1/2 right-[1040px] top-[274px]" />
-      <div className="absolute bottom-0 left-0 w-[824px] h-[325px] rounded-full bg-[#097247a] opacity-80 -translate-x-1/2 -translate-y-1/2 -left-[225px] top-[972px]" />
+      <div className="absolute top-0 left-0 w-[800px] h-[800px] rounded-full bg-primary/20 -translate-x-1/2 -translate-y-1/2 -top-[200px] -left-[200px] blur-3xl" />
+      <div className="absolute bottom-0 right-0 w-[600px] h-[600px] rounded-full bg-secondary/20 translate-x-1/2 translate-y-1/2 bottom-0 right-0 blur-3xl" />
 
       {/* Main Content */}
-      <div className="relative z-10 w-full h-screen flex">
+      <div className="relative z-10 w-full min-h-screen flex flex-col lg:flex-row">
         {/* Left Panel - Register Form */}
-        <div className="w-[436px] h-full flex flex-col justify-center px-[82px]">
-          {/* Logo */}
-          <Link href="/" className="flex items-center gap-3 mb-8 w-[155px] h-12">
-            <div className="w-10 h-10 rounded-[9.85px] bg-[#09724a] flex items-center justify-center">
-              <div className="w-6 h-6 rounded-full bg-[#e1eee3] border border-[#09724a]" />
-            </div>
-            <span className="text-[24.6px] font-bold text-[#0d0d12] leading-[33.23px]">
-              Biletim
-            </span>
-          </Link>
+        <div className="w-full lg:w-1/2 flex items-center justify-center px-6 sm:px-12 lg:px-16 xl:px-24 py-12">
+          <div className="w-full max-w-[420px]">
+            {/* Logo */}
+            <Link href="/" className="flex items-center gap-3 mb-10">
+              <div className="w-10 h-10 rounded-xl bg-gradient-primary flex items-center justify-center flex-shrink-0 shadow-glow">
+                <div className="w-5 h-5 rounded-full bg-white/90" />
+              </div>
+              <span className="text-2xl font-semibold text-on-surface">
+                Biletim
+              </span>
+            </Link>
 
-          {/* Register Form */}
-          <div className="w-full">
             {/* Header */}
-            <div className="text-center mb-8">
-              <h1 className="text-[24px] font-bold text-[#0d0d12] leading-[31.2px] tracking-[-0.48px] mb-2">
+            <div className="mb-8">
+              <h1 className="display-sm text-on-surface mb-3">
                 Hesap Oluştur
               </h1>
-              <p className="text-[16px] text-[#666d80] leading-[24px] tracking-[0.32px]">
+              <p className="body-lg text-on-surface-variant">
                 Biletim'e katılın ve etkinliklerinizi yönetmeye bugün başlayın.
               </p>
             </div>
@@ -88,11 +86,11 @@ export default function RegisterPage() {
             <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
               {/* Name Field */}
               <div>
-                <label className="block text-[14px] font-medium text-[#666d80] leading-[21px] tracking-[0.28px] mb-2">
+                <label className="block label-md text-on-surface-variant mb-2">
                   Ad Soyad
                 </label>
                 <div className="relative">
-                  <User className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-[#818898]" />
+                  <User className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-on-surface-variant/50" />
                   <Input
                     {...register("name")}
                     type="text"
@@ -102,17 +100,17 @@ export default function RegisterPage() {
                   />
                 </div>
                 {errors.name && (
-                  <p className="text-[14px] text-[#df1c41] mt-1">{errors.name.message}</p>
+                  <p className="body-sm text-danger mt-1">{errors.name.message}</p>
                 )}
               </div>
 
               {/* Email Field */}
               <div>
-                <label className="block text-[14px] font-medium text-[#666d80] leading-[21px] tracking-[0.28px] mb-2">
+                <label className="block label-md text-on-surface-variant mb-2">
                   E-posta Adresi
                 </label>
                 <div className="relative">
-                  <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-[#818898]" />
+                  <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-on-surface-variant/50" />
                   <Input
                     {...register("email")}
                     type="email"
@@ -122,17 +120,17 @@ export default function RegisterPage() {
                   />
                 </div>
                 {errors.email && (
-                  <p className="text-[14px] text-[#df1c41] mt-1">{errors.email.message}</p>
+                  <p className="body-sm text-danger mt-1">{errors.email.message}</p>
                 )}
               </div>
 
               {/* Password Field */}
               <div>
-                <label className="block text-[14px] font-medium text-[#666d80] leading-[21px] tracking-[0.28px] mb-2">
+                <label className="block label-md text-on-surface-variant mb-2">
                   Şifre
                 </label>
                 <div className="relative">
-                  <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-[#818898]" />
+                  <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-on-surface-variant/50" />
                   <Input
                     {...register("password")}
                     type={showPassword ? "text" : "password"}
@@ -143,23 +141,23 @@ export default function RegisterPage() {
                   <button
                     type="button"
                     onClick={() => setShowPassword(!showPassword)}
-                    className="absolute right-3 top-1/2 -translate-y-1/2 text-[#818898] hover:text-[#0d0d12]"
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-on-surface-variant hover:text-on-surface"
                   >
                     {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
                   </button>
                 </div>
                 {errors.password && (
-                  <p className="text-[14px] text-[#df1c41] mt-1">{errors.password.message}</p>
+                  <p className="body-sm text-danger mt-1">{errors.password.message}</p>
                 )}
               </div>
 
               {/* Confirm Password Field */}
               <div>
-                <label className="block text-[14px] font-medium text-[#666d80] leading-[21px] tracking-[0.28px] mb-2">
+                <label className="block label-md text-on-surface-variant mb-2">
                   Şifre Tekrar
                 </label>
                 <div className="relative">
-                  <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-[#818898]" />
+                  <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-on-surface-variant/50" />
                   <Input
                     {...register("confirmPassword")}
                     type={showConfirmPassword ? "text" : "password"}
@@ -170,13 +168,13 @@ export default function RegisterPage() {
                   <button
                     type="button"
                     onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                    className="absolute right-3 top-1/2 -translate-y-1/2 text-[#818898] hover:text-[#0d0d12]"
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-on-surface-variant hover:text-on-surface"
                   >
                     {showConfirmPassword ? <EyeOff size={20} /> : <Eye size={20} />}
                   </button>
                 </div>
                 {errors.confirmPassword && (
-                  <p className="text-[14px] text-[#df1c41] mt-1">{errors.confirmPassword.message}</p>
+                  <p className="body-sm text-danger mt-1">{errors.confirmPassword.message}</p>
                 )}
               </div>
 
@@ -185,14 +183,14 @@ export default function RegisterPage() {
                 <Checkbox id="terms" className="mt-1" />
                 <label
                   htmlFor="terms"
-                  className="text-[14px] text-[#666d80] leading-[21px] cursor-pointer"
+                  className="body-md text-on-surface-variant cursor-pointer"
                 >
                   {" "}
-                  <Link href="/terms" className="text-[#09724a] hover:underline">
+                  <Link href="/terms" className="text-primary hover:underline">
                     Hizmet Şartları
                   </Link>
                   {" "}ve{" "}
-                  <Link href="/privacy" className="text-[#09724a] hover:underline">
+                  <Link href="/privacy" className="text-primary hover:underline">
                     Gizlilik Politikası
                   </Link>
                   'nı kabul ediyorum
@@ -211,11 +209,11 @@ export default function RegisterPage() {
               </Button>
 
               {/* Login Link */}
-              <p className="text-center text-[16px] text-[#666d80] leading-[24px] tracking-[0.32px]">
+              <p className="text-center body-lg text-on-surface-variant">
                 Zaten hesabınız var mı?{" "}
                 <Link
                   href="/login"
-                  className="font-semibold text-[#09724a]"
+                  className="font-semibold text-primary hover:text-primary-dark"
                 >
                   Giriş Yap
                 </Link>
@@ -225,29 +223,29 @@ export default function RegisterPage() {
         </div>
 
         {/* Right Panel - Decorative */}
-        <div className="flex-1 h-full flex items-center justify-center px-16">
-          <div className="w-[778px] h-[976px] rounded-[30px] bg-white/40 border border-white backdrop-blur-sm p-16 flex flex-col">
+        <div className="hidden lg:flex w-1/2 h-full items-center justify-center px-16 relative">
+          <div className="w-full max-w-[600px] glass-card rounded-3xl p-12 flex flex-col">
             {/* Logo */}
-            <div className="w-[82px] h-[82px] rounded-[9.85px] bg-[#09724a] flex items-center justify-center mb-6">
-              <div className="w-12 h-12 rounded-full bg-[#e1eee3] border border-[#09724a]" />
+            <div className="w-20 h-20 rounded-2xl bg-gradient-primary flex items-center justify-center mb-8 shadow-glow">
+              <div className="w-12 h-12 rounded-full bg-white/20" />
             </div>
 
             {/* Content */}
             <div className="flex-1">
-              <h2 className="text-[32px] font-semibold text-[#000000] leading-[41.6px] tracking-[-0.96px] text-center mb-4">
+              <h2 className="display-md text-on-surface text-center mb-4">
                 Etkinlik Yönetimi Yolculuğunuza Başlayın
               </h2>
-              <p className="text-[16px] text-[#000000]/60 leading-[24px] tracking-[-0.32px] text-center">
+              <p className="body-lg text-on-surface-variant text-center">
                 Etkinlikler oluşturun ve yönetin, bilet satın ve başarınızı tek bir yerde takip edin.
               </p>
             </div>
 
             {/* Illustration */}
             <div className="flex-1 flex items-center justify-center">
-              <div className="w-[567px] h-[441px] bg-gradient-to-br from-[#09724a]/20 to-transparent rounded-3xl flex items-center justify-center">
+              <div className="w-full aspect-video bg-gradient-to-br from-primary/20 to-secondary/20 rounded-3xl flex items-center justify-center">
                 <div className="text-center">
-                  <div className="w-[100px] h-[100px] rounded-full bg-[#09724a]/20 mx-auto mb-4" />
-                  <p className="text-[#09724a] font-medium">Etkinlik Yönetimi</p>
+                  <div className="w-24 h-24 rounded-full bg-gradient-primary mx-auto mb-6 shadow-glow animate-float" />
+                  <p className="title-lg text-primary">Etkinlik Yönetimi</p>
                 </div>
               </div>
             </div>

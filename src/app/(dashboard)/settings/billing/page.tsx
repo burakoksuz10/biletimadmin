@@ -13,10 +13,10 @@ export default function BillingSettingsPage() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-[24px] font-semibold text-[#0d0d12]">
+          <h1 className="headline-lg font-semibold text-on-surface">
             Faturalandırma & Abonelik
           </h1>
-          <p className="text-[14px] text-[#666d80] mt-1">
+          <p className="body-md text-on-surface-variant mt-1">
             Aboneliğinizi ve fatura geçmişinizi yönetin
           </p>
         </div>
@@ -29,7 +29,7 @@ export default function BillingSettingsPage() {
       {/* Current Plan */}
       <Card className="border-[#e5e7eb]">
         <CardHeader>
-          <CardTitle className="text-[16px] font-semibold text-[#0d0d12]">
+          <CardTitle className="title-lg font-semibold text-on-surface">
             Mevcut Plan
           </CardTitle>
         </CardHeader>
@@ -37,12 +37,12 @@ export default function BillingSettingsPage() {
           <div className="flex items-start justify-between">
             <div>
               <div className="flex items-center gap-2">
-                <h2 className="text-[24px] font-semibold text-[#0d0d12]">
+                <h2 className="headline-lg font-semibold text-on-surface">
                   Pro Plan
                 </h2>
                 <Badge variant="success">Aktif</Badge>
               </div>
-              <p className="text-[14px] text-[#666d80] mt-2">
+              <p className="body-md text-on-surface-variant mt-2">
                 ₺499/ay • 15 Mart 2026 tarihinde yenilenir
               </p>
               <div className="mt-4 space-y-2">
@@ -72,7 +72,7 @@ export default function BillingSettingsPage() {
       {/* Payment Method */}
       <Card className="border-[#e5e7eb]">
         <CardHeader>
-          <CardTitle className="text-[16px] font-semibold text-[#0d0d12]">
+          <CardTitle className="title-lg font-semibold text-on-surface">
             Ödeme Yöntemi
           </CardTitle>
         </CardHeader>
@@ -83,10 +83,10 @@ export default function BillingSettingsPage() {
                 <CreditCard className="w-6 h-6 text-[#09724a]" />
               </div>
               <div>
-                <p className="text-[14px] font-medium text-[#0d0d12]">
+                <p className="body-md font-medium text-on-surface">
                   •••• •••• •••• 4242
                 </p>
-                <p className="text-[12px] text-[#666d80]">
+                <p className="label-md text-on-surface-variant">
                   Son kullanma: 12/2028
                 </p>
               </div>
@@ -101,7 +101,7 @@ export default function BillingSettingsPage() {
       {/* Billing History */}
       <Card className="border-[#e5e7eb]">
         <CardHeader>
-          <CardTitle className="text-[16px] font-semibold text-[#0d0d12]">
+          <CardTitle className="title-lg font-semibold text-on-surface">
             Fatura Geçmişi
           </CardTitle>
         </CardHeader>
@@ -110,19 +110,19 @@ export default function BillingSettingsPage() {
             <table className="w-full">
               <thead>
                 <tr className="border-b border-[#e5e7eb]">
-                  <th className="text-left py-3 px-4 text-[12px] font-medium text-[#818898] uppercase tracking-wider">
+                  <th className="text-left py-3 px-4 label-md font-medium text-on-surface-variant uppercase tracking-wider">
                     Tarih
                   </th>
-                  <th className="text-left py-3 px-4 text-[12px] font-medium text-[#818898] uppercase tracking-wider">
+                  <th className="text-left py-3 px-4 label-md font-medium text-on-surface-variant uppercase tracking-wider">
                     Açıklama
                   </th>
-                  <th className="text-left py-3 px-4 text-[12px] font-medium text-[#818898] uppercase tracking-wider">
+                  <th className="text-left py-3 px-4 label-md font-medium text-on-surface-variant uppercase tracking-wider">
                     Tutar
                   </th>
-                  <th className="text-left py-3 px-4 text-[12px] font-medium text-[#818898] uppercase tracking-wider">
+                  <th className="text-left py-3 px-4 label-md font-medium text-on-surface-variant uppercase tracking-wider">
                     Durum
                   </th>
-                  <th className="text-right py-3 px-4 text-[12px] font-medium text-[#818898] uppercase tracking-wider">
+                  <th className="text-right py-3 px-4 label-md font-medium text-on-surface-variant uppercase tracking-wider">
                     Fatura
                   </th>
                 </tr>
@@ -138,7 +138,7 @@ export default function BillingSettingsPage() {
                     <td className="py-3 px-4 text-[14px] text-[#0d0d12]">
                       {invoice.date}
                     </td>
-                    <td className="py-3 px-4 text-[14px] text-[#666d80]">
+                    <td className="py-3 px-4 body-md text-on-surface-variant">
                       {invoice.desc}
                     </td>
                     <td className="py-3 px-4 text-[14px] font-semibold text-[#0d0d12]">

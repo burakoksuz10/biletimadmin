@@ -19,16 +19,14 @@ import {
   Crown,
   Star,
   Download,
-  MoreHorizontal,
-  UserCheck,
   TrendingUp,
-  CreditCard,
   Ticket,
+  Loader2,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
-import { Card, CardContent } from "@/components/ui/card";
+import { Card } from "@/components/ui/card";
 import { formatDate } from "@/lib/utils";
 import { customersService } from "@/lib/api/services";
 import type { CustomerListItem, CustomerStatus, CustomerSegment } from "@/types/customer.types";
@@ -43,6 +41,15 @@ const statusLabels: Record<CustomerStatus, string> = {
   active: "Aktif",
   suspended: "Askıya Alındı",
   banned: "Yasaklandı",
+};
+
+const segmentLabels: Record<CustomerSegment, string> = {
+  vip: "VIP",
+  regular: "Normal",
+  new: "Yeni",
+  at_risk: "Riskli",
+  lost: "Kayıp",
+  one_time: "Tek Seferlik",
 };
 
 export default function CustomersPage() {
@@ -121,6 +128,7 @@ export default function CustomersPage() {
       vip: customers.filter((c) => c.customer_segment === "vip").length,
       new: customers.filter((c) => c.customer_segment === "new").length,
       totalRevenue: customers.reduce((sum, c) => sum + (c.total_spent || 0), 0),
+      totalTickets: customers.reduce((sum, c) => sum + (c.total_tickets || 0), 0),
     };
   }, [customers]);
 
@@ -171,7 +179,6 @@ export default function CustomersPage() {
 
   const handleBulkAction = async (action: "suspend" | "activate" | "ban") => {
     console.log(`Bulk action: ${action} for customers:`, selectedIds);
-    // TODO: Implement bulk action
   };
 
   return (
@@ -179,153 +186,139 @@ export default function CustomersPage() {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-[24px] font-semibold text-[#0d0d12] dark:text-[#f9fafb]">
+          <h1 className="headline-lg text-on-surface">
             Müşteriler
           </h1>
-          <p className="text-[14px] text-[#666d80] dark:text-[#9ca3af] mt-1">
+          <p className="body-md text-on-surface-variant mt-1">
             Bilet alan müşterileri görüntüleyin ve yönetin
           </p>
         </div>
         <div className="flex items-center gap-3">
-          <Button variant="secondary" className="h-10">
+          <Button variant="secondary">
             <Download className="w-4 h-4 mr-2" />
             Export
           </Button>
-          <Button className="bg-[#09724a] hover:bg-[#0d8a52] text-white h-10">
-            <UserCheck className="w-4 h-4 mr-2" />
+          <Button variant="primary">
+            <User className="w-4 h-4 mr-2" />
             Yeni Müşteri
           </Button>
         </div>
       </div>
 
-      {/* Stats Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-        <Card className="border-[#e5e7eb]">
-          <CardContent className="p-6">
-            <div className="flex items-center gap-4">
-              <div className="w-12 h-12 rounded-xl bg-[#e1eee3] dark:bg-[#1a2e1f] flex items-center justify-center">
-                <Users className="w-6 h-6 text-[#09724a] dark:text-[#00fb90]" />
-              </div>
-              <div>
-                <p className="text-[12px] text-[#666d80] dark:text-[#9ca3af]">Toplam Müşteri</p>
-                <p className="text-[20px] font-semibold text-[#0d0d12] dark:text-[#f9fafb]">
-                  {stats.total}
-                </p>
-              </div>
+      {/* Stats Cards - First Row */}
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-5">
+        <Card variant="stats" padding="md">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="label-sm text-on-surface-variant mb-3 uppercase tracking-wide font-semibold">Toplam</p>
+              <p className="display-lg text-on-surface leading-none">
+                {stats.total}
+              </p>
             </div>
-          </CardContent>
+            <div className="w-14 h-14 rounded-2xl bg-primary/10 flex items-center justify-center shadow-sm">
+              <Users className="w-7 h-7 text-primary" />
+            </div>
+          </div>
         </Card>
 
-        <Card className="border-[#e5e7eb]">
-          <CardContent className="p-6">
-            <div className="flex items-center gap-4">
-              <div className="w-12 h-12 rounded-xl bg-[#ecfdf3] dark:bg-[#1a2e1f] flex items-center justify-center">
-                <Shield className="w-6 h-6 text-[#10b981] dark:text-[#00fb90]" />
-              </div>
-              <div>
-                <p className="text-[12px] text-[#666d80] dark:text-[#9ca3af]">Aktif</p>
-                <p className="text-[20px] font-semibold text-[#0d0d12] dark:text-[#f9fafb]">
-                  {stats.active}
-                </p>
-              </div>
+        <Card variant="stats" padding="md">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="label-sm text-on-surface-variant mb-3 uppercase tracking-wide font-semibold">Aktif</p>
+              <p className="display-lg text-on-surface leading-none">
+                {stats.active}
+              </p>
             </div>
-          </CardContent>
+            <div className="w-14 h-14 rounded-2xl bg-success/10 flex items-center justify-center shadow-sm">
+              <Shield className="w-7 h-7 text-success" />
+            </div>
+          </div>
         </Card>
 
-        <Card className="border-[#e5e7eb]">
-          <CardContent className="p-6">
-            <div className="flex items-center gap-4">
-              <div className="w-12 h-12 rounded-xl bg-[#fff8f0] dark:bg-[#2e241a] flex items-center justify-center">
-                <Ban className="w-6 h-6 text-[#d39c3d] dark:text-[#f5a623]" />
-              </div>
-              <div>
-                <p className="text-[12px] text-[#666d80] dark:text-[#9ca3af]">Askıya Alındı</p>
-                <p className="text-[20px] font-semibold text-[#0d0d12] dark:text-[#f9fafb]">
-                  {stats.suspended}
-                </p>
-              </div>
+        <Card variant="stats" padding="md">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="label-sm text-on-surface-variant mb-3 uppercase tracking-wide font-semibold">VIP</p>
+              <p className="display-lg text-on-surface leading-none">
+                {stats.vip}
+              </p>
             </div>
-          </CardContent>
+            <div className="w-14 h-14 rounded-2xl bg-warning/10 flex items-center justify-center shadow-sm">
+              <Crown className="w-7 h-7 text-warning" />
+            </div>
+          </div>
         </Card>
 
-        <Card className="border-[#e5e7eb]">
-          <CardContent className="p-6">
-            <div className="flex items-center gap-4">
-              <div className="w-12 h-12 rounded-xl bg-[#fff0f3] dark:bg-[#2e1a1f] flex items-center justify-center">
-                <Crown className="w-6 h-6 text-[#df1c41] dark:text-[#ff6b8a]" />
-              </div>
-              <div>
-                <p className="text-[12px] text-[#666d80] dark:text-[#9ca3af]">VIP Müşteriler</p>
-                <p className="text-[20px] font-semibold text-[#0d0d12] dark:text-[#f9fafb]">
-                  {stats.vip}
-                </p>
-              </div>
+        <Card variant="stats" padding="md">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="label-sm text-on-surface-variant mb-3 uppercase tracking-wide font-semibold">Bu Ay Yeni</p>
+              <p className="display-lg text-on-surface leading-none">
+                {stats.new}
+              </p>
             </div>
-          </CardContent>
+            <div className="w-14 h-14 rounded-2xl bg-info/10 flex items-center justify-center shadow-sm">
+              <Star className="w-7 h-7 text-info" />
+            </div>
+          </div>
         </Card>
       </div>
 
-      {/* Additional Stats Row */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <Card className="border-[#e5e7eb]">
-          <CardContent className="p-6">
-            <div className="flex items-center gap-4">
-              <div className="w-12 h-12 rounded-xl bg-[#effafa] dark:bg-[#1a2e2e] flex items-center justify-center">
-                <TrendingUp className="w-6 h-6 text-[#09724a] dark:text-[#00fb90]" />
-              </div>
-              <div>
-                <p className="text-[12px] text-[#666d80] dark:text-[#9ca3af]">Toplam Harcama</p>
-                <p className="text-[20px] font-semibold text-[#0d0d12] dark:text-[#f9fafb]">
-                  {stats.totalRevenue.toLocaleString()} ₺
-                </p>
-              </div>
+      {/* Stats Cards - Second Row */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
+        <Card variant="stats" padding="md">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="label-sm text-on-surface-variant mb-3 uppercase tracking-wide font-semibold">Toplam Harcama</p>
+              <p className="display-lg text-on-surface leading-none">
+                {stats.totalRevenue.toLocaleString()} ₺
+              </p>
             </div>
-          </CardContent>
+            <div className="w-14 h-14 rounded-2xl bg-secondary/10 flex items-center justify-center shadow-sm">
+              <TrendingUp className="w-7 h-7 text-secondary" />
+            </div>
+          </div>
         </Card>
 
-        <Card className="border-[#e5e7eb]">
-          <CardContent className="p-6">
-            <div className="flex items-center gap-4">
-              <div className="w-12 h-12 rounded-xl bg-[#eff6ff] dark:bg-[#1a242e] flex items-center justify-center">
-                <Ticket className="w-6 h-6 text-[#3b82f6] dark:text-[#60a5fa]" />
-              </div>
-              <div>
-                <p className="text-[12px] text-[#666d80] dark:text-[#9ca3af]">Toplam Bilet</p>
-                <p className="text-[20px] font-semibold text-[#0d0d12] dark:text-[#f9fafb]">
-                  {customers.reduce((sum, c) => sum + (c.total_tickets || 0), 0).toLocaleString()}
-                </p>
-              </div>
+        <Card variant="stats" padding="md">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="label-sm text-on-surface-variant mb-3 uppercase tracking-wide font-semibold">Toplam Bilet</p>
+              <p className="display-lg text-on-surface leading-none">
+                {stats.totalTickets.toLocaleString()}
+              </p>
             </div>
-          </CardContent>
+            <div className="w-14 h-14 rounded-2xl bg-primary/10 flex items-center justify-center shadow-sm">
+              <Ticket className="w-7 h-7 text-primary" />
+            </div>
+          </div>
         </Card>
 
-        <Card className="border-[#e5e7eb]">
-          <CardContent className="p-6">
-            <div className="flex items-center gap-4">
-              <div className="w-12 h-12 rounded-xl bg-[#fffbeb] dark:bg-[#2e2a1a] flex items-center justify-center">
-                <Star className="w-6 h-6 text-[#f59e0b] dark:text-[#fbbf24]" />
-              </div>
-              <div>
-                <p className="text-[12px] text-[#666d80] dark:text-[#9ca3af]">Bu Ay Yeni</p>
-                <p className="text-[20px] font-semibold text-[#0d0d12] dark:text-[#f9fafb]">
-                  {stats.new}
-                </p>
-              </div>
+        <Card variant="stats" padding="md">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="label-sm text-on-surface-variant mb-3 uppercase tracking-wide font-semibold">Yasaklı</p>
+              <p className="display-lg text-on-surface leading-none">
+                {stats.banned}
+              </p>
             </div>
-          </CardContent>
+            <div className="w-14 h-14 rounded-2xl bg-danger/10 flex items-center justify-center shadow-sm">
+              <Ban className="w-7 h-7 text-danger" />
+            </div>
+          </div>
         </Card>
       </div>
 
       {/* Status Tabs */}
-      <div className="flex items-center gap-2 border-b border-[#e5e7eb] dark:border-[#374151]">
+      <div className="flex items-center gap-2 border-b border-outline/30">
         {(["all", "active", "suspended", "banned"] as const).map((status) => (
           <button
             key={status}
             onClick={() => setStatusFilter(status)}
-            className={`px-4 py-3 text-[14px] font-medium border-b-2 transition-colors ${
+            className={`px-4 py-3 body-md font-medium border-b-2 transition-colors ${
               statusFilter === status
-                ? "border-[#09724a] text-[#09724a] dark:text-[#00fb90] dark:border-[#00fb90]"
-                : "border-transparent text-[#666d80] dark:text-[#9ca3af] hover:text-[#0d0d12] dark:hover:text-[#f9fafb]"
+                ? "border-primary text-primary"
+                : "border-transparent text-on-surface-variant hover:text-on-surface hover:border-outline/50"
             }`}
           >
             {status === "all"
@@ -335,7 +328,7 @@ export default function CustomersPage() {
               : status === "suspended"
               ? "Askıda"
               : "Yasaklı"}
-            <span className="ml-2 text-[12px] text-[#818898]">
+            <span className="ml-2 body-sm text-on-surface-variant">
               ({statusCounts[status]})
             </span>
           </button>
@@ -349,26 +342,26 @@ export default function CustomersPage() {
             <button
               key={segment}
               onClick={() => setSegmentFilter(segment)}
-              className={`px-3 py-1.5 rounded-lg text-[14px] font-medium transition-colors ${
+              className={`px-3 py-1.5 rounded-lg body-sm font-medium transition-colors ${
                 segmentFilter === segment
-                  ? "bg-[#09724a] text-white dark:bg-[#00fb90] dark:text-[#0d0d12]"
-                  : "bg-[#f7f7f7] text-[#666d80] hover:text-[#0d0d12] dark:bg-[#1f2937] dark:text-[#9ca3af] dark:hover:text-[#f9fafb]"
+                  ? "bg-gradient-primary text-white shadow-glow"
+                  : "bg-surface-low text-on-surface-variant hover:text-on-surface hover:bg-surface-low/80"
               }`}
             >
               {segment === "all"
                 ? "Tümü"
-              : segment === "vip"
-              ? "VIP"
-              : segment === "regular"
-              ? "Normal"
-              : segment === "new"
-              ? "Yeni"
-              : segment === "at_risk"
-              ? "Riskli"
-              : segment === "lost"
-              ? "Kayıp"
-              : "Tek Seferlik"}
-              <span className="ml-1 text-[12px] opacity-75">
+                : segment === "vip"
+                ? "VIP"
+                : segment === "regular"
+                ? "Normal"
+                : segment === "new"
+                ? "Yeni"
+                : segment === "at_risk"
+                ? "Riskli"
+                : segment === "lost"
+                ? "Kayıp"
+                : "Tek Seferlik"}
+              <span className="ml-1 label-sm opacity-75">
                 ({segmentCounts[segment]})
               </span>
             </button>
@@ -379,16 +372,16 @@ export default function CustomersPage() {
       {/* Search & Filters */}
       <div className="flex items-center gap-4">
         <div className="relative flex-1 max-w-sm">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-[#818898] dark:text-[#9ca3af]" />
+          <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-on-surface-variant" />
           <Input
             type="search"
             placeholder="Müşteri ara..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="pl-10 h-10 rounded-lg bg-[#f7f7f7] border-[#e5e7eb] dark:bg-[#1f2937] dark:border-[#374151] dark:text-[#f9fafb] dark:placeholder:text-[#6b7280]"
+            className="pl-11"
           />
         </div>
-        <Button variant="secondary" className="h-10">
+        <Button variant="secondary">
           <Filter className="w-4 h-4 mr-2" />
           Filtreler
         </Button>
@@ -396,8 +389,8 @@ export default function CustomersPage() {
 
       {/* Bulk Actions Bar */}
       {selectedIds.length > 0 && (
-        <div className="flex items-center justify-between bg-[#e1eee3] dark:bg-[#1a2e1f] border border-[#09724a] dark:border-[#00fb90] rounded-lg p-3">
-          <p className="text-[14px] text-[#09724a] dark:text-[#00fb90]">
+        <div className="flex items-center justify-between bg-success/10 border border-success/30 rounded-xl p-4">
+          <p className="body-md text-success font-medium">
             {selectedIds.length} müşteri seçildi
           </p>
           <div className="flex items-center gap-2">
@@ -418,10 +411,10 @@ export default function CustomersPage() {
               Aktifleştir
             </Button>
             <Button
-              variant="secondary"
+              variant="ghost"
               size="small"
               onClick={() => handleBulkAction("ban")}
-              className="text-[#df1c41] hover:bg-[#fff8f0]"
+              className="text-danger hover:text-danger hover:bg-danger/10"
             >
               <Ban className="w-4 h-4 mr-2" />
               Yasakla
@@ -431,212 +424,213 @@ export default function CustomersPage() {
       )}
 
       {/* Table */}
-      <Card className="border-[#e5e7eb]">
-        <CardContent className="p-0">
-          <div className="overflow-x-auto">
-            <table className="w-full">
-              <thead>
-                <tr className="border-b border-[#e5e7eb] dark:border-[#374151] bg-[#f7f7f7] dark:bg-[#1f2937]">
-                  <th className="text-left py-3 px-4 w-12">
-                    <input
-                      type="checkbox"
-                      checked={selectedIds.length === filteredCustomers.length && filteredCustomers.length > 0}
-                      onChange={handleSelectAll}
-                      className="w-4 h-4"
-                    />
-                  </th>
-                  <th
-                    className="text-left py-3 px-4 cursor-pointer hover:bg-[#e5e7eb] dark:hover:bg-[#374151]"
-                    onClick={() => handleSort("name")}
-                  >
-                    <div className="flex items-center gap-1">
-                      <span className="text-[#0d0d12] dark:text-[#f9fafb]">Müşteri</span>
-                      <ArrowUpDown className="w-3 h-3 text-[#818898] dark:text-[#9ca3af]" />
+      <Card variant="default" padding="none">
+        <div className="overflow-x-auto">
+          <table className="w-full">
+            <thead>
+              <tr className="border-b border-outline/30 bg-surface-low/50">
+                <th className="text-left py-4 px-6 w-12">
+                  <input
+                    type="checkbox"
+                    checked={selectedIds.length === filteredCustomers.length && filteredCustomers.length > 0}
+                    onChange={handleSelectAll}
+                    className="w-4 h-4"
+                  />
+                </th>
+                <th
+                  className="text-left py-4 px-6 cursor-pointer hover:bg-surface-low/30 transition-colors"
+                  onClick={() => handleSort("name")}
+                >
+                  <div className="flex items-center gap-1">
+                    <span className="label-sm font-semibold text-on-surface-variant uppercase tracking-wide">Müşteri</span>
+                    <ArrowUpDown className="w-3 h-3 text-on-surface-variant" />
+                  </div>
+                </th>
+                <th className="text-left py-4 px-6">
+                  <span className="label-sm font-semibold text-on-surface-variant uppercase tracking-wide">İletişim</span>
+                </th>
+                <th className="text-left py-4 px-6">
+                  <span className="label-sm font-semibold text-on-surface-variant uppercase tracking-wide">Müşteri Grubu</span>
+                </th>
+                <th className="text-left py-4 px-6">
+                  <span className="label-sm font-semibold text-on-surface-variant uppercase tracking-wide">Durum</span>
+                </th>
+                <th className="text-right py-4 px-6">
+                  <span className="label-sm font-semibold text-on-surface-variant uppercase tracking-wide">İşlemler</span>
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              {isLoading ? (
+                <tr>
+                  <td colSpan={6} className="py-12 text-center">
+                    <div className="flex flex-col items-center justify-center gap-3">
+                      <Loader2 className="w-6 h-6 animate-spin text-primary" />
+                      <p className="body-md text-on-surface-variant">Yükleniyor...</p>
                     </div>
-                  </th>
-                  <th className="text-left py-3 px-4 text-[#0d0d12] dark:text-[#f9fafb]">İletişim</th>
-                  <th className="text-left py-3 px-4 text-[#0d0d12] dark:text-[#f9fafb]">Müşteri Grubu</th>
-                  <th className="text-left py-3 px-4 text-[#0d0d12] dark:text-[#f9fafb]">Durum</th>
-                  <th className="text-right py-3 px-4 text-[#0d0d12] dark:text-[#f9fafb]">İşlemler</th>
+                  </td>
                 </tr>
-              </thead>
-              <tbody>
-                {isLoading ? (
-                  <tr>
-                    <td
-                      colSpan={6}
-                      className="py-12 text-center text-[14px] text-[#666d80] dark:text-[#9ca3af]"
-                    >
-                      Yükleniyor...
+              ) : filteredCustomers.length === 0 ? (
+                <tr>
+                  <td colSpan={6} className="py-12 text-center">
+                    <div className="flex flex-col items-center justify-center gap-3">
+                      <User className="w-12 h-12 text-on-surface-variant" />
+                      <p className="body-md text-on-surface-variant">Müşteri bulunamadı</p>
+                    </div>
+                  </td>
+                </tr>
+              ) : (
+                filteredCustomers.map((customer) => (
+                  <tr
+                    key={customer.id}
+                    className="border-b border-outline/30 last:border-0 hover:bg-surface-low/30 transition-colors"
+                  >
+                    <td className="py-4 px-6">
+                      <input
+                        type="checkbox"
+                        checked={selectedIds.includes(customer.id)}
+                        onChange={() => handleSelectCustomer(customer.id)}
+                        className="w-4 h-4"
+                      />
                     </td>
-                  </tr>
-                ) : filteredCustomers.length === 0 ? (
-                  <tr>
-                    <td
-                      colSpan={6}
-                      className="py-12 text-center text-[14px] text-[#666d80] dark:text-[#9ca3af]"
-                    >
-                      Müşteri bulunamadı
-                    </td>
-                  </tr>
-                ) : (
-                  filteredCustomers.map((customer) => (
-                    <tr
-                      key={customer.id}
-                      className="border-b border-[#e5e7eb] dark:border-[#374151] hover:bg-[#f7f7f7] dark:hover:bg-[#1f2937] transition-colors"
-                    >
-                      <td className="py-3 px-4">
-                        <input
-                          type="checkbox"
-                          checked={selectedIds.includes(customer.id)}
-                          onChange={() => handleSelectCustomer(customer.id)}
-                          className="w-4 h-4"
-                        />
-                      </td>
-                      <td className="py-3 px-4">
-                        <div className="flex items-center gap-3">
-                          <div className="w-10 h-10 rounded-full bg-[#e1eee3] dark:bg-[#1a2e1f] border border-[#09724a] dark:border-[#00fb90] flex items-center justify-center flex-shrink-0">
-                            {customer.avatar ? (
-                              <img
-                                src={customer.avatar}
-                                alt={customer.name}
-                                className="w-full h-full rounded-full object-cover"
-                              />
-                            ) : (
-                              <User className="w-5 h-5 text-[#09724a] dark:text-[#00fb90]" />
-                            )}
-                          </div>
-                          <div>
-                            <p className="text-[14px] font-medium text-[#0d0d12] dark:text-[#f9fafb]">
-                              {customer.name}
-                            </p>
-                            <div className="flex items-center gap-1 text-[12px] text-[#666d80] dark:text-[#9ca3af]">
-                              <Mail className="w-3 h-3" />
-                              {customer.email}
-                            </div>
-                          </div>
-                        </div>
-                      </td>
-                      <td className="py-3 px-4">
-                        <div className="flex items-center gap-2">
-                          <Phone className="w-4 h-4 text-[#818898] dark:text-[#9ca3af]" />
-                          <p className="text-[14px] text-[#666d80] dark:text-[#9ca3af]">
-                            {customer.phone || "-"}
-                          </p>
-                        </div>
-                      </td>
-                      <td className="py-3 px-4">
-                        {customer.user_group_label && (
-                          <Badge variant="info">
-                            {customer.user_group_label}
-                          </Badge>
-                        )}
-                      </td>
-                      <td className="py-3 px-4">
-                        <Badge variant={statusVariantMap[customer.status]}>
-                          {statusLabels[customer.status]}
-                        </Badge>
-                      </td>
-                      <td className="py-3 px-4">
-                        <div className="relative">
-                          <button
-                            onClick={() =>
-                              setShowActionsId(
-                                showActionsId === customer.id ? null : customer.id
-                              )
-                            }
-                            className="w-8 h-8 rounded-lg flex items-center justify-center hover:bg-[#f7f7f7] dark:hover:bg-[#374151] transition-colors"
-                          >
-                            <MoreHorizontal className="w-4 h-4 text-[#666d80] dark:text-[#9ca3af]" />
-                          </button>
-
-                          {showActionsId === customer.id && (
-                            <div className="absolute right-0 top-full mt-1 w-40 bg-white dark:bg-[#1f2937] rounded-lg border border-[#e5e7eb] dark:border-[#374151] shadow-lg py-1 z-10">
-                              <Link
-                                href={`/customers/${customer.id}`}
-                                className="flex items-center gap-2 px-3 py-2 text-[14px] text-[#0d0d12] dark:text-[#f9fafb] hover:bg-[#f7f7f7] dark:hover:bg-[#374151]"
-                                onClick={() => setShowActionsId(null)}
-                              >
-                                <Eye className="w-4 h-4" />
-                                Detayları Görüntüle
-                              </Link>
-                              <Link
-                                href={`/customers/${customer.id}/edit`}
-                                className="flex items-center gap-2 px-3 py-2 text-[14px] text-[#0d0d12] dark:text-[#f9fafb] hover:bg-[#f7f7f7] dark:hover:bg-[#374151]"
-                                onClick={() => setShowActionsId(null)}
-                              >
-                                <Edit className="w-4 h-4" />
-                                Düzenle
-                              </Link>
-                              {customer.status === "active" && (
-                                <button
-                                  onClick={() => {
-                                    setShowActionsId(null);
-                                    // TODO: Suspend customer
-                                  }}
-                                  className="flex items-center gap-2 w-full px-3 py-2 text-[14px] text-[#d39c3d] dark:text-[#f5a623] hover:bg-[#fff8f0] dark:hover:bg-[#2e241a]"
-                                >
-                                  <Ban className="w-4 h-4" />
-                                  Askıya Al
-                                </button>
-                              )}
-                              {customer.status !== "active" && (
-                                <button
-                                  onClick={() => {
-                                    setShowActionsId(null);
-                                    // TODO: Activate customer
-                                  }}
-                                  className="flex items-center gap-2 w-full px-3 py-2 text-[14px] text-[#09724a] dark:text-[#00fb90] hover:bg-[#e1eee3] dark:hover:bg-[#1a2e1f]"
-                                >
-                                  <Shield className="w-4 h-4" />
-                                  Etkinleştir
-                                </button>
-                              )}
-                            </div>
+                    <td className="py-4 px-6">
+                      <div className="flex items-center gap-3">
+                        <div className="w-10 h-10 rounded-full bg-primary/10 border border-primary/20 flex items-center justify-center flex-shrink-0">
+                          {customer.avatar ? (
+                            <img
+                              src={customer.avatar}
+                              alt={customer.name}
+                              className="w-full h-full rounded-full object-cover"
+                            />
+                          ) : (
+                            <User className="w-5 h-5 text-primary" />
                           )}
                         </div>
-                      </td>
-                    </tr>
-                  ))
-                )}
-              </tbody>
-            </table>
-          </div>
+                        <div>
+                          <p className="body-md font-medium text-on-surface">
+                            {customer.name}
+                          </p>
+                          <div className="flex items-center gap-1 body-sm text-on-surface-variant">
+                            <Mail className="w-3 h-3" />
+                            {customer.email}
+                          </div>
+                        </div>
+                      </div>
+                    </td>
+                    <td className="py-4 px-6">
+                      <div className="flex items-center gap-2">
+                        <Phone className="w-4 h-4 text-on-surface-variant" />
+                        <p className="body-md text-on-surface-variant">
+                          {customer.phone || "-"}
+                        </p>
+                      </div>
+                    </td>
+                    <td className="py-4 px-6">
+                      {customer.user_group_label && (
+                        <Badge variant="info">
+                          {customer.user_group_label}
+                        </Badge>
+                      )}
+                    </td>
+                    <td className="py-4 px-6">
+                      <Badge variant={statusVariantMap[customer.status]}>
+                        {statusLabels[customer.status]}
+                      </Badge>
+                    </td>
+                    <td className="py-4 px-6">
+                      <div className="relative">
+                        <button
+                          onClick={() =>
+                            setShowActionsId(
+                              showActionsId === customer.id ? null : customer.id
+                            )
+                          }
+                          className="w-8 h-8 rounded-lg flex items-center justify-center hover:bg-surface-low transition-colors"
+                        >
+                          <ArrowUpDown className="w-4 h-4 text-on-surface-variant" />
+                        </button>
 
-          {/* Pagination */}
-          <div className="flex items-center justify-between p-4 border-t border-[#e5e7eb] dark:border-[#374151]">
-            <p className="text-[14px] text-[#666d80] dark:text-[#9ca3af]">
-              {filteredCustomers.length} sonuçtan gösteriliyor
-            </p>
-            <div className="flex items-center gap-2">
-              <Button
-                variant="secondary"
-                size="small"
-                disabled={true}
-                className="opacity-50"
-              >
-                <ChevronLeft className="w-4 h-4 mr-1" />
-                Önceki
-              </Button>
-              <Button
-                variant="secondary"
-                size="small"
-                className="bg-[#09724a] text-white"
-              >
-                1
-              </Button>
-              <Button
-                variant="secondary"
-                size="small"
-                disabled={true}
-                className="opacity-50"
-              >
-                Sonraki
-                <ChevronRight className="w-4 h-4 ml-1" />
-              </Button>
-            </div>
+                        {showActionsId === customer.id && (
+                          <div className="absolute right-0 top-full mt-1 w-48 bg-white dark:bg-surface-higher rounded-xl border border-outline/30 shadow-glow py-1 z-10">
+                            <Link
+                              href={`/customers/${customer.id}`}
+                              className="flex items-center gap-2 px-3 py-2 body-md text-on-surface hover:bg-surface-low transition-colors"
+                              onClick={() => setShowActionsId(null)}
+                            >
+                              <Eye className="w-4 h-4" />
+                              Detayları Görüntüle
+                            </Link>
+                            <Link
+                              href={`/customers/${customer.id}/edit`}
+                              className="flex items-center gap-2 px-3 py-2 body-md text-on-surface hover:bg-surface-low transition-colors"
+                              onClick={() => setShowActionsId(null)}
+                            >
+                              <Edit className="w-4 h-4" />
+                              Düzenle
+                            </Link>
+                            {customer.status === "active" && (
+                              <button
+                                onClick={() => {
+                                  setShowActionsId(null);
+                                }}
+                                className="flex items-center gap-2 w-full px-3 py-2 body-md text-warning hover:bg-warning/10 transition-colors"
+                              >
+                                <Ban className="w-4 h-4" />
+                                Askıya Al
+                              </button>
+                            )}
+                            {customer.status !== "active" && (
+                              <button
+                                onClick={() => {
+                                  setShowActionsId(null);
+                                }}
+                                className="flex items-center gap-2 w-full px-3 py-2 body-md text-success hover:bg-success/10 transition-colors"
+                              >
+                                <Shield className="w-4 h-4" />
+                                Etkinleştir
+                              </button>
+                            )}
+                          </div>
+                        )}
+                      </div>
+                    </td>
+                  </tr>
+                ))
+              )}
+            </tbody>
+          </table>
+        </div>
+
+        {/* Pagination */}
+        <div className="flex items-center justify-between p-4 border-t border-outline/30">
+          <p className="body-md text-on-surface-variant">
+            {filteredCustomers.length} sonuçtan gösteriliyor
+          </p>
+          <div className="flex items-center gap-2">
+            <Button
+              variant="secondary"
+              size="small"
+              disabled={true}
+            >
+              <ChevronLeft className="w-4 h-4 mr-1" />
+              Önceki
+            </Button>
+            <Button
+              variant="primary"
+              size="small"
+            >
+              1
+            </Button>
+            <Button
+              variant="secondary"
+              size="small"
+              disabled={true}
+            >
+              Sonraki
+              <ChevronRight className="w-4 h-4 ml-1" />
+            </Button>
           </div>
-        </CardContent>
+        </div>
       </Card>
     </div>
   );

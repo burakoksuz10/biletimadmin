@@ -83,33 +83,33 @@ export function Sidebar({ isCollapsed, onToggle }: SidebarProps) {
   return (
     <aside
       className={cn(
-        "fixed left-0 top-0 h-screen bg-white dark:bg-[#111827] border-r border-[#e5e7eb] dark:border-[#374151] transition-all duration-300 z-40",
-        isCollapsed ? "w-[80px]" : "w-[300px]"
+        "fixed left-0 top-0 h-screen glass-nav border-r border-outline/20 transition-all duration-300 z-40",
+        isCollapsed ? "w-[80px]" : "w-sidebar"
       )}
     >
       <div className="flex flex-col h-full">
         {/* Logo */}
-        <div className="h-[72px] flex items-center justify-between px-6 border-b border-[#e5e7eb] dark:border-[#374151]">
+        <div className="h-header flex items-center justify-between px-6 border-b border-outline/20">
           {!isCollapsed && (
             <Link href="/" className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-[9.85px] bg-[#09724a] dark:bg-[#00fb90] flex items-center justify-center">
-                <div className="w-6 h-6 rounded-full bg-[#e1eee3] dark:bg-[#111827] border border-[#09724a] dark:border-[#00fb90]" />
+              <div className="w-10 h-10 rounded-xl bg-gradient-primary flex items-center justify-center shadow-glow">
+                <div className="w-5 h-5 rounded-full bg-white/90" />
               </div>
-              <span className="text-[20px] font-bold text-[#0d0d12] dark:text-[#ffffff]">
+              <span className="text-xl font-semibold text-on-surface">
                 Biletim
               </span>
             </Link>
           )}
           {isCollapsed && (
-            <div className="w-10 h-10 rounded-[9.85px] bg-[#09724a] dark:bg-[#00fb90] flex items-center justify-center mx-auto">
-              <div className="w-6 h-6 rounded-full bg-[#e1eee3] dark:bg-[#111827] border border-[#09724a] dark:border-[#00fb90]" />
+            <div className="w-10 h-10 rounded-xl bg-gradient-primary flex items-center justify-center mx-auto shadow-glow">
+              <div className="w-5 h-5 rounded-full bg-white/90" />
             </div>
           )}
         </div>
 
         {/* Navigation */}
         <nav className="flex-1 overflow-y-auto py-6 px-4">
-          <ul className="space-y-2">
+          <ul className="space-y-1">
             {menuItems.map((item) => {
               const Icon = item.icon;
               const isActive = pathname === item.href || pathname.startsWith(item.href + "/");
@@ -119,17 +119,17 @@ export function Sidebar({ isCollapsed, onToggle }: SidebarProps) {
                   <Link
                     href={item.href}
                     className={cn(
-                      "flex items-center gap-3 rounded-lg px-3 py-2.5 transition-colors",
+                      "flex items-center gap-3 rounded-xl px-3 py-2.5 transition-all duration-200",
                       isActive
-                        ? "bg-[#e1eee3] dark:bg-[#1f1f21] text-[#09724a] dark:text-[#00fb90]"
-                        : "text-[#666d80] dark:text-[#9ca3af] hover:bg-[#f7f7f7] dark:hover:bg-[#1f1f21] hover:text-[#0d0d12] dark:hover:text-[#ffffff]",
+                        ? "bg-gradient-primary text-white shadow-glow"
+                        : "text-on-surface-variant hover:bg-surface-low hover:text-on-surface",
                       isCollapsed && "justify-center"
                     )}
                     title={isCollapsed ? item.title : undefined}
                   >
                     <Icon className="w-5 h-5 flex-shrink-0" />
                     {!isCollapsed && (
-                      <span className="text-[14px] font-medium">
+                      <span className="text-sm font-medium">
                         {item.title}
                       </span>
                     )}
@@ -141,11 +141,11 @@ export function Sidebar({ isCollapsed, onToggle }: SidebarProps) {
         </nav>
 
         {/* Toggle Button */}
-        <div className="p-4 border-t border-[#e5e7eb] dark:border-[#374151]">
+        <div className="p-4 border-t border-outline/20">
           <button
             onClick={onToggle}
             className={cn(
-              "flex items-center gap-3 w-full rounded-lg px-3 py-2.5 text-[#666d80] dark:text-[#9ca3af] hover:bg-[#f7f7f7] dark:hover:bg-[#1f1f21] hover:text-[#0d0d12] dark:hover:text-[#ffffff] transition-colors",
+              "flex items-center gap-3 w-full rounded-xl px-3 py-2.5 text-on-surface-variant hover:bg-surface-low hover:text-on-surface transition-all duration-200",
               isCollapsed && "justify-center"
             )}
           >
@@ -154,7 +154,7 @@ export function Sidebar({ isCollapsed, onToggle }: SidebarProps) {
             ) : (
               <>
                 <ChevronLeft className="w-5 h-5" />
-                <span className="text-[14px] font-medium">Daralt</span>
+                <span className="text-sm font-medium">Daralt</span>
               </>
             )}
           </button>

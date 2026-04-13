@@ -18,7 +18,6 @@ import {
   Search,
   ChevronLeft,
   ChevronRight,
-  MoreHorizontal,
   Eye,
   Edit,
   Ban,
@@ -31,6 +30,10 @@ import {
   User,
   Users,
   Crown,
+  Loader2,
+  ShieldCheck,
+  UserCog,
+  MoreHorizontal,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -39,7 +42,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { formatDate } from "@/lib/utils";
 import { usersService } from "@/lib/api/services";
 import type { BackendUser } from "@/lib/api/types/biletleme.types";
-import type { UserListItem, UserRole, UserStatus } from "@/types/user.types";
+import type { UserRole, UserStatus } from "@/types/user.types";
 
 const roleVariantMap: Record<UserRole, "success" | "info" | "neutral"> = {
   super_admin: "success",
@@ -55,7 +58,7 @@ const statusVariantMap: Record<UserStatus, "success" | "warning" | "danger"> = {
 
 const roleLabels: Record<UserRole, string> = {
   super_admin: "Süper Admin",
-  org_admin: "Organizatör Admini",
+  org_admin: "Org. Admin",
   co_admin: "Co-Admin",
 };
 
@@ -105,7 +108,7 @@ export default function UsersPage() {
         accessorKey: "name",
         header: ({ column }) => (
           <button
-            className="flex items-center gap-1 text-[12px] font-medium text-[#818898] uppercase tracking-wider"
+            className="flex items-center gap-1 label-sm font-semibold text-on-surface-variant uppercase tracking-wide"
             onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
           >
             Kullanıcı
@@ -114,14 +117,14 @@ export default function UsersPage() {
         ),
         cell: ({ row }) => (
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-full bg-[#e1eee3] border border-[#09724a] flex items-center justify-center flex-shrink-0">
-              <User className="w-5 h-5 text-[#09724a]" />
+            <div className="w-10 h-10 rounded-full bg-primary/10 border border-primary/20 flex items-center justify-center flex-shrink-0">
+              <User className="w-5 h-5 text-primary" />
             </div>
             <div>
-              <p className="text-[14px] font-medium text-[#0d0d12]">
+              <p className="body-md font-medium text-on-surface">
                 {row.original.name}
               </p>
-              <div className="flex items-center gap-1 text-[12px] text-[#666d80]">
+              <div className="flex items-center gap-1 body-sm text-on-surface-variant">
                 <Mail className="w-3 h-3" />
                 {row.original.email}
               </div>
@@ -132,14 +135,14 @@ export default function UsersPage() {
       {
         accessorKey: "phone",
         header: () => (
-          <span className="text-[12px] font-medium text-[#818898] uppercase tracking-wider">
+          <span className="label-sm font-semibold text-on-surface-variant uppercase tracking-wide">
             İletişim
           </span>
         ),
         cell: ({ row }) => (
           <div className="flex items-center gap-2">
-            <Phone className="w-4 h-4 text-[#818898]" />
-            <p className="text-[14px] text-[#666d80]">{row.original.phone || "-"}</p>
+            <Phone className="w-4 h-4 text-on-surface-variant" />
+            <p className="body-md text-on-surface-variant">{row.original.phone || "-"}</p>
           </div>
         ),
       },
@@ -147,7 +150,7 @@ export default function UsersPage() {
         accessorKey: "role",
         header: ({ column }) => (
           <button
-            className="flex items-center gap-1 text-[12px] font-medium text-[#818898] uppercase tracking-wider"
+            className="flex items-center gap-1 label-sm font-semibold text-on-surface-variant uppercase tracking-wide"
             onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
           >
             Rol
@@ -164,7 +167,7 @@ export default function UsersPage() {
         accessorKey: "status",
         header: ({ column }) => (
           <button
-            className="flex items-center gap-1 text-[12px] font-medium text-[#818898] uppercase tracking-wider"
+            className="flex items-center gap-1 label-sm font-semibold text-on-surface-variant uppercase tracking-wide"
             onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
           >
             Durum
@@ -181,7 +184,7 @@ export default function UsersPage() {
         accessorKey: "created_at",
         header: ({ column }) => (
           <button
-            className="flex items-center gap-1 text-[12px] font-medium text-[#818898] uppercase tracking-wider"
+            className="flex items-center gap-1 label-sm font-semibold text-on-surface-variant uppercase tracking-wide"
             onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
           >
             Katılma Tarihi
@@ -190,8 +193,8 @@ export default function UsersPage() {
         ),
         cell: ({ row }) => (
           <div className="flex items-center gap-2">
-            <Calendar className="w-4 h-4 text-[#818898]" />
-            <p className="text-[14px] text-[#666d80]">
+            <Calendar className="w-4 h-4 text-on-surface-variant" />
+            <p className="body-md text-on-surface-variant">
               {formatDate(row.original.created_at)}
             </p>
           </div>
@@ -200,7 +203,7 @@ export default function UsersPage() {
       {
         id: "actions",
         header: () => (
-          <span className="text-[12px] font-medium text-[#818898] uppercase tracking-wider">
+          <span className="label-sm font-semibold text-on-surface-variant uppercase tracking-wide">
             İşlemler
           </span>
         ),
@@ -212,16 +215,16 @@ export default function UsersPage() {
                   showActionsId === row.original.id ? null : row.original.id
                 )
               }
-              className="w-8 h-8 rounded-lg flex items-center justify-center hover:bg-[#f7f7f7] transition-colors"
+              className="w-8 h-8 rounded-lg flex items-center justify-center hover:bg-surface-low transition-colors"
             >
-              <MoreHorizontal className="w-4 h-4 text-[#666d80]" />
+              <MoreHorizontal className="w-4 h-4 text-on-surface-variant" />
             </button>
 
             {showActionsId === row.original.id && (
-              <div className="absolute right-0 top-full mt-1 w-40 bg-white rounded-lg border border-[#e5e7eb] shadow-lg py-1 z-10">
+              <div className="absolute right-0 top-full mt-1 w-48 bg-white dark:bg-surface-higher rounded-xl border border-outline/30 shadow-glow py-1 z-10">
                 <Link
                   href={`/users/${row.original.id}`}
-                  className="flex items-center gap-2 px-3 py-2 text-[14px] text-[#0d0d12] hover:bg-[#f7f7f7]"
+                  className="flex items-center gap-2 px-3 py-2 body-md text-on-surface hover:bg-surface-low transition-colors"
                   onClick={() => setShowActionsId(null)}
                 >
                   <Eye className="w-4 h-4" />
@@ -229,7 +232,7 @@ export default function UsersPage() {
                 </Link>
                 <Link
                   href={`/users/${row.original.id}/edit`}
-                  className="flex items-center gap-2 px-3 py-2 text-[14px] text-[#0d0d12] hover:bg-[#f7f7f7]"
+                  className="flex items-center gap-2 px-3 py-2 body-md text-on-surface hover:bg-surface-low transition-colors"
                   onClick={() => setShowActionsId(null)}
                 >
                   <Edit className="w-4 h-4" />
@@ -238,7 +241,7 @@ export default function UsersPage() {
                 {row.original.status === "active" && (
                   <button
                     onClick={() => setShowActionsId(null)}
-                    className="flex items-center gap-2 w-full px-3 py-2 text-[14px] text-[#d39c3d] hover:bg-[#fff8f0]"
+                    className="flex items-center gap-2 w-full px-3 py-2 body-md text-warning hover:bg-warning/10 transition-colors"
                   >
                     <Ban className="w-4 h-4" />
                     Askıya Al
@@ -247,7 +250,7 @@ export default function UsersPage() {
                 {row.original.status !== "active" && (
                   <button
                     onClick={() => setShowActionsId(null)}
-                    className="flex items-center gap-2 w-full px-3 py-2 text-[14px] text-[#09724a] hover:bg-[#e1eee3]"
+                    className="flex items-center gap-2 w-full px-3 py-2 body-md text-success hover:bg-success/10 transition-colors"
                   >
                     <Shield className="w-4 h-4" />
                     Etkinleştir
@@ -307,100 +310,97 @@ export default function UsersPage() {
       {/* Page Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-[24px] font-semibold text-[#0d0d12]">Kullanıcılar</h1>
-          <p className="text-[14px] text-[#666d80] mt-1">
+          <h1 className="headline-lg text-on-surface">
+            Kullanıcılar
+          </h1>
+          <p className="body-md text-on-surface-variant mt-1">
             Tüm kullanıcıları ve izinlerini yönetin
           </p>
         </div>
-        <Button>
-          <Users className="w-4 h-4 mr-2" />
+        <Button variant="primary">
+          <UserCog className="w-4 h-4 mr-2" />
           Kullanıcı Ekle
         </Button>
       </div>
 
       {/* Stats Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-        <Card className="border-[#e5e7eb]">
-          <CardContent className="p-6">
-            <div className="flex items-center gap-4">
-              <div className="w-12 h-12 rounded-xl bg-[#e1eee3] dark:bg-[#1a2e1f] flex items-center justify-center">
-                <Users className="w-6 h-6 text-[#09724a] dark:text-[#00fb90]" />
-              </div>
-              <div>
-                <p className="text-[12px] text-[#666d80] dark:text-[#9ca3af]">Toplam Kullanıcı</p>
-                <p className="text-[20px] font-semibold text-[#0d0d12] dark:text-[#f9fafb]">
-                  {users.length}
-                </p>
-              </div>
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-5">
+        <Card variant="stats" padding="md">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="label-sm text-on-surface-variant mb-3 uppercase tracking-wide font-semibold">Toplam</p>
+              <p className="display-lg text-on-surface leading-none">
+                {users.length}
+              </p>
             </div>
-          </CardContent>
+            <div className="w-14 h-14 rounded-2xl bg-primary/10 flex items-center justify-center shadow-sm">
+              <Users className="w-7 h-7 text-primary" />
+            </div>
+          </div>
         </Card>
-        <Card className="border-[#e5e7eb]">
-          <CardContent className="p-6">
-            <div className="flex items-center gap-4">
-              <div className="w-12 h-12 rounded-xl bg-[#effefa] dark:bg-[#1a2e2e] flex items-center justify-center">
-                <Shield className="w-6 h-6 text-[#09724a] dark:text-[#00fb90]" />
-              </div>
-              <div>
-                <p className="text-[12px] text-[#666d80] dark:text-[#9ca3af]">Aktif</p>
-                <p className="text-[20px] font-semibold text-[#0d0d12] dark:text-[#f9fafb]">
-                  {statusCounts.active}
-                </p>
-              </div>
+
+        <Card variant="stats" padding="md">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="label-sm text-on-surface-variant mb-3 uppercase tracking-wide font-semibold">Aktif</p>
+              <p className="display-lg text-on-surface leading-none">
+                {statusCounts.active}
+              </p>
             </div>
-          </CardContent>
+            <div className="w-14 h-14 rounded-2xl bg-success/10 flex items-center justify-center shadow-sm">
+              <ShieldCheck className="w-7 h-7 text-success" />
+            </div>
+          </div>
         </Card>
-        <Card className="border-[#e5e7eb]">
-          <CardContent className="p-6">
-            <div className="flex items-center gap-4">
-              <div className="w-12 h-12 rounded-xl bg-[#fff8f0] dark:bg-[#2e241a] flex items-center justify-center">
-                <Ban className="w-6 h-6 text-[#d39c3d] dark:text-[#f5a623]" />
-              </div>
-              <div>
-                <p className="text-[12px] text-[#666d80] dark:text-[#9ca3af]">Askıya Alındı</p>
-                <p className="text-[20px] font-semibold text-[#0d0d12] dark:text-[#f9fafb]">
-                  {statusCounts.suspended}
-                </p>
-              </div>
+
+        <Card variant="stats" padding="md">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="label-sm text-on-surface-variant mb-3 uppercase tracking-wide font-semibold">Org. Admin</p>
+              <p className="display-lg text-on-surface leading-none">
+                {roleCounts.org_admin}
+              </p>
             </div>
-          </CardContent>
+            <div className="w-14 h-14 rounded-2xl bg-info/10 flex items-center justify-center shadow-sm">
+              <Crown className="w-7 h-7 text-info" />
+            </div>
+          </div>
         </Card>
-        <Card className="border-[#e5e7eb]">
-          <CardContent className="p-6">
-            <div className="flex items-center gap-4">
-              <div className="w-12 h-12 rounded-xl bg-[#fff0f3] dark:bg-[#2e1a1f] flex items-center justify-center">
-                <Crown className="w-6 h-6 text-[#df1c41] dark:text-[#ff6b8a]" />
-              </div>
-              <div>
-                <p className="text-[12px] text-[#666d80] dark:text-[#9ca3af]">Org. Adminler</p>
-                <p className="text-[20px] font-semibold text-[#0d0d12] dark:text-[#f9fafb]">
-                  {roleCounts.org_admin}
-                </p>
-              </div>
+
+        <Card variant="stats" padding="md">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="label-sm text-on-surface-variant mb-3 uppercase tracking-wide font-semibold">Askıya Alındı</p>
+              <p className="display-lg text-on-surface leading-none">
+                {statusCounts.suspended}
+              </p>
             </div>
-          </CardContent>
+            <div className="w-14 h-14 rounded-2xl bg-warning/10 flex items-center justify-center shadow-sm">
+              <Ban className="w-7 h-7 text-warning" />
+            </div>
+          </div>
         </Card>
       </div>
 
       {/* Role Tabs */}
-      <div className="flex items-center gap-2 border-b border-[#e5e7eb] dark:border-[#374151]">
+      <div className="flex items-center gap-2 border-b border-outline/30">
         {(["all", "super_admin", "org_admin", "co_admin"] as const).map(
           (role) => (
             <button
               key={role}
               onClick={() => setRoleFilter(role)}
-              className={`px-4 py-3 text-[14px] font-medium border-b-2 transition-colors ${
+              className={`px-4 py-3 body-md font-medium border-b-2 transition-colors ${
                 roleFilter === role
-                  ? "border-[#09724a] text-[#09724a] dark:text-[#00fb90] dark:border-[#00fb90]"
-                  : "border-transparent text-[#666d80] dark:text-[#9ca3af] hover:text-[#0d0d12] dark:hover:text-[#f9fafb]"
+                  ? "border-primary text-primary"
+                  : "border-transparent text-on-surface-variant hover:text-on-surface hover:border-outline/50"
               }`}
             >
               {role === "super_admin"
-                ? "Süper Adminler"
+                ? "Süper Admin"
                 : role === "org_admin"
-                ? "Org. Adminler"
-                : "Co-Adminler"}
-              <span className="ml-2 text-[12px] text-[#818898]">
+                ? "Org. Admin"
+                : "Co-Admin"}
+              <span className="ml-2 body-sm text-on-surface-variant">
                 ({roleCounts[role]})
               </span>
             </button>
@@ -414,14 +414,20 @@ export default function UsersPage() {
           <button
             key={status}
             onClick={() => setStatusFilter(status)}
-            className={`px-3 py-1.5 rounded-lg text-[14px] font-medium transition-colors ${
+            className={`px-3 py-1.5 rounded-lg body-sm font-medium transition-colors ${
               statusFilter === status
-                ? "bg-[#09724a] text-white dark:bg-[#00fb90] dark:text-[#0d0d12]"
-                : "bg-[#f7f7f7] text-[#666d80] hover:text-[#0d0d12] dark:bg-[#1f2937] dark:text-[#9ca3af] dark:hover:text-[#f9fafb]"
+                ? "bg-gradient-primary text-white shadow-glow"
+                : "bg-surface-low text-on-surface-variant hover:text-on-surface hover:bg-surface-low/80"
             }`}
           >
-            {status.charAt(0).toUpperCase() + status.slice(1)}
-            <span className="ml-1 text-[12px] opacity-75">
+            {status === "all"
+              ? "Tümü"
+              : status === "active"
+              ? "Aktif"
+              : status === "suspended"
+              ? "Askıda"
+              : "Yasaklı"}
+            <span className="ml-1 label-sm opacity-75">
               ({statusCounts[status]})
             </span>
           </button>
@@ -431,137 +437,139 @@ export default function UsersPage() {
       {/* Search & Filters */}
       <div className="flex items-center gap-4">
         <div className="relative flex-1 max-w-sm">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-[#818898] dark:text-[#9ca3af]" />
+          <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-on-surface-variant" />
           <Input
             type="search"
             placeholder="Kullanıcı ara..."
             value={globalFilter}
             onChange={(e) => setGlobalFilter(e.target.value)}
-            className="pl-10 h-10 rounded-lg bg-[#f7f7f7] border-[#e5e7eb] dark:bg-[#1f2937] dark:border-[#374151] dark:text-[#f9fafb] dark:placeholder:text-[#6b7280]"
+            className="pl-11"
           />
         </div>
-        <Button variant="secondary" className="h-10">
+        <Button variant="secondary">
           <Filter className="w-4 h-4 mr-2" />
           Filtreler
         </Button>
       </div>
 
       {/* Table */}
-      <Card className="border-[#e5e7eb]">
+      <Card variant="default" padding="none">
         <CardContent className="p-0">
-          <div className="overflow-x-auto">
-            <table className="w-full">
-              <thead>
-                {table.getHeaderGroups().map((headerGroup) => (
-                  <tr
-                    key={headerGroup.id}
-                    className="border-b border-[#e5e7eb] dark:border-[#374151] bg-[#f7f7f7] dark:bg-[#1f2937]"
-                  >
-                    {headerGroup.headers.map((header) => (
-                      <th
-                        key={header.id}
-                        className="text-left py-3 px-4"
-                      >
-                        {header.isPlaceholder
-                          ? null
-                          : flexRender(
-                              header.column.columnDef.header,
-                              header.getContext()
-                            )}
-                      </th>
-                    ))}
-                  </tr>
-                ))}
-              </thead>
-              <tbody>
-                {isLoading ? (
-                  <tr>
-                    <td
-                      colSpan={columns.length}
-                      className="text-center py-12 text-[14px] text-[#666d80] dark:text-[#9ca3af]"
-                    >
-                      Yükleniyor...
-                    </td>
-                  </tr>
-                ) : table.getRowModel().rows.length === 0 ? (
-                  <tr>
-                    <td
-                      colSpan={columns.length}
-                      className="text-center py-12 text-[14px] text-[#666d80] dark:text-[#9ca3af]"
-                    >
-                      Kullanıcı bulunamadı.
-                    </td>
-                  </tr>
-                ) : (
-                  table.getRowModel().rows.map((row) => (
-                    <tr
-                      key={row.id}
-                      className="border-b border-[#e5e7eb] dark:border-[#374151] hover:bg-[#f7f7f7] dark:hover:bg-[#1f2937] transition-colors"
-                    >
-                      {row.getVisibleCells().map((cell) => (
-                        <td key={cell.id} className="py-3 px-4">
-                          {flexRender(
-                            cell.column.columnDef.cell,
-                            cell.getContext()
-                          )}
-                        </td>
-                      ))}
-                    </tr>
-                  ))
-                )}
-              </tbody>
-            </table>
-          </div>
-
-          {/* Pagination */}
-          <div className="flex items-center justify-between p-4 border-t border-[#e5e7eb] dark:border-[#374151]">
-            <p className="text-[14px] text-[#666d80] dark:text-[#9ca3af]">
-              {table.getFilteredRowModel().rows.length} sonuçtan{" "}
-              {table.getState().pagination.pageIndex *
-                table.getState().pagination.pageSize +
-                1}{" "}
-              -{" "}
-              {Math.min(
-                (table.getState().pagination.pageIndex + 1) *
-                  table.getState().pagination.pageSize,
-                table.getFilteredRowModel().rows.length
-              )}{" "}
-              arası gösteriliyor
-            </p>
-            <div className="flex items-center gap-2">
-              <Button
-                variant="secondary"
-                size="small"
-                onClick={() => table.previousPage()}
-                disabled={!table.getCanPreviousPage()}
-              >
-                <ChevronLeft className="w-4 h-4 mr-1" />
-                Önceki
-              </Button>
-              {Array.from({ length: table.getPageCount() }, (_, i) => (
-                <button
-                  key={i}
-                  onClick={() => table.setPageIndex(i)}
-                  className={`w-8 h-8 rounded-lg text-[14px] font-medium transition-colors ${
-                    table.getState().pagination.pageIndex === i
-                      ? "bg-[#09724a] text-white dark:bg-[#00fb90] dark:text-[#0d0d12]"
-                      : "text-[#666d80] hover:bg-[#f7f7f7] dark:text-[#9ca3af] dark:hover:bg-[#1f2937]"
-                  }`}
-                >
-                  {i + 1}
-                </button>
-              ))}
-              <Button
-                variant="secondary"
-                size="small"
-                onClick={() => table.nextPage()}
-                disabled={!table.getCanNextPage()}
-              >
-                Sonraki
-                <ChevronRight className="w-4 h-4 ml-1" />
-              </Button>
+          {isLoading ? (
+            <div className="flex items-center justify-center py-12">
+              <Loader2 className="w-6 h-6 animate-spin text-primary" />
             </div>
-          </div>
+          ) : (
+            <>
+              <div className="overflow-x-auto">
+                <table className="w-full">
+                  <thead>
+                    {table.getHeaderGroups().map((headerGroup) => (
+                      <tr
+                        key={headerGroup.id}
+                        className="border-b border-outline/30 bg-surface-low/50"
+                      >
+                        {headerGroup.headers.map((header) => (
+                          <th
+                            key={header.id}
+                            className="text-left py-4 px-6"
+                          >
+                            {header.isPlaceholder
+                              ? null
+                              : flexRender(
+                                  header.column.columnDef.header,
+                                  header.getContext()
+                                )}
+                          </th>
+                        ))}
+                      </tr>
+                    ))}
+                  </thead>
+                  <tbody>
+                    {table.getRowModel().rows.length === 0 ? (
+                      <tr>
+                        <td
+                          colSpan={columns.length}
+                          className="text-center py-12"
+                        >
+                          <div className="flex flex-col items-center justify-center gap-3">
+                            <UserCog className="w-12 h-12 text-on-surface-variant" />
+                            <p className="body-md text-on-surface-variant">Kullanıcı bulunamadı</p>
+                          </div>
+                        </td>
+                      </tr>
+                    ) : (
+                      table.getRowModel().rows.map((row) => (
+                        <tr
+                          key={row.id}
+                          className="border-b border-outline/30 last:border-0 hover:bg-surface-low/30 transition-colors"
+                        >
+                          {row.getVisibleCells().map((cell) => (
+                            <td key={cell.id} className="py-4 px-6">
+                              {flexRender(
+                                cell.column.columnDef.cell,
+                                cell.getContext()
+                              )}
+                            </td>
+                          ))}
+                        </tr>
+                      ))
+                    )}
+                  </tbody>
+                </table>
+              </div>
+
+              {/* Pagination */}
+              <div className="flex items-center justify-between p-4 border-t border-outline/30">
+                <p className="body-md text-on-surface-variant">
+                  {table.getFilteredRowModel().rows.length} sonuçtan{" "}
+                  {table.getState().pagination.pageIndex *
+                    table.getState().pagination.pageSize +
+                    1}{" "}
+                  -{" "}
+                  {Math.min(
+                    (table.getState().pagination.pageIndex + 1) *
+                      table.getState().pagination.pageSize,
+                    table.getFilteredRowModel().rows.length
+                  )}{" "}
+                  arası gösteriliyor
+                </p>
+                <div className="flex items-center gap-2">
+                  <Button
+                    variant="secondary"
+                    size="small"
+                    onClick={() => table.previousPage()}
+                    disabled={!table.getCanPreviousPage()}
+                  >
+                    <ChevronLeft className="w-4 h-4 mr-1" />
+                    Önceki
+                  </Button>
+                  {Array.from({ length: table.getPageCount() }, (_, i) => (
+                    <button
+                      key={i}
+                      onClick={() => table.setPageIndex(i)}
+                      className={`w-8 h-8 rounded-lg body-md font-medium transition-colors ${
+                        table.getState().pagination.pageIndex === i
+                          ? "bg-gradient-primary text-white shadow-glow"
+                          : "text-on-surface-variant hover:bg-surface-low"
+                      }`}
+                    >
+                      {i + 1}
+                    </button>
+                  ))}
+                  <Button
+                    variant="secondary"
+                    size="small"
+                    onClick={() => table.nextPage()}
+                    disabled={!table.getCanNextPage()}
+                  >
+                    Sonraki
+                    <ChevronRight className="w-4 h-4 ml-1" />
+                  </Button>
+                </div>
+              </div>
+            </>
+          )}
         </CardContent>
       </Card>
     </div>

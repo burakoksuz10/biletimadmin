@@ -8,7 +8,7 @@ import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
-import { Save, Upload } from "lucide-react";
+import { Save, Upload, Globe, Settings as SettingsIcon } from "lucide-react";
 
 export default function GeneralSettingsPage() {
   const [settings, setSettings] = useState({
@@ -24,25 +24,30 @@ export default function GeneralSettingsPage() {
       {/* Page Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-[24px] font-semibold text-[#0d0d12]">
+          <h1 className="headline-lg text-on-surface">
             Genel Ayarlar
           </h1>
-          <p className="text-[14px] text-[#666d80] mt-1">
+          <p className="body-md text-on-surface-variant mt-1">
             Platform ayarlarınızı ve tercihlerinizi yönetin
           </p>
         </div>
-        <Button>
+        <Button variant="primary">
           <Save className="w-4 h-4 mr-2" />
           Değişiklikleri Kaydet
         </Button>
       </div>
 
       {/* Site Settings */}
-      <Card className="border-[#e5e7eb]">
+      <Card variant="default">
         <CardHeader>
-          <CardTitle className="text-[16px] font-semibold text-[#0d0d12]">
-            Site Bilgileri
-          </CardTitle>
+          <div className="flex items-center gap-3">
+            <div className="w-8 h-8 rounded-xl bg-primary/10 flex items-center justify-center">
+              <Globe className="w-4 h-4 text-primary" />
+            </div>
+            <CardTitle className="title-lg font-semibold text-on-surface">
+              Site Bilgileri
+            </CardTitle>
+          </div>
         </CardHeader>
         <CardContent className="space-y-6">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -79,7 +84,7 @@ export default function GeneralSettingsPage() {
                 onChange={(e) =>
                   setSettings({ ...settings, defaultLanguage: e.target.value })
                 }
-                className="w-full h-[52px] px-4 rounded-[10px] border border-[#e5e7eb] bg-white text-[14px] focus:outline-none focus:ring-2 focus:ring-[#09724a]"
+                className="w-full h-11 px-4 rounded-xl border border-outline/50 bg-surface-high text-[14px] focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all"
               >
                 <option value="tr">Türkçe</option>
                 <option value="en">English</option>
@@ -96,7 +101,7 @@ export default function GeneralSettingsPage() {
                 onChange={(e) =>
                   setSettings({ ...settings, defaultCurrency: e.target.value })
                 }
-                className="w-full h-[52px] px-4 rounded-[10px] border border-[#e5e7eb] bg-white text-[14px] focus:outline-none focus:ring-2 focus:ring-[#09724a]"
+                className="w-full h-11 px-4 rounded-xl border border-outline/50 bg-surface-high text-[14px] focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all"
               >
                 <option value="TRY">Türk Lirası (TRY)</option>
                 <option value="USD">Amerikan Doları (USD)</option>
@@ -114,7 +119,7 @@ export default function GeneralSettingsPage() {
               onChange={(e) =>
                 setSettings({ ...settings, timezone: e.target.value })
               }
-              className="w-full h-[52px] px-4 rounded-[10px] border border-[#e5e7eb] bg-white text-[14px] focus:outline-none focus:ring-2 focus:ring-[#09724a]"
+              className="w-full h-11 px-4 rounded-xl border border-outline/50 bg-surface-high text-[14px] focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all"
             >
               <option value="Europe/Istanbul">Europe/Istanbul (UTC+3)</option>
               <option value="Europe/London">Europe/London (UTC+0)</option>
@@ -129,19 +134,24 @@ export default function GeneralSettingsPage() {
       </Card>
 
       {/* Logo & Favicon */}
-      <Card className="border-[#e5e7eb]">
+      <Card variant="default">
         <CardHeader>
-          <CardTitle className="text-[16px] font-semibold text-[#0d0d12]">
-            Marka
-          </CardTitle>
+          <div className="flex items-center gap-3">
+            <div className="w-8 h-8 rounded-xl bg-secondary/10 flex items-center justify-center">
+              <SettingsIcon className="w-4 h-4 text-secondary" />
+            </div>
+            <CardTitle className="title-lg font-semibold text-on-surface">
+              Marka
+            </CardTitle>
+          </div>
         </CardHeader>
         <CardContent className="space-y-6">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div className="space-y-2">
               <Label htmlFor="logo">Logo</Label>
               <div className="flex items-center gap-4">
-                <div className="w-20 h-20 rounded-xl bg-[#f7f7f7] border border-[#e5e7eb] flex items-center justify-center">
-                  <span className="text-[24px] font-bold text-[#09724a]">
+                <div className="w-20 h-20 rounded-xl bg-surface-low border border-outline/30 flex items-center justify-center">
+                  <span className="headline-lg font-bold text-primary">
                     ET
                   </span>
                 </div>
@@ -150,7 +160,7 @@ export default function GeneralSettingsPage() {
                     <Upload className="w-4 h-4 mr-2" />
                     Logo Yükle
                   </Button>
-                  <p className="text-[12px] text-[#818898] mt-2">
+                  <p className="label-md text-on-surface-variant mt-2">
                     Önerilen: 200x60px, PNG veya SVG
                   </p>
                 </div>
@@ -159,8 +169,8 @@ export default function GeneralSettingsPage() {
             <div className="space-y-2">
               <Label htmlFor="favicon">Favicon</Label>
               <div className="flex items-center gap-4">
-                <div className="w-12 h-12 rounded-lg bg-[#f7f7f7] border border-[#e5e7eb] flex items-center justify-center">
-                  <span className="text-[16px] font-bold text-[#09724a]">
+                <div className="w-12 h-12 rounded-lg bg-surface-low border border-outline/30 flex items-center justify-center">
+                  <span className="title-lg font-bold text-primary">
                     ET
                   </span>
                 </div>
@@ -169,7 +179,7 @@ export default function GeneralSettingsPage() {
                     <Upload className="w-4 h-4 mr-2" />
                     Favicon Yükle
                   </Button>
-                  <p className="text-[12px] text-[#818898] mt-2">
+                  <p className="label-md text-on-surface-variant mt-2">
                     Önerilen: 32x32px, PNG veya ICO
                   </p>
                 </div>
@@ -180,19 +190,24 @@ export default function GeneralSettingsPage() {
       </Card>
 
       {/* Maintenance Mode */}
-      <Card className="border-[#e5e7eb]">
+      <Card variant="default">
         <CardHeader>
-          <CardTitle className="text-[16px] font-semibold text-[#0d0d12]">
-            Bakım Modu
-          </CardTitle>
+          <div className="flex items-center gap-3">
+            <div className="w-8 h-8 rounded-xl bg-warning/10 flex items-center justify-center">
+              <SettingsIcon className="w-4 h-4 text-warning" />
+            </div>
+            <CardTitle className="title-lg font-semibold text-on-surface">
+              Bakım Modu
+            </CardTitle>
+          </div>
         </CardHeader>
         <CardContent>
-          <div className="flex items-center justify-between">
+          <div className="flex items-center justify-between p-4 rounded-xl bg-surface-low/50 hover:bg-surface-low transition-colors">
             <div>
-              <p className="text-[14px] font-medium text-[#0d0d12]">
+              <p className="body-md font-medium text-on-surface">
                 Bakım Modunu Etkinleştir
               </p>
-              <p className="text-[12px] text-[#666d80] mt-1">
+              <p className="body-sm text-on-surface-variant mt-1">
                 Etkinleştirildiğinde, siteye sadece yöneticiler erişebilir
               </p>
             </div>

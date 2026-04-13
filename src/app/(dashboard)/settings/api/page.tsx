@@ -18,10 +18,10 @@ export default function ApiSettingsPage() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-[24px] font-semibold text-[#0d0d12]">
+          <h1 className="headline-lg font-semibold text-on-surface">
             API Ayarları
           </h1>
-          <p className="text-[14px] text-[#666d80] mt-1">
+          <p className="body-md text-on-surface-variant mt-1">
             API anahtarlarını ve erişimi yönetin
           </p>
         </div>
@@ -31,7 +31,7 @@ export default function ApiSettingsPage() {
       <Card className="border-[#e5e7eb]">
         <CardHeader>
           <div className="flex items-center justify-between">
-            <CardTitle className="text-[16px] font-semibold text-[#0d0d12]">
+            <CardTitle className="title-lg font-semibold text-on-surface">
               API Anahtarları
             </CardTitle>
             <Button variant="secondary" size="small">
@@ -45,12 +45,12 @@ export default function ApiSettingsPage() {
             <div className="flex items-start justify-between mb-3">
               <div>
                 <div className="flex items-center gap-2">
-                  <p className="text-[14px] font-medium text-[#0d0d12]">
+                  <p className="body-md font-medium text-on-surface">
                     Canlı Anahtar
                   </p>
                   <Badge variant="success">Aktif</Badge>
                 </div>
-                <p className="text-[12px] text-[#666d80] mt-1">
+                <p className="label-md text-on-surface-variant mt-1">
                   Oluşturuldu: 15 Oca 2026 • Son kullanım: 2 saat önce
                 </p>
               </div>
@@ -68,7 +68,7 @@ export default function ApiSettingsPage() {
                 />
                 <button
                   onClick={() => setShowKey(!showKey)}
-                  className="absolute right-10 top-1/2 -translate-y-1/2 text-[#818898]"
+                  className="absolute right-10 top-1/2 -translate-y-1/2 text-on-surface-variant"
                 >
                   {showKey ? (
                     <EyeOff className="w-5 h-5" />
@@ -87,12 +87,12 @@ export default function ApiSettingsPage() {
             <div className="flex items-start justify-between mb-3">
               <div>
                 <div className="flex items-center gap-2">
-                  <p className="text-[14px] font-medium text-[#0d0d12]">
+                  <p className="body-md font-medium text-on-surface">
                     Test Anahtarı
                   </p>
                   <Badge variant="neutral">Test</Badge>
                 </div>
-                <p className="text-[12px] text-[#666d80] mt-1">
+                <p className="label-md text-on-surface-variant mt-1">
                   Oluşturuldu: 15 Oca 2026 • Son kullanım: 1 gün önce
                 </p>
               </div>
@@ -118,7 +118,7 @@ export default function ApiSettingsPage() {
       {/* API Documentation */}
       <Card className="border-[#e5e7eb]">
         <CardHeader>
-          <CardTitle className="text-[16px] font-semibold text-[#0d0d12]">
+          <CardTitle className="title-lg font-semibold text-on-surface">
             API Dokümantasyonu
           </CardTitle>
         </CardHeader>
@@ -143,26 +143,26 @@ export default function ApiSettingsPage() {
       {/* Rate Limits */}
       <Card className="border-[#e5e7eb]">
         <CardHeader>
-          <CardTitle className="text-[16px] font-semibold text-[#0d0d12]">
+          <CardTitle className="title-lg font-semibold text-on-surface">
             Hız Limitleri
           </CardTitle>
         </CardHeader>
         <CardContent>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <div className="p-4 rounded-xl bg-[#f7f7f7]">
-              <p className="text-[12px] text-[#666d80]">Dakikadaki istek</p>
-              <p className="text-[24px] font-semibold text-[#0d0d12] mt-1">
+              <p className="label-md text-on-surface-variant">Dakikadaki istek</p>
+              <p className="headline-lg font-semibold text-on-surface mt-1">
                 1,000
               </p>
             </div>
             <div className="p-4 rounded-xl bg-[#f7f7f7]">
-              <p className="text-[12px] text-[#666d80]">Günlük istek</p>
-              <p className="text-[24px] font-semibold text-[#0d0d12] mt-1">
+              <p className="label-md text-on-surface-variant">Günlük istek</p>
+              <p className="headline-lg font-semibold text-on-surface mt-1">
                 100,000
               </p>
             </div>
             <div className="p-4 rounded-xl bg-[#f7f7f7]">
-              <p className="text-[12px] text-[#666d80]">Bugünkü kullanım</p>
+              <p className="label-md text-on-surface-variant">Bugünkü kullanım</p>
               <p className="text-[24px] font-semibold text-[#09724a] mt-1">
                 12,458
               </p>
@@ -174,29 +174,29 @@ export default function ApiSettingsPage() {
       {/* Webhook Endpoints */}
       <Card className="border-[#e5e7eb]">
         <CardHeader>
-          <CardTitle className="text-[16px] font-semibold text-[#0d0d12]">
+          <CardTitle className="title-lg font-semibold text-on-surface">
             Webhook Uç Noktaları
           </CardTitle>
         </CardHeader>
         <CardContent>
           <div className="space-y-2">
             <div className="flex items-center justify-between p-3 rounded-lg bg-[#f7f7f7]">
-              <code className="text-[12px] text-[#0d0d12]">
+              <code className="label-md text-on-surface">
                 POST /api/v1/events
               </code>
-              <span className="text-[12px] text-[#666d80]">Etkinlik oluştur</span>
+              <span className="label-md text-on-surface-variant">Etkinlik oluştur</span>
             </div>
             <div className="flex items-center justify-between p-3 rounded-lg bg-[#f7f7f7]">
-              <code className="text-[12px] text-[#0d0d12]">
+              <code className="label-md text-on-surface">
                 GET /api/v1/events/:id
               </code>
-              <span className="text-[12px] text-[#666d80]">Etkinlik detaylarını al</span>
+              <span className="label-md text-on-surface-variant">Etkinlik detaylarını al</span>
             </div>
             <div className="flex items-center justify-between p-3 rounded-lg bg-[#f7f7f7]">
-              <code className="text-[12px] text-[#0d0d12]">
+              <code className="label-md text-on-surface">
                 POST /api/v1/tickets
               </code>
-              <span className="text-[12px] text-[#666d80]">Bilet oluştur</span>
+              <span className="label-md text-on-surface-variant">Bilet oluştur</span>
             </div>
           </div>
         </CardContent>

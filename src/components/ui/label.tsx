@@ -1,5 +1,5 @@
-// Label Component - Form labels from Figma
-// 14px, Medium weight, #666d80 color
+// Label Component - "The Ethereal Stage" Design System
+// Form labels with proper color hierarchy
 
 import * as React from "react";
 import * as LabelPrimitive from "@radix-ui/react-label";
@@ -17,7 +17,7 @@ const Label = React.forwardRef<
 >(({ className, ...props }, ref) => (
   <LabelPrimitive.Root
     ref={ref}
-    className={cn(labelVariants(), "text-[#666d80]", className)}
+    className={cn(labelVariants(), "text-on-surface dark:text-on-surface-variant", className)}
     {...props}
   />
 ));

@@ -203,7 +203,7 @@ export function OrganizationForm({
       onSuccess?.(result);
     } catch (err: any) {
       console.error("Failed to save organization:", err);
-      
+
       // Handle validation errors from API
       if (err?.errors) {
         const apiErrors = err.errors;
@@ -211,14 +211,14 @@ export function OrganizationForm({
           if (field in form.getValues()) {
             form.setError(field as keyof OrganizationFormValues, {
               type: "server",
-              message: Array.isArray(apiErrors[field]) 
-                ? apiErrors[field][0] 
+              message: Array.isArray(apiErrors[field])
+                ? apiErrors[field][0]
                 : apiErrors[field],
             });
           }
         });
       }
-      
+
       // Handle general error message
       const errorMessage = err?.message || "Bir hata oluştu";
       setError(errorMessage);
@@ -232,21 +232,21 @@ export function OrganizationForm({
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
         {/* Error message */}
         {error && (
-          <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 text-red-700 dark:text-red-400 px-4 py-3 rounded-lg text-sm">
+          <div className="bg-danger/10 border border-danger/20 text-danger px-4 py-3 rounded-xl body-md">
             {error}
           </div>
         )}
 
         {/* Logo Upload */}
         <div className="space-y-2">
-          <label className="text-sm font-medium text-[#0d0d12] dark:text-[#f9fafb]">
+          <label className="label-md text-on-surface">
             Logo
           </label>
           <div className="flex items-center gap-4">
             {/* Logo Preview */}
             <div className="relative">
               {logoPreview ? (
-                <div className="relative w-20 h-20 rounded-xl overflow-hidden border-2 border-[#e5e7eb] dark:border-[#374151] bg-[#f7f7f7] dark:bg-[#1f2937]">
+                <div className="relative w-20 h-20 rounded-xl overflow-hidden border-2 border-outline/40 bg-surface-high">
                   <Image
                     src={logoPreview}
                     alt="Logo önizleme"
@@ -257,14 +257,14 @@ export function OrganizationForm({
                   <button
                     type="button"
                     onClick={handleRemoveLogo}
-                    className="absolute -top-1 -right-1 w-5 h-5 bg-[#df1c41] text-white rounded-full flex items-center justify-center hover:bg-[#c4183a] transition-colors"
+                    className="absolute -top-1 -right-1 w-5 h-5 bg-danger text-white rounded-full flex items-center justify-center hover:bg-danger/90 transition-colors"
                   >
                     <X className="w-3 h-3" />
                   </button>
                 </div>
               ) : (
-                <div className="w-20 h-20 rounded-xl border-2 border-dashed border-[#e5e7eb] dark:border-[#374151] bg-[#f7f7f7] dark:bg-[#1f2937] flex items-center justify-center">
-                  <Building2 className="w-8 h-8 text-[#9ca3af] dark:text-[#6b7280]" />
+                <div className="w-20 h-20 rounded-xl border-2 border-dashed border-outline/40 bg-surface-high flex items-center justify-center">
+                  <Building2 className="w-8 h-8 text-on-surface-variant" />
                 </div>
               )}
             </div>
@@ -288,7 +288,7 @@ export function OrganizationForm({
                 <Upload className="w-4 h-4 mr-1.5" />
                 Logo Yükle
               </Button>
-              <p className="text-[11px] text-[#9ca3af] dark:text-[#6b7280]">
+              <p className="body-sm text-on-surface-variant">
                 PNG, JPG, WEBP. Maks. 2MB
               </p>
             </div>
@@ -337,17 +337,16 @@ export function OrganizationForm({
 
         {/* Operator Selection */}
         <div className="space-y-3">
-          <label className="text-sm font-medium text-[#0d0d12] dark:text-[#f9fafb]">
+          <label className="label-md text-on-surface">
             Organizatör Yöneticisi
           </label>
-          
+
           <div className="flex gap-2">
             <Button
               type="button"
               variant={operatorType === "none" ? "primary" : "secondary"}
               size="small"
               onClick={() => setOperatorType("none")}
-              className={operatorType === "none" ? "bg-[#09724a] text-white" : ""}
             >
               Seçim Yok
             </Button>
@@ -356,7 +355,6 @@ export function OrganizationForm({
               variant={operatorType === "existing" ? "primary" : "secondary"}
               size="small"
               onClick={() => setOperatorType("existing")}
-              className={operatorType === "existing" ? "bg-[#09724a] text-white" : ""}
             >
               <Users className="w-4 h-4 mr-1.5" />
               Kayıtlı Seç
@@ -366,7 +364,6 @@ export function OrganizationForm({
               variant={operatorType === "new" ? "primary" : "secondary"}
               size="small"
               onClick={() => setOperatorType("new")}
-              className={operatorType === "new" ? "bg-[#09724a] text-white" : ""}
             >
               <UserPlus className="w-4 h-4 mr-1.5" />
               Yeni Ekle
@@ -377,7 +374,7 @@ export function OrganizationForm({
           {operatorType === "existing" && (
             <div className="space-y-2">
               {isLoadingOperators ? (
-                <div className="flex items-center gap-2 text-sm text-[#9ca3af]">
+                <div className="flex items-center gap-2 body-md text-on-surface-variant">
                   <Loader2 className="w-4 h-4 animate-spin" />
                   Organizatör yöneticileri yükleniyor...
                 </div>
@@ -398,7 +395,7 @@ export function OrganizationForm({
                   </SelectContent>
                 </Select>
               ) : (
-                <p className="text-sm text-[#9ca3af] dark:text-[#6b7280]">
+                <p className="body-md text-on-surface-variant">
                   Kayıtlı organizatör yöneticisi bulunamadı
                 </p>
               )}
@@ -407,13 +404,13 @@ export function OrganizationForm({
 
           {/* New Operator Form */}
           {operatorType === "new" && (
-            <div className="space-y-3 p-4 border border-[#e5e7eb] dark:border-[#374151] rounded-lg bg-[#f7f7f7] dark:bg-[#1f2937]">
-              <h4 className="text-sm font-medium text-[#0d0d12] dark:text-[#f9fafb]">
+            <div className="space-y-3 p-4 border border-outline/30 rounded-xl bg-surface-high">
+              <h4 className="body-md font-semibold text-on-surface">
                 Yeni Organizatör Yöneticisi Bilgileri
               </h4>
               <div className="space-y-3">
                 <div>
-                  <label className="text-xs font-medium text-[#666d80] dark:text-[#9ca3af]">
+                  <label className="label-sm text-on-surface-variant">
                     Ad Soyad *
                   </label>
                   <Input
@@ -421,11 +418,10 @@ export function OrganizationForm({
                     placeholder="Ad Soyad"
                     value={newOperator.name}
                     onChange={(e) => setNewOperator({ ...newOperator, name: e.target.value })}
-                    className="mt-1"
                   />
                 </div>
                 <div>
-                  <label className="text-xs font-medium text-[#666d80] dark:text-[#9ca3af]">
+                  <label className="label-sm text-on-surface-variant">
                     E-posta *
                   </label>
                   <Input
@@ -433,11 +429,10 @@ export function OrganizationForm({
                     placeholder="ornek@email.com"
                     value={newOperator.email}
                     onChange={(e) => setNewOperator({ ...newOperator, email: e.target.value })}
-                    className="mt-1"
                   />
                 </div>
                 <div>
-                  <label className="text-xs font-medium text-[#666d80] dark:text-[#9ca3af]">
+                  <label className="label-sm text-on-surface-variant">
                     Şifre *
                   </label>
                   <Input
@@ -445,18 +440,15 @@ export function OrganizationForm({
                     placeholder="•••••••••"
                     value={newOperator.password}
                     onChange={(e) => setNewOperator({ ...newOperator, password: e.target.value })}
-                    className="mt-1"
                   />
                 </div>
-                <p className="text-[11px] text-[#9ca3af] dark:text-[#6b7280]">
+                <p className="body-sm text-on-surface-variant">
                   Rol: Org-Admin (sabit)
                 </p>
               </div>
             </div>
           )}
         </div>
-
-        {/* Tax Information */}
 
         {/* Tax Information */}
         <div className="grid grid-cols-2 gap-4">
@@ -562,7 +554,7 @@ export function OrganizationForm({
 
         {/* Contact Information */}
         <div className="space-y-4">
-          <h3 className="text-sm font-medium text-[#0d0d12] dark:text-[#f9fafb]">
+          <h3 className="body-md font-semibold text-on-surface">
             İletişim Bilgileri
           </h3>
 
@@ -620,7 +612,7 @@ export function OrganizationForm({
           )}
           <Button
             type="submit"
-            className="bg-[#09724a] hover:bg-[#066d41]"
+            variant="primary"
             disabled={isLoading}
           >
             {isLoading ? (

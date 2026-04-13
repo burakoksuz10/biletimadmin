@@ -13,10 +13,10 @@ export default function IntegrationsSettingsPage() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-[24px] font-semibold text-[#0d0d12]">
+          <h1 className="headline-lg font-semibold text-on-surface">
             Entegrasyonlar
           </h1>
-          <p className="text-[14px] text-[#666d80] mt-1">
+          <p className="body-md text-on-surface-variant mt-1">
             Üçüncü taraf hizmetler ve uygulamalarla bağlantı kurun
           </p>
         </div>
@@ -25,7 +25,7 @@ export default function IntegrationsSettingsPage() {
       {/* Social Media */}
       <Card className="border-[#e5e7eb]">
         <CardHeader>
-          <CardTitle className="text-[16px] font-semibold text-[#0d0d12]">
+          <CardTitle className="title-lg font-semibold text-on-surface">
             Sosyal Medya
           </CardTitle>
         </CardHeader>
@@ -43,11 +43,11 @@ export default function IntegrationsSettingsPage() {
               <div className="flex items-center gap-4">
                 <span className="text-2xl">{social.icon}</span>
                 <div>
-                  <p className="text-[14px] font-medium text-[#0d0d12]">
+                  <p className="body-md font-medium text-on-surface">
                     {social.name}
                   </p>
                   {social.connected && social.username && (
-                    <p className="text-[12px] text-[#666d80]">
+                    <p className="label-md text-on-surface-variant">
                       {social.username}
                     </p>
                   )}
@@ -75,7 +75,7 @@ export default function IntegrationsSettingsPage() {
       {/* Calendar Integration */}
       <Card className="border-[#e5e7eb]">
         <CardHeader>
-          <CardTitle className="text-[16px] font-semibold text-[#0d0d12]">
+          <CardTitle className="title-lg font-semibold text-on-surface">
             Takvim Entegrasyonu
           </CardTitle>
         </CardHeader>
@@ -91,14 +91,14 @@ export default function IntegrationsSettingsPage() {
             >
               <div className="flex items-center gap-4">
                 <div className="w-10 h-10 rounded-lg bg-[#f7f7f7] flex items-center justify-center">
-                  <Globe className="w-5 h-5 text-[#666d80]" />
+                  <Globe className="w-5 h-5 text-on-surface-variant" />
                 </div>
                 <div>
-                  <p className="text-[14px] font-medium text-[#0d0d12]">
+                  <p className="body-md font-medium text-on-surface">
                     {calendar.name}
                   </p>
                   {calendar.connected && calendar.email && (
-                    <p className="text-[12px] text-[#666d80]">
+                    <p className="label-md text-on-surface-variant">
                       {calendar.email}
                     </p>
                   )}
@@ -127,7 +127,7 @@ export default function IntegrationsSettingsPage() {
       <Card className="border-[#e5e7eb]">
         <CardHeader>
           <div className="flex items-center justify-between">
-            <CardTitle className="text-[16px] font-semibold text-[#0d0d12]">
+            <CardTitle className="title-lg font-semibold text-on-surface">
               Webhook'lar
             </CardTitle>
             <Button variant="secondary" size="small">
@@ -140,10 +140,10 @@ export default function IntegrationsSettingsPage() {
           <div className="space-y-4">
             <div className="flex items-center justify-between p-4 rounded-xl border border-[#e5e7eb]">
               <div>
-                <p className="text-[14px] font-medium text-[#0d0d12]">
+                <p className="body-md font-medium text-on-surface">
                   Etkinlik Oluşturuldu
                 </p>
-                <p className="text-[12px] text-[#666d80]">
+                <p className="label-md text-on-surface-variant">
                   https://api.example.com/webhooks/events
                 </p>
               </div>
@@ -156,10 +156,10 @@ export default function IntegrationsSettingsPage() {
             </div>
             <div className="flex items-center justify-between p-4 rounded-xl border border-[#e5e7eb]">
               <div>
-                <p className="text-[14px] font-medium text-[#0d0d12]">
+                <p className="body-md font-medium text-on-surface">
                   Bilet Satın Alındı
                 </p>
-                <p className="text-[12px] text-[#666d80]">
+                <p className="label-md text-on-surface-variant">
                   https://api.example.com/webhooks/tickets
                 </p>
               </div>
@@ -177,17 +177,17 @@ export default function IntegrationsSettingsPage() {
       {/* Auto-sync Settings */}
       <Card className="border-[#e5e7eb]">
         <CardHeader>
-          <CardTitle className="text-[16px] font-semibold text-[#0d0d12]">
+          <CardTitle className="title-lg font-semibold text-on-surface">
             Otomatik Senkronizasyon Ayarları
           </CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-[14px] font-medium text-[#0d0d12]">
+              <p className="body-md font-medium text-on-surface">
                 Etkinlikleri takvime senkronize et
               </p>
-              <p className="text-[12px] text-[#666d80] mt-1">
+              <p className="label-md text-on-surface-variant mt-1">
                 Yeni etkinlikleri bağlı takvimlere otomatik olarak ekle
               </p>
             </div>
@@ -195,10 +195,10 @@ export default function IntegrationsSettingsPage() {
           </div>
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-[14px] font-medium text-[#0d0d12]">
+              <p className="body-md font-medium text-on-surface">
                 Sosyal medyada paylaş
               </p>
-              <p className="text-[12px] text-[#666d80] mt-1">
+              <p className="label-md text-on-surface-variant mt-1">
                 Yeni etkinlikleri bağlı hesaplara otomatik olarak gönder
               </p>
             </div>

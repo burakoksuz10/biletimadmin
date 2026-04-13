@@ -4,7 +4,7 @@ export const dynamic = 'force-dynamic';
 
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Save, Bell, Mail, Smartphone, MessageSquare } from "lucide-react";
 
@@ -100,42 +100,42 @@ export default function NotificationSettingsPage() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-[24px] font-semibold text-[#0d0d12]">
+          <h1 className="headline-lg text-on-surface">
             Bildirim Ayarları
           </h1>
-          <p className="text-[14px] text-[#666d80] mt-1">
+          <p className="body-md text-on-surface-variant mt-1">
             Bildirimleri nasıl alacağınızı yönetin
           </p>
         </div>
-        <Button>
+        <Button variant="primary">
           <Save className="w-4 h-4 mr-2" />
           Değişiklikleri Kaydet
         </Button>
       </div>
 
-      <Card className="border-[#e5e7eb]">
+      <Card variant="default" padding="none">
         <CardContent className="p-0">
           <table className="w-full">
             <thead>
-              <tr className="border-b border-[#e5e7eb]">
-                <th className="text-left py-4 px-6 text-[14px] font-medium text-[#0d0d12]">
+              <tr className="border-b border-outline/30 bg-surface-low/50">
+                <th className="text-left py-4 px-6 label-sm font-semibold text-on-surface-variant uppercase tracking-wide">
                   Bildirim
                 </th>
-                <th className="text-center py-4 px-4 text-[14px] font-medium text-[#0d0d12]">
+                <th className="text-center py-4 px-4 label-sm font-semibold text-on-surface-variant uppercase tracking-wide">
                   <div className="flex items-center justify-center gap-2">
-                    <Mail className="w-4 h-4 text-[#666d80]" />
+                    <Mail className="w-4 h-4 text-on-surface-variant" />
                     E-posta
                   </div>
                 </th>
-                <th className="text-center py-4 px-4 text-[14px] font-medium text-[#0d0d12]">
+                <th className="text-center py-4 px-4 label-sm font-semibold text-on-surface-variant uppercase tracking-wide">
                   <div className="flex items-center justify-center gap-2">
-                    <Bell className="w-4 h-4 text-[#666d80]" />
+                    <Bell className="w-4 h-4 text-on-surface-variant" />
                     Anlık
                   </div>
                 </th>
-                <th className="text-center py-4 px-4 text-[14px] font-medium text-[#0d0d12]">
+                <th className="text-center py-4 px-4 label-sm font-semibold text-on-surface-variant uppercase tracking-wide">
                   <div className="flex items-center justify-center gap-2">
-                    <Smartphone className="w-4 h-4 text-[#666d80]" />
+                    <Smartphone className="w-4 h-4 text-on-surface-variant" />
                     SMS
                   </div>
                 </th>
@@ -145,13 +145,13 @@ export default function NotificationSettingsPage() {
               {notifications.map((notification) => (
                 <tr
                   key={notification.id}
-                  className="border-b border-[#e5e7eb] hover:bg-[#f7f7f7] transition-colors"
+                  className="border-b border-outline/30 last:border-0 hover:bg-surface-low/30 transition-colors"
                 >
                   <td className="py-4 px-6">
-                    <p className="text-[14px] font-medium text-[#0d0d12]">
+                    <p className="body-md font-medium text-on-surface">
                       {notification.title}
                     </p>
-                    <p className="text-[12px] text-[#666d80] mt-0.5">
+                    <p className="body-sm text-on-surface-variant mt-0.5">
                       {notification.description}
                     </p>
                   </td>

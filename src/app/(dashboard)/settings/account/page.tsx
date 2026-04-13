@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
-import { Save, Upload, Camera } from "lucide-react";
+import { Save, Upload, Camera, User, BarChart3, AlertTriangle } from "lucide-react";
 
 export default function AccountSettingsPage() {
   const [formData, setFormData] = useState({
@@ -22,35 +22,40 @@ export default function AccountSettingsPage() {
       {/* Page Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-[24px] font-semibold text-[#0d0d12]">
+          <h1 className="headline-lg text-on-surface">
             Hesap Ayarları
           </h1>
-          <p className="text-[14px] text-[#666d80] mt-1">
+          <p className="body-md text-on-surface-variant mt-1">
             Hesap bilgilerinizi ve tercihlerinizi yönetin
           </p>
         </div>
-        <Button>
+        <Button variant="primary">
           <Save className="w-4 h-4 mr-2" />
           Değişiklikleri Kaydet
         </Button>
       </div>
 
       {/* Profile Picture */}
-      <Card className="border-[#e5e7eb]">
+      <Card variant="default">
         <CardHeader>
-          <CardTitle className="text-[16px] font-semibold text-[#0d0d12]">
-            Profil Fotoğrafı
-          </CardTitle>
+          <div className="flex items-center gap-3">
+            <div className="w-8 h-8 rounded-xl bg-primary/10 flex items-center justify-center">
+              <User className="w-4 h-4 text-primary" />
+            </div>
+            <CardTitle className="title-lg font-semibold text-on-surface">
+              Profil Fotoğrafı
+            </CardTitle>
+          </div>
         </CardHeader>
         <CardContent>
           <div className="flex items-center gap-6">
             <div className="relative">
-              <div className="w-24 h-24 rounded-full bg-[#e1eee3] border-4 border-[#09724a] flex items-center justify-center">
-                <span className="text-[28px] font-bold text-[#09724a]">
+              <div className="w-24 h-24 rounded-full bg-primary/10 border-4 border-primary flex items-center justify-center">
+                <span className="display-sm font-bold text-primary">
                   {formData.name ? formData.name.charAt(0) : "A"}
                 </span>
               </div>
-              <button className="absolute bottom-0 right-0 w-8 h-8 rounded-full bg-[#09724a] flex items-center justify-center text-white hover:bg-[#066d41] transition-colors">
+              <button className="absolute bottom-0 right-0 w-8 h-8 rounded-full bg-gradient-primary flex items-center justify-center text-white shadow-glow hover:opacity-90 transition-opacity">
                 <Camera className="w-4 h-4" />
               </button>
             </div>
@@ -59,7 +64,7 @@ export default function AccountSettingsPage() {
                 <Upload className="w-4 h-4 mr-2" />
                 Yeni Yükle
               </Button>
-              <p className="text-[12px] text-[#818898] mt-2">
+              <p className="label-md text-on-surface-variant mt-2">
                 Önerilen: 200x200px, JPG veya PNG
               </p>
             </div>
@@ -68,11 +73,16 @@ export default function AccountSettingsPage() {
       </Card>
 
       {/* Personal Information */}
-      <Card className="border-[#e5e7eb]">
+      <Card variant="default">
         <CardHeader>
-          <CardTitle className="text-[16px] font-semibold text-[#0d0d12]">
-            Kişisel Bilgiler
-          </CardTitle>
+          <div className="flex items-center gap-3">
+            <div className="w-8 h-8 rounded-xl bg-info/10 flex items-center justify-center">
+              <User className="w-4 h-4 text-info" />
+            </div>
+            <CardTitle className="title-lg font-semibold text-on-surface">
+              Kişisel Bilgiler
+            </CardTitle>
+          </div>
         </CardHeader>
         <CardContent className="space-y-6">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -119,7 +129,7 @@ export default function AccountSettingsPage() {
                 id="role"
                 value="Süper Admin"
                 disabled
-                className="bg-[#f7f7f7]"
+                className="bg-surface-low"
               />
             </div>
           </div>
@@ -133,7 +143,7 @@ export default function AccountSettingsPage() {
                 setFormData({ ...formData, bio: e.target.value })
               }
               rows={4}
-              className="w-full px-4 py-3 rounded-[10px] border border-[#e5e7eb] bg-white text-[14px] focus:outline-none focus:ring-2 focus:ring-[#09724a] resize-none"
+              className="w-full px-4 py-3 rounded-xl border border-outline/50 bg-surface-high text-[14px] focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary resize-none transition-all"
               placeholder="Kendinizden bahsedin..."
             />
           </div>
@@ -141,29 +151,34 @@ export default function AccountSettingsPage() {
       </Card>
 
       {/* Account Statistics */}
-      <Card className="border-[#e5e7eb]">
+      <Card variant="default">
         <CardHeader>
-          <CardTitle className="text-[16px] font-semibold text-[#0d0d12]">
-            Hesap İstatistikleri
-          </CardTitle>
+          <div className="flex items-center gap-3">
+            <div className="w-8 h-8 rounded-xl bg-success/10 flex items-center justify-center">
+              <BarChart3 className="w-4 h-4 text-success" />
+            </div>
+            <CardTitle className="title-lg font-semibold text-on-surface">
+              Hesap İstatistikleri
+            </CardTitle>
+          </div>
         </CardHeader>
         <CardContent>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <div className="p-4 rounded-xl bg-[#f7f7f7]">
-              <p className="text-[12px] text-[#666d80]">Üyelik Tarihi</p>
-              <p className="text-[18px] font-semibold text-[#0d0d12] mt-1">
+            <div className="p-4 rounded-xl bg-surface-low/50">
+              <p className="label-sm text-on-surface-variant uppercase tracking-wide font-semibold">Üyelik Tarihi</p>
+              <p className="headline-sm font-semibold text-on-surface mt-2">
                 January 2024
               </p>
             </div>
-            <div className="p-4 rounded-xl bg-[#f7f7f7]">
-              <p className="text-[12px] text-[#666d80]">Oluşturulan Etkinlikler</p>
-              <p className="text-[18px] font-semibold text-[#0d0d12] mt-1">
+            <div className="p-4 rounded-xl bg-surface-low/50">
+              <p className="label-sm text-on-surface-variant uppercase tracking-wide font-semibold">Oluşturulan Etkinlikler</p>
+              <p className="headline-sm font-semibold text-on-surface mt-2">
                 24
               </p>
             </div>
-            <div className="p-4 rounded-xl bg-[#f7f7f7]">
-              <p className="text-[12px] text-[#666d80]">Toplam Gelir</p>
-              <p className="text-[18px] font-semibold text-[#0d0d12] mt-1">
+            <div className="p-4 rounded-xl bg-surface-low/50">
+              <p className="label-sm text-on-surface-variant uppercase tracking-wide font-semibold">Toplam Gelir</p>
+              <p className="headline-sm font-semibold text-on-surface mt-2">
                 ₺125,000
               </p>
             </div>
@@ -172,19 +187,24 @@ export default function AccountSettingsPage() {
       </Card>
 
       {/* Danger Zone */}
-      <Card className="border-[#df1c41]">
+      <Card className="border-danger/50">
         <CardHeader>
-          <CardTitle className="text-[16px] font-semibold text-[#df1c41]">
-            Tehlike Bölgesi
-          </CardTitle>
+          <div className="flex items-center gap-3">
+            <div className="w-8 h-8 rounded-xl bg-danger/10 flex items-center justify-center">
+              <AlertTriangle className="w-4 h-4 text-danger" />
+            </div>
+            <CardTitle className="title-lg font-semibold text-danger">
+              Tehlike Bölgesi
+            </CardTitle>
+          </div>
         </CardHeader>
         <CardContent>
-          <div className="flex items-center justify-between">
+          <div className="flex items-center justify-between p-4 rounded-xl bg-danger/5 hover:bg-danger/10 transition-colors">
             <div>
-              <p className="text-[14px] font-medium text-[#0d0d12]">
+              <p className="body-md font-medium text-on-surface">
                 Hesabı Sil
               </p>
-              <p className="text-[12px] text-[#666d80] mt-1">
+              <p className="body-sm text-on-surface-variant mt-1">
                 Hesabınızı ve tüm verilerinizi kalıcı olarak silin
               </p>
             </div>

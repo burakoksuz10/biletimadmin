@@ -21,8 +21,8 @@ export default function CreateEventPage() {
     <div className="space-y-6">
       {/* Page Header */}
       <div>
-        <h1 className="text-[24px] font-semibold text-[#0d0d12]">Yeni Etkinlik Oluştur</h1>
-        <p className="text-[14px] text-[#666d80] mt-1">
+        <h1 className="headline-lg font-semibold text-on-surface">Yeni Etkinlik Oluştur</h1>
+        <p className="body-md text-on-surface-variant mt-1">
           Yeni bir etkinlik oluşturun ve detaylarını girin
         </p>
       </div>

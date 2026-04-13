@@ -78,7 +78,7 @@ export default function OrganizationsPage() {
         org.city?.toLowerCase().includes(searchQuery.toLowerCase());
 
       const matchesStatus =
-        statusFilter === "all" || 
+        statusFilter === "all" ||
         (statusFilter === "active" && org.is_active === true) ||
         (statusFilter === "inactive" && org.is_active === false);
 
@@ -119,7 +119,7 @@ export default function OrganizationsPage() {
     try {
       setIsDeleting(true);
       const response = await organizationsService.delete(deletingOrganization.id);
-      
+
       if (response.success) {
         setOrganizations((prev) =>
           prev.filter((o) => o.id !== deletingOrganization.id)
@@ -140,15 +140,15 @@ export default function OrganizationsPage() {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-[24px] font-semibold text-[#0d0d12]">
+          <h1 className="headline-lg text-on-surface">
             Organizatörler
           </h1>
-          <p className="text-[14px] text-[#666d80] mt-1">
+          <p className="body-md text-on-surface-variant mt-1">
             Organizatörleri yönetin ve görüntüleyin
           </p>
         </div>
         <Button
-          className="bg-[#09724a] hover:bg-[#0d8a52] text-white"
+          variant="primary"
           onClick={() => setIsCreateDialogOpen(true)}
         >
           <Plus className="w-4 h-4 mr-2" />
@@ -157,65 +157,59 @@ export default function OrganizationsPage() {
       </div>
 
       {/* Stats Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <Card className="border-[#e5e7eb]">
-          <CardContent className="p-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-[14px] text-[#666d80] dark:text-[#9ca3af]">Toplam</p>
-                <p className="text-[28px] font-semibold text-[#0d0d12] dark:text-[#f9fafb] mt-1">
-                  {organizations.length}
-                </p>
-              </div>
-              <div className="w-12 h-12 rounded-full bg-[#e1eee3] dark:bg-[#1a2e1f] flex items-center justify-center">
-                <Building2 className="w-6 h-6 text-[#09724a] dark:text-[#00fb90]" />
-              </div>
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
+        <Card variant="stats" padding="md">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="label-sm text-on-surface-variant mb-3 uppercase tracking-wide font-semibold">Toplam</p>
+              <p className="display-lg text-on-surface leading-none">
+                {organizations.length}
+              </p>
             </div>
-          </CardContent>
+            <div className="w-14 h-14 rounded-2xl bg-primary/10 flex items-center justify-center shadow-sm">
+              <Building2 className="w-7 h-7 text-primary" />
+            </div>
+          </div>
         </Card>
 
-        <Card className="border-[#e5e7eb]">
-          <CardContent className="p-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-[14px] text-[#666d80] dark:text-[#9ca3af]">Aktif</p>
-                <p className="text-[28px] font-semibold text-[#0d0d12] dark:text-[#f9fafb] mt-1">
-                  {organizations.filter((o) => o.is_active === true).length}
-                </p>
-              </div>
-              <div className="w-12 h-12 rounded-full bg-[#ecfdf3] dark:bg-[#1a2e1f] flex items-center justify-center">
-                <CheckCircle className="w-6 h-6 text-[#10b981] dark:text-[#00fb90]" />
-              </div>
+        <Card variant="stats" padding="md">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="label-sm text-on-surface-variant mb-3 uppercase tracking-wide font-semibold">Aktif</p>
+              <p className="display-lg text-on-surface leading-none">
+                {organizations.filter((o) => o.is_active === true).length}
+              </p>
             </div>
-          </CardContent>
+            <div className="w-14 h-14 rounded-2xl bg-success/10 flex items-center justify-center shadow-sm">
+              <CheckCircle className="w-7 h-7 text-success" />
+            </div>
+          </div>
         </Card>
 
-        <Card className="border-[#e5e7eb]">
-          <CardContent className="p-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-[14px] text-[#666d80] dark:text-[#9ca3af]">Pasif</p>
-                <p className="text-[28px] font-semibold text-[#0d0d12] dark:text-[#f9fafb] mt-1">
-                  {organizations.filter((o) => o.is_active === false).length}
-                </p>
-              </div>
-              <div className="w-12 h-12 rounded-full bg-[#fff0f3] dark:bg-[#2e1a1f] flex items-center justify-center">
-                <XCircle className="w-6 h-6 text-[#df1c41] dark:text-[#ff6b8a]" />
-              </div>
+        <Card variant="stats" padding="md">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="label-sm text-on-surface-variant mb-3 uppercase tracking-wide font-semibold">Pasif</p>
+              <p className="display-lg text-on-surface leading-none">
+                {organizations.filter((o) => o.is_active === false).length}
+              </p>
             </div>
-          </CardContent>
+            <div className="w-14 h-14 rounded-2xl bg-danger/10 flex items-center justify-center shadow-sm">
+              <XCircle className="w-7 h-7 text-danger" />
+            </div>
+          </div>
         </Card>
       </div>
 
       {/* Filters */}
       <div className="flex items-center gap-4">
         <div className="relative flex-1 max-w-sm">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#666d80] dark:text-[#9ca3af]" />
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-on-surface-variant" />
           <Input
             placeholder="Organizatör ara..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="pl-10 h-10 border-[#e5e7eb] dark:border-[#374151] dark:bg-[#1f2937] dark:text-[#f9fafb] dark:placeholder:text-[#6b7280]"
+            className="pl-10"
           />
         </div>
 
@@ -224,12 +218,8 @@ export default function OrganizationsPage() {
             <Button
               key={status}
               variant={statusFilter === status ? "primary" : "secondary"}
+              size="medium"
               onClick={() => setStatusFilter(status)}
-              className={
-                statusFilter === status
-                  ? "bg-[#09724a] text-white dark:bg-[#00fb90] dark:text-[#0d0d12]"
-                  : "bg-white border-[#e5e7eb] text-[#666d80] hover:bg-[#f7f7f7] dark:bg-[#1f2937] dark:border-[#374151] dark:text-[#9ca3af] dark:hover:bg-[#374151]"
-              }
             >
               {status === "all" && "Tümü"}
               {status === "active" && "Aktif"}
@@ -240,22 +230,22 @@ export default function OrganizationsPage() {
       </div>
 
       {/* Organizations Table */}
-      <Card className="border-[#e5e7eb]">
+      <Card>
         <CardContent className="p-0">
           <div className="overflow-x-auto">
             <table className="w-full">
               <thead>
-                <tr className="border-b border-[#e5e7eb] dark:border-[#374151] bg-[#f7f7f7] dark:bg-[#1f2937]">
-                  <th className="text-left py-3 px-4 text-[14px] font-medium text-[#0d0d12] dark:text-[#f9fafb]">
+                <tr className="border-b border-outline/20 bg-surface-low">
+                  <th className="text-left py-3 px-4 label-md text-on-surface-variant">
                     Organizatör
                   </th>
-                  <th className="text-left py-3 px-4 text-[14px] font-medium text-[#0d0d12] dark:text-[#f9fafb]">
+                  <th className="text-left py-3 px-4 label-md text-on-surface-variant">
                     Konum
                   </th>
-                  <th className="text-left py-3 px-4 text-[14px] font-medium text-[#0d0d12] dark:text-[#f9fafb]">
+                  <th className="text-left py-3 px-4 label-md text-on-surface-variant">
                     Durum
                   </th>
-                  <th className="text-right py-3 px-4 text-[14px] font-medium text-[#0d0d12] dark:text-[#f9fafb]">
+                  <th className="text-right py-3 px-4 label-md text-on-surface-variant">
                     İşlemler
                   </th>
                 </tr>
@@ -265,7 +255,7 @@ export default function OrganizationsPage() {
                   <tr>
                     <td
                       colSpan={4}
-                      className="py-8 text-center text-[#666d80] dark:text-[#9ca3af]"
+                      className="py-8 text-center text-on-surface-variant"
                     >
                       Yükleniyor...
                     </td>
@@ -274,7 +264,7 @@ export default function OrganizationsPage() {
                   <tr>
                     <td
                       colSpan={4}
-                      className="py-8 text-center text-[#666d80] dark:text-[#9ca3af]"
+                      className="py-8 text-center text-on-surface-variant"
                     >
                       Organizatör bulunamadı
                     </td>
@@ -283,12 +273,12 @@ export default function OrganizationsPage() {
                   filteredOrganizations.map((org) => (
                     <tr
                       key={org.id}
-                      className="border-b border-[#e5e7eb] dark:border-[#374151] hover:bg-[#f7f7f7] dark:hover:bg-[#1f2937] transition-colors"
+                      className="border-b border-outline/10 hover:bg-surface-low/50 transition-colors"
                     >
                       <td className="py-3 px-4">
                         <div className="flex items-center gap-3">
                           {org.logo_path ? (
-                            <div className="w-10 h-10 rounded-lg overflow-hidden flex-shrink-0 bg-[#f7f7f7] dark:bg-[#1f2937]">
+                            <div className="w-10 h-10 rounded-lg overflow-hidden flex-shrink-0 bg-surface-high">
                               <Image
                                 src={org.logo_path}
                                 alt={org.name}
@@ -298,16 +288,16 @@ export default function OrganizationsPage() {
                               />
                             </div>
                           ) : (
-                            <div className="w-10 h-10 rounded-lg bg-[#e1eee3] dark:bg-[#1a2e1f] flex items-center justify-center flex-shrink-0">
-                              <Building2 className="w-5 h-5 text-[#09724a] dark:text-[#00fb90]" />
+                            <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center flex-shrink-0">
+                              <Building2 className="w-5 h-5 text-primary" />
                             </div>
                           )}
                           <div>
-                            <p className="text-[14px] font-medium text-[#0d0d12] dark:text-[#f9fafb]">
+                            <p className="body-md font-medium text-on-surface">
                               {org.name}
                             </p>
                             {org.description && (
-                              <p className="text-[12px] text-[#666d80] dark:text-[#9ca3af] mt-0.5 line-clamp-1">
+                              <p className="body-sm text-on-surface-variant mt-0.5 line-clamp-1">
                                 {org.description}
                               </p>
                             )}
@@ -315,7 +305,7 @@ export default function OrganizationsPage() {
                         </div>
                       </td>
                       <td className="py-3 px-4">
-                        <p className="text-[14px] text-[#0d0d12] dark:text-[#f9fafb]">
+                        <p className="body-md text-on-surface">
                           {org.city && org.district
                             ? `${org.district}, ${org.city}`
                             : org.city || org.district || "-"}
@@ -332,7 +322,7 @@ export default function OrganizationsPage() {
                             <Button
                               variant="ghost"
                               size="small"
-                              className="h-8 w-8 p-0 text-[#666d80] dark:text-[#9ca3af] hover:text-[#09724a] dark:hover:text-[#00fb90]"
+                              className="h-8 w-8 p-0"
                             >
                               <Eye className="w-4 h-4" />
                             </Button>
@@ -340,7 +330,7 @@ export default function OrganizationsPage() {
                           <Button
                             variant="ghost"
                             size="small"
-                            className="h-8 w-8 p-0 text-[#666d80] dark:text-[#9ca3af] hover:text-[#09724a] dark:hover:text-[#00fb90]"
+                            className="h-8 w-8 p-0"
                             onClick={() => setEditingOrganization(org)}
                           >
                             <Edit className="w-4 h-4" />
@@ -348,7 +338,7 @@ export default function OrganizationsPage() {
                           <Button
                             variant="ghost"
                             size="small"
-                            className="h-8 w-8 p-0 text-[#666d80] dark:text-[#9ca3af] hover:text-[#df1c41] dark:hover:text-[#ff6b8a]"
+                            className="h-8 w-8 p-0 text-danger hover:text-danger hover:bg-danger/10"
                             onClick={() => setDeletingOrganization(org)}
                           >
                             <Trash2 className="w-4 h-4" />
@@ -422,7 +412,7 @@ export default function OrganizationsPage() {
           <AlertDialogFooter>
             <AlertDialogCancel disabled={isDeleting}>İptal</AlertDialogCancel>
             <AlertDialogAction
-              className="bg-[#df1c41] hover:bg-[#c4183a]"
+              className="bg-danger hover:bg-danger/90"
               onClick={handleDelete}
               disabled={isDeleting}
             >

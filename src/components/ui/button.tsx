@@ -1,5 +1,5 @@
-// Button Component - Figma Design Tokens
-// Based on Figma frames: Login button, Create Event button, etc.
+// Button Component - "The Ethereal Stage" Design System
+// Features: Gradient primary, glass secondary, full rounded, shadow glow
 
 import * as React from "react";
 import { Slot } from "@radix-ui/react-slot";
@@ -7,44 +7,44 @@ import { cva, type VariantProps } from "class-variance-authority";
 import { cn } from "@/lib/utils";
 
 const buttonVariants = cva(
-  // Base styles
-  "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-[52px] text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 dark:focus-visible:ring-offset-[#111827] disabled:pointer-events-none disabled:opacity-50",
+  // Base styles - full rounded, smooth transitions
+  "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-full text-sm font-medium transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/50 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50",
   {
     variants: {
       variant: {
-        // Primary - Green button (#09724a) - Login button style
-        primary: "bg-[#09724a] text-white hover:bg-[#066d41] focus-visible:ring-[#09724a]",
-        
-        // Secondary - White with border
-        secondary: "bg-white dark:bg-[#1f2937] text-[#0d0d12] dark:text-[#f9fafb] border border-[#e5e7eb] dark:border-[#374151] hover:bg-[#f7f7f7] dark:hover:bg-[#374151]",
-        
-        // Outline - No background, border only
-        outline: "border border-[#e5e7eb] dark:border-[#374151] bg-transparent text-[#0d0d12] dark:text-[#f9fafb] hover:bg-[#f7f7f7] dark:hover:bg-[#374151]",
-        
-        // Ghost - No background, no border
-        ghost: "text-[#0d0d12] dark:text-[#f9fafb] hover:bg-[#f7f7f7] dark:hover:bg-[#374151]",
-        
-        // Success - Green background for success actions
-        success: "bg-[#09724a] text-white hover:bg-[#066d41]",
-        
-        // Danger - Red background for delete actions
-        danger: "bg-[#df1c41] text-white hover:bg-[#c4183a]",
-        
-        // Link - Text only, no background
-        link: "text-[#09724a] dark:text-[#00fb90] underline-offset-4 hover:underline",
+        // Primary - Signature gradient with shadow glow
+        primary: "bg-gradient-primary text-white shadow-glow hover:shadow-glow-lg hover:bg-gradient-primary-hover active:scale-[0.98]",
+
+        // Secondary Glass - Glassmorphism effect
+        secondary: "bg-white/30 dark:bg-white/10 text-primary backdrop-blur-glass border border-white/20 hover:bg-white/40 dark:hover:bg-white/15 active:scale-[0.98]",
+
+        // Outline - Ghost border (no solid border)
+        outline: "bg-transparent text-on-surface dark:text-on-surface border border-outline/20 hover:border-outline/40 hover:bg-surface/50 active:scale-[0.98]",
+
+        // Ghost - Minimal, no border
+        ghost: "text-on-surface dark:text-on-surface hover:bg-surface-low/50 active:scale-[0.98]",
+
+        // Success - Green for success actions
+        success: "bg-success text-on-success shadow-glow hover:shadow-glow-sm active:scale-[0.98]",
+
+        // Danger - Red for destructive actions
+        danger: "bg-danger text-on-danger shadow-glow hover:shadow-glow-sm active:scale-[0.98]",
+
+        // Link - Text only
+        link: "text-primary underline-offset-4 hover:underline",
       },
       size: {
-        // Large - Login button (52px height)
-        default: "h-[52px] px-8 py-3 text-base",
-        
-        // Medium - Create Event button (40px height, 8px radius)
-        medium: "h-10 px-4 py-2 text-sm rounded-lg",
-        
-        // Small - Icon buttons, pagination
-        small: "h-8 px-3 py-1 text-xs rounded-md",
-        
+        // Large - Hero buttons, CTAs
+        default: "h-14 px-8 text-base",
+
+        // Medium - Form actions, card buttons
+        medium: "h-11 px-6 text-sm",
+
+        // Small - Compact buttons
+        small: "h-9 px-4 text-xs",
+
         // Icon - Square icon buttons
-        icon: "h-10 w-10 rounded-lg",
+        icon: "h-11 w-11",
       },
     },
     defaultVariants: {

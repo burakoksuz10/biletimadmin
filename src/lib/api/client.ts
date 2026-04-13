@@ -38,10 +38,35 @@ export interface ApiError {
   data?: unknown;
 }
 
+// Simple in-memory cache for API responses
+class ApiCache {
+  private cache = new Map<string, { data: any; timestamp: number }>();
+  private ttl: number = 30000; // 30 seconds TTL
+
+  get(key: string): any | null {
+    const cached = this.cache.get(key);
+    if (cached && Date.now() - cached.timestamp < this.ttl) {
+      return cached.data;
+    }
+    this.cache.delete(key);
+    return null;
+  }
+
+  set(key: string, data: any): void {
+    this.cache.set(key, { data, timestamp: Date.now() });
+  }
+
+  clear(): void {
+    this.cache.clear();
+  }
+}
+
 class ApiClient {
   private client: AxiosInstance;
+  private cache: ApiCache;
 
   constructor() {
+    this.cache = new ApiCache();
     const baseURL = getBaseURL();
 
     console.log(`🔗 [API CLIENT] Using ${USE_PROXY ? "PROXY" : "DIRECT"} mode: ${baseURL}`);
@@ -275,8 +300,23 @@ class ApiClient {
   }
 
   // HTTP Methods
-  async get<T>(url: string, config?: Partial<InternalAxiosRequestConfig>) {
+  async get<T>(url: string, config?: Partial<InternalAxiosRequestConfig>, skipCache = false): Promise<T> {
+    // Check cache first for GET requests
+    const cacheKey = `GET:${url}:${JSON.stringify(config || {})}`;
+    if (!skipCache) {
+      const cached = this.cache.get(cacheKey);
+      if (cached) {
+        return cached as T;
+      }
+    }
+
     const response = await this.client.get<T>(url, config);
+
+    // Cache successful responses
+    if (response.status === 200) {
+      this.cache.set(cacheKey, response.data);
+    }
+
     return response.data;
   }
 

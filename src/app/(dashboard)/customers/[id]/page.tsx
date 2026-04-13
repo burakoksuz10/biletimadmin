@@ -76,7 +76,7 @@ export default function CustomerDetailPage() {
       <div className="flex items-center justify-center h-96">
         <div className="text-center">
           <RefreshCw className="w-8 h-8 animate-spin text-[#09724a] mx-auto mb-4" />
-          <p className="text-[#666d80]">Yükleniyor...</p>
+          <p className="text-on-surface-variant">Yükleniyor...</p>
         </div>
       </div>
     );
@@ -189,13 +189,13 @@ export default function CustomerDetailPage() {
             )}
           </div>
           <div>
-            <h1 className="text-[24px] font-semibold text-[#0d0d12]">
+            <h1 className="headline-lg font-semibold text-on-surface">
               {customer.name}
             </h1>
             <div className="flex items-center gap-3 mt-1">
-              <p className="text-[14px] text-[#666d80]">{customer.email}</p>
-              <span className="text-[#666d80]">•</span>
-              <p className="text-[14px] text-[#666d80]">{customer.phone}</p>
+              <p className="body-md text-on-surface-variant">{customer.email}</p>
+              <span className="text-on-surface-variant">•</span>
+              <p className="body-md text-on-surface-variant">{customer.phone}</p>
             </div>
           </div>
         </div>
@@ -242,11 +242,11 @@ export default function CustomerDetailPage() {
             {segmentLabels[customer.customer_segment]} Müşteri
           </Badge>
         )}
-        <p className="text-[14px] text-[#666d80]">
+        <p className="body-md text-on-surface-variant">
           Kayıt: {formatDate(customer.created_at)}
         </p>
         {customer.last_login && (
-          <p className="text-[14px] text-[#666d80]">
+          <p className="body-md text-on-surface-variant">
             Son giriş: {formatDate(customer.last_login)}
           </p>
         )}
@@ -270,7 +270,7 @@ export default function CustomerDetailPage() {
                 className={`flex items-center gap-2 pb-3 border-b-2 transition-colors ${
                   activeTab === tab.id
                     ? "border-[#09724a] text-[#09724a]"
-                    : "border-transparent text-[#666d80] hover:text-[#0d0d12]"
+                    : "border-transparent text-on-surface-variant hover:text-[#0d0d12]"
                 }`}
               >
                 <Icon className="w-4 h-4" />
@@ -287,22 +287,22 @@ export default function CustomerDetailPage() {
           {/* Personal Info */}
           <Card className="border-[#e5e7eb]">
             <CardHeader>
-              <CardTitle className="text-[16px]">Kişisel Bilgiler</CardTitle>
+              <CardTitle className="title-lg">Kişisel Bilgiler</CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="flex items-center gap-3">
-                <Users className="w-5 h-5 text-[#666d80]" />
+                <Users className="w-5 h-5 text-on-surface-variant" />
                 <div>
-                  <p className="text-[12px] text-[#666d80]">Ad Soyad</p>
-                  <p className="text-[14px] font-medium text-[#0d0d12]">
+                  <p className="label-md text-on-surface-variant">Ad Soyad</p>
+                  <p className="body-md font-medium text-on-surface">
                     {customer.name}
                   </p>
                 </div>
               </div>
               <div className="flex items-center gap-3">
-                <Mail className="w-5 h-5 text-[#666d80]" />
+                <Mail className="w-5 h-5 text-on-surface-variant" />
                 <div>
-                  <p className="text-[12px] text-[#666d80]">E-posta</p>
+                  <p className="label-md text-on-surface-variant">E-posta</p>
                   <p className="text-[14px] text-[#0d0d12]">{customer.email}</p>
                   {customer.email_verified && (
                     <CheckCircle className="w-4 h-4 text-[#10b981]" />
@@ -310,9 +310,9 @@ export default function CustomerDetailPage() {
                 </div>
               </div>
               <div className="flex items-center gap-3">
-                <Phone className="w-5 h-5 text-[#666d80]" />
+                <Phone className="w-5 h-5 text-on-surface-variant" />
                 <div>
-                  <p className="text-[12px] text-[#666d80]">Telefon</p>
+                  <p className="label-md text-on-surface-variant">Telefon</p>
                   <p className="text-[14px] text-[#0d0d12]">{customer.phone}</p>
                   {customer.phone_verified && (
                     <CheckCircle className="w-4 h-4 text-[#10b981]" />
@@ -321,9 +321,9 @@ export default function CustomerDetailPage() {
               </div>
               {customer.birth_date && (
                 <div className="flex items-center gap-3">
-                  <Calendar className="w-5 h-5 text-[#666d80]" />
+                  <Calendar className="w-5 h-5 text-on-surface-variant" />
                   <div>
-                    <p className="text-[12px] text-[#666d80]">Doğum Tarihi</p>
+                    <p className="label-md text-on-surface-variant">Doğum Tarihi</p>
                     <p className="text-[14px] text-[#0d0d12]">
                       {formatDate(customer.birth_date)}
                     </p>
@@ -332,9 +332,9 @@ export default function CustomerDetailPage() {
               )}
               {customer.gender && (
                 <div className="flex items-center gap-3">
-                  <Users className="w-5 h-5 text-[#666d80]" />
+                  <Users className="w-5 h-5 text-on-surface-variant" />
                   <div>
-                    <p className="text-[12px] text-[#666d80]">Cinsiyet</p>
+                    <p className="label-md text-on-surface-variant">Cinsiyet</p>
                     <p className="text-[14px] text-[#0d0d12]">
                       {customer.gender === "male"
                         ? "Erkek"
@@ -353,32 +353,32 @@ export default function CustomerDetailPage() {
           {/* Location Info */}
           <Card className="border-[#e5e7eb]">
             <CardHeader>
-              <CardTitle className="text-[16px]">Konum Bilgileri</CardTitle>
+              <CardTitle className="title-lg">Konum Bilgileri</CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
               {customer.city && (
                 <div className="flex items-center gap-3">
-                  <MapPin className="w-5 h-5 text-[#666d80]" />
+                  <MapPin className="w-5 h-5 text-on-surface-variant" />
                   <div>
-                    <p className="text-[12px] text-[#666d80]">Şehir</p>
+                    <p className="label-md text-on-surface-variant">Şehir</p>
                     <p className="text-[14px] text-[#0d0d12]">{customer.city}</p>
                   </div>
                 </div>
               )}
               {customer.country && (
                 <div className="flex items-center gap-3">
-                  <MapPin className="w-5 h-5 text-[#666d80]" />
+                  <MapPin className="w-5 h-5 text-on-surface-variant" />
                   <div>
-                    <p className="text-[12px] text-[#666d80]">Ülke</p>
+                    <p className="label-md text-on-surface-variant">Ülke</p>
                     <p className="text-[14px] text-[#0d0d12]">{customer.country}</p>
                   </div>
                 </div>
               )}
               {customer.address && (
                 <div className="flex items-center gap-3">
-                  <MapPin className="w-5 h-5 text-[#666d80]" />
+                  <MapPin className="w-5 h-5 text-on-surface-variant" />
                   <div>
-                    <p className="text-[12px] text-[#666d80]">Adres</p>
+                    <p className="label-md text-on-surface-variant">Adres</p>
                     <p className="text-[14px] text-[#0d0d12]">{customer.address}</p>
                   </div>
                 </div>
@@ -389,18 +389,18 @@ export default function CustomerDetailPage() {
           {/* Account Info */}
           <Card className="border-[#e5e7eb]">
             <CardHeader>
-              <CardTitle className="text-[16px]">Hesap Bilgileri</CardTitle>
+              <CardTitle className="title-lg">Hesap Bilgileri</CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="flex items-center justify-between">
-                <span className="text-[14px] text-[#666d80]">Durum</span>
+                <span className="body-md text-on-surface-variant">Durum</span>
                 <Badge variant={statusVariantMap[customer.status]}>
                   {statusLabels[customer.status]}
                 </Badge>
               </div>
               {customer.customer_segment && (
                 <div className="flex items-center justify-between">
-                  <span className="text-[14px] text-[#666d80]">Segment</span>
+                  <span className="body-md text-on-surface-variant">Segment</span>
                   <Badge variant={segmentVariantMap[customer.customer_segment]}>
                     {segmentLabels[customer.customer_segment]}
                   </Badge>
@@ -408,21 +408,21 @@ export default function CustomerDetailPage() {
               )}
               {customer.loyalty_points && (
                 <div className="flex items-center justify-between">
-                  <span className="text-[14px] text-[#666d80]">Loyalty Puanı</span>
-                  <span className="text-[14px] font-medium text-[#0d0d0d12]">
+                  <span className="body-md text-on-surface-variant">Loyalty Puanı</span>
+                  <span className="text-[14px] font-medium text-on-surface">
                     {customer.loyalty_points.toLocaleString()}
                   </span>
                 </div>
               )}
               <div className="flex items-center justify-between">
-                <span className="text-[14px] text-[#666d80]">Newsletter</span>
-                <span className="text-[14px] text-[#0d0d0d12]">
+                <span className="body-md text-on-surface-variant">Newsletter</span>
+                <span className="text-[14px] text-on-surface">
                   {customer.newsletter_subscribed ? "Abone" : "Abone değil"}
                 </span>
               </div>
               <div className="flex items-center justify-between">
-                <span className="text-[14px] text-[#666d80]">SMS Bildirimler</span>
-                <span className="text-[14px] text-[#0d0d0d12]">
+                <span className="body-md text-on-surface-variant">SMS Bildirimler</span>
+                <span className="text-[14px] text-on-surface">
                   {customer.sms_notifications ? "Açık" : "Kapalı"}
                 </span>
               </div>
@@ -432,31 +432,31 @@ export default function CustomerDetailPage() {
           {/* Stats Summary */}
           <Card className="border-[#e5e7eb] lg:col-span-2">
             <CardHeader>
-              <CardTitle className="text-[16px]">İstatistik Özeti</CardTitle>
+              <CardTitle className="title-lg">İstatistik Özeti</CardTitle>
             </CardHeader>
             <CardContent>
               <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
                 <div>
-                  <p className="text-[12px] text-[#666d80]">Toplam Sipariş</p>
-                  <p className="text-[24px] font-semibold text-[#0d0d0d12]">
+                  <p className="label-md text-on-surface-variant">Toplam Sipariş</p>
+                  <p className="text-[24px] font-semibold text-on-surface">
                     {stats?.total_orders ?? 0}
                   </p>
                 </div>
                 <div>
-                  <p className="text-[12px] text-[#666d80]">Toplam Bilet</p>
-                  <p className="text-[24px] font-semibold text-[#0d0d0d12]">
+                  <p className="label-md text-on-surface-variant">Toplam Bilet</p>
+                  <p className="text-[24px] font-semibold text-on-surface">
                     {stats?.total_tickets ?? 0}
                   </p>
                 </div>
                 <div>
-                  <p className="text-[12px] text-[#666d80]">Toplam Harcama</p>
+                  <p className="label-md text-on-surface-variant">Toplam Harcama</p>
                   <p className="text-[24px] font-semibold text-[#09724a]">
                     {formatCurrency(stats?.total_spent ?? 0)}
                   </p>
                 </div>
                 <div>
-                  <p className="text-[12px] text-[#666d80]">Ortalama Sipariş</p>
-                  <p className="text-[24px] font-semibold text-[#0d0d0d12]">
+                  <p className="label-md text-on-surface-variant">Ortalama Sipariş</p>
+                  <p className="text-[24px] font-semibold text-on-surface">
                     {formatCurrency(stats?.average_order_value ?? 0)}
                   </p>
                 </div>
@@ -468,13 +468,13 @@ export default function CustomerDetailPage() {
           {stats?.favorite_categories && stats.favorite_categories.length > 0 && (
             <Card className="border-[#e5e7eb]">
               <CardHeader>
-                <CardTitle className="text-[16px]">Favori Kategoriler</CardTitle>
+                <CardTitle className="title-lg">Favori Kategoriler</CardTitle>
               </CardHeader>
               <CardContent>
                 <div className="space-y-3">
                   {stats.favorite_categories.map((cat, index) => (
                     <div key={index} className="flex items-center justify-between">
-                      <span className="text-[14px] text-[#0d0d0d12]">{cat.name}</span>
+                      <span className="text-[14px] text-on-surface">{cat.name}</span>
                       <Badge variant="neutral">{cat.count} etkinlik</Badge>
                     </div>
                   ))}
@@ -487,13 +487,13 @@ export default function CustomerDetailPage() {
           {stats?.favorite_venues && stats.favorite_venues.length > 0 && (
             <Card className="border-[#e5e7eb]">
               <CardHeader>
-                <CardTitle className="text-[16px]">Favori Mekanlar</CardTitle>
+                <CardTitle className="title-lg">Favori Mekanlar</CardTitle>
               </CardHeader>
               <CardContent>
                 <div className="space-y-3">
                   {stats.favorite_venues.map((venue, index) => (
                     <div key={index} className="flex items-center justify-between">
-                      <span className="text-[14px] text-[#0d0d0d12]">{venue.name}</span>
+                      <span className="text-[14px] text-on-surface">{venue.name}</span>
                       <Badge variant="neutral">{venue.count} ziyaret</Badge>
                     </div>
                   ))}
@@ -505,7 +505,7 @@ export default function CustomerDetailPage() {
           {/* Monthly Spending Chart */}
           <Card className="border-[#e5e7eb] lg:col-span-2">
             <CardHeader>
-              <CardTitle className="text-[16px]">Aylık Harcama</CardTitle>
+              <CardTitle className="title-lg">Aylık Harcama</CardTitle>
             </CardHeader>
             <CardContent>
               <div className="h-64 flex items-end gap-2">
@@ -521,7 +521,7 @@ export default function CustomerDetailPage() {
                         minHeight: "20px",
                       }}
                     />
-                    <p className="text-[10px] text-[#666d80]">
+                    <p className="label-sm text-on-surface-variant">
                       {new Date(item.month).toLocaleDateString("tr-TR", {
                         month: "short",
                       })}
@@ -537,7 +537,7 @@ export default function CustomerDetailPage() {
       {activeTab === "orders" && (
         <Card className="border-[#e5e7eb]">
           <CardHeader>
-            <CardTitle className="text-[16px]">Sipariş Geçmi</CardTitle>
+            <CardTitle className="title-lg">Sipariş Geçmi</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="space-y-4">
@@ -548,21 +548,21 @@ export default function CustomerDetailPage() {
                 >
                   <div className="flex items-start justify-between mb-3">
                     <div>
-                      <p className="text-[14px] font-medium text-[#0d0d0d12]">
+                      <p className="text-[14px] font-medium text-on-surface">
                         {order.event_title}
                       </p>
-                      <p className="text-[12px] text-[#666d80] mt-1">
+                      <p className="label-md text-on-surface-variant mt-1">
                         {order.venue_name}
                       </p>
-                      <p className="text-[12px] text-[#666d80]">
+                      <p className="label-md text-on-surface-variant">
                         {formatDate(order.event_date)}
                       </p>
                     </div>
                     <div className="text-right">
-                      <p className="text-[16px] font-semibold text-[#09724a]">
+                      <p className="title-lg font-semibold text-[#09724a]">
                         {formatCurrency(order.total_amount)}
                       </p>
-                      <p className="text-[12px] text-[#666d80]">
+                      <p className="label-md text-on-surface-variant">
                         {order.ticket_count} bilet
                       </p>
                     </div>
@@ -572,11 +572,11 @@ export default function CustomerDetailPage() {
                       <Badge variant={orderStatusVariantMap[order.status]}>
                         {orderStatusLabels[order.status]}
                       </Badge>
-                      <span className="text-[12px] text-[#666d80]">
+                      <span className="label-md text-on-surface-variant">
                         {order.order_number}
                       </span>
                     </div>
-                    <p className="text-[12px] text-[#666d80]">
+                    <p className="label-md text-on-surface-variant">
                       {formatDate(order.created_at)}
                     </p>
                   </div>
@@ -590,7 +590,7 @@ export default function CustomerDetailPage() {
       {activeTab === "tickets" && (
         <Card className="border-[#e5e7eb]">
           <CardHeader>
-            <CardTitle className="text-[16px]">Biletler</CardTitle>
+            <CardTitle className="title-lg">Biletler</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="space-y-3">
@@ -602,10 +602,10 @@ export default function CustomerDetailPage() {
                   <div className="flex items-center gap-3">
                     <Ticket className="w-5 h-5 text-[#09724a]" />
                     <div>
-                      <p className="text-[14px] font-medium text-[#0d0d0d12]">
+                      <p className="text-[14px] font-medium text-on-surface">
                         {ticket.ticket_type}
                       </p>
-                      <p className="text-[12px] text-[#666d80]">
+                      <p className="label-md text-on-surface-variant">
                         {ticket.ticket_number}
                       </p>
                     </div>
@@ -614,7 +614,7 @@ export default function CustomerDetailPage() {
                     <Badge variant={ticketStatusVariantMap[ticket.status]}>
                       {ticketStatusLabels[ticket.status]}
                     </Badge>
-                    <p className="text-[14px] font-medium text-[#0d0d0d12]">
+                    <p className="text-[14px] font-medium text-on-surface">
                       {formatCurrency(ticket.price)}
                     </p>
                   </div>
@@ -628,7 +628,7 @@ export default function CustomerDetailPage() {
       {activeTab === "activity" && (
         <Card className="border-[#e5e7eb]">
           <CardHeader>
-            <CardTitle className="text-[16px]">Aktivite Geçmişi</CardTitle>
+            <CardTitle className="title-lg">Aktivite Geçmişi</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="space-y-4">
@@ -640,13 +640,13 @@ export default function CustomerDetailPage() {
                     className="flex items-start gap-3 pb-4 border-b border-[#e5e7eb] last:border-0 last:pb-0"
                 >
                     <div className="w-8 h-8 rounded-full bg-[#f7f7f7] flex items-center justify-center flex-shrink-0">
-                      <Icon className="w-4 h-4 text-[#666d80]" />
+                      <Icon className="w-4 h-4 text-on-surface-variant" />
                     </div>
                     <div className="flex-1">
-                      <p className="text-[14px] text-[#0d0d0d12]">
+                      <p className="text-[14px] text-on-surface">
                         {item.description}
                       </p>
-                      <p className="text-[12px] text-[#666d80] mt-1">
+                      <p className="label-md text-on-surface-variant mt-1">
                         {formatDate(item.created_at)}
                       </p>
                     </div>
@@ -661,12 +661,12 @@ export default function CustomerDetailPage() {
       {activeTab === "notes" && (
         <Card className="border-[#e5e7eb]">
           <CardHeader>
-            <CardTitle className="text-[16px]">Notlar ve Etiketler</CardTitle>
+            <CardTitle className="title-lg">Notlar ve Etiketler</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="text-center py-8">
-              <Star className="w-12 h-12 text-[#666d80] mx-auto mb-3" />
-              <p className="text-[14px] text-[#666d80]">
+              <Star className="w-12 h-12 text-on-surface-variant mx-auto mb-3" />
+              <p className="body-md text-on-surface-variant">
                 Henüz not eklenmemiş
               </p>
               <Button className="mt-4">

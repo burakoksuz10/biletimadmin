@@ -131,10 +131,10 @@ export default function VenueStagesPage() {
             </Button>
           </Link>
           <div>
-            <h1 className="text-[24px] font-semibold text-[#0d0d12]">
+            <h1 className="headline-lg font-semibold text-on-surface">
               {venue?.name} - Salonlar
             </h1>
-            <p className="text-[14px] text-[#666d80]">
+            <p className="body-md text-on-surface-variant">
               {venue?.city}, {venue?.district}
             </p>
           </div>
@@ -154,8 +154,8 @@ export default function VenueStagesPage() {
           <CardContent className="p-6">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-[14px] text-[#666d80] dark:text-[#9ca3af]">Toplam Salon</p>
-                <p className="text-[28px] font-semibold text-[#0d0d12] dark:text-[#f9fafb] mt-1">
+                <p className="body-md text-on-surface-variant dark:text-[#9ca3af]">Toplam Salon</p>
+                <p className="display-sm font-semibold text-on-surface dark:text-[#f9fafb] mt-1">
                   {stages.length}
                 </p>
               </div>
@@ -170,8 +170,8 @@ export default function VenueStagesPage() {
           <CardContent className="p-6">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-[14px] text-[#666d80] dark:text-[#9ca3af]">Toplam Kapasite</p>
-                <p className="text-[28px] font-semibold text-[#0d0d12] dark:text-[#f9fafb] mt-1">
+                <p className="body-md text-on-surface-variant dark:text-[#9ca3af]">Toplam Kapasite</p>
+                <p className="display-sm font-semibold text-on-surface dark:text-[#f9fafb] mt-1">
                   {stages.reduce((sum, s) => sum + s.capacity, 0).toLocaleString()}
                 </p>
               </div>
@@ -186,8 +186,8 @@ export default function VenueStagesPage() {
           <CardContent className="p-6">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-[14px] text-[#666d80] dark:text-[#9ca3af]">Toplam Koltuk</p>
-                <p className="text-[28px] font-semibold text-[#0d0d12] dark:text-[#f9fafb] mt-1">
+                <p className="body-md text-on-surface-variant dark:text-[#9ca3af]">Toplam Koltuk</p>
+                <p className="display-sm font-semibold text-on-surface dark:text-[#f9fafb] mt-1">
                   {stages.reduce((sum, s) => sum + (s.seats_count || 0), 0).toLocaleString()}
                 </p>
               </div>
@@ -202,7 +202,7 @@ export default function VenueStagesPage() {
       {/* Search */}
       <div className="flex items-center gap-4">
         <div className="relative flex-1 max-w-sm">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#666d80] dark:text-[#9ca3af]" />
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-on-surface-variant dark:text-[#9ca3af]" />
           <Input
             placeholder="Salon ara..."
             value={searchQuery}
@@ -215,7 +215,7 @@ export default function VenueStagesPage() {
       {/* Stages List */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         {filteredStages.length === 0 ? (
-          <div className="col-span-full text-center py-12 text-[#666d80]">
+          <div className="col-span-full text-center py-12 text-on-surface-variant">
             <DoorOpen className="w-12 h-12 mx-auto mb-4 opacity-50" />
             <p>Salon bulunamadı</p>
           </div>
@@ -225,7 +225,7 @@ export default function VenueStagesPage() {
               <CardContent className="p-4">
                 <div className="flex items-start justify-between mb-3">
                   <div className="flex-1">
-                    <h3 className="text-[16px] font-semibold text-[#0d0d12] mb-1">
+                    <h3 className="title-lg font-semibold text-on-surface mb-1">
                       {stage.name}
                     </h3>
                     <Badge variant="success" className="text-xs">
@@ -236,7 +236,7 @@ export default function VenueStagesPage() {
                     <Button
                       variant="ghost"
                       size="small"
-                      className="h-8 w-8 p-0 text-[#666d80] hover:text-[#09724a]"
+                      className="h-8 w-8 p-0 text-on-surface-variant hover:text-[#09724a]"
                       onClick={() => setEditingStage(stage)}
                     >
                       <Edit className="w-4 h-4" />
@@ -244,26 +244,26 @@ export default function VenueStagesPage() {
                     <Button
                       variant="ghost"
                       size="small"
-                      className="h-8 w-8 p-0 text-[#666d80] hover:text-[#df1c41]"
+                      className="h-8 w-8 p-0 text-on-surface-variant hover:text-[#df1c41]"
                       onClick={() => setDeletingStage(stage)}
                     >
                       <Trash2 className="w-4 h-4" />
                     </Button>
                   </div>
                 </div>
-                <div className="space-y-1 text-sm text-[#666d80]">
+                <div className="space-y-1 text-sm text-on-surface-variant">
                   <div className="flex justify-between">
                     <span>Kapasite:</span>
-                    <span className="font-medium text-[#0d0d12]">{stage.capacity.toLocaleString()}</span>
+                    <span className="font-medium text-on-surface">{stage.capacity.toLocaleString()}</span>
                   </div>
                   <div className="flex justify-between">
                     <span>Koltuk Sayısı:</span>
-                    <span className="font-medium text-[#0d0d12]">{stage.seats_count?.toLocaleString() || 0}</span>
+                    <span className="font-medium text-on-surface">{stage.seats_count?.toLocaleString() || 0}</span>
                   </div>
                   {stage.gate_info && (
                     <div className="flex justify-between">
                       <span>Kapı:</span>
-                      <span className="font-medium text-[#0d0d12]">{stage.gate_info}</span>
+                      <span className="font-medium text-on-surface">{stage.gate_info}</span>
                     </div>
                   )}
                 </div>

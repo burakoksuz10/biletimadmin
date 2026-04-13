@@ -29,7 +29,7 @@ export default function EditEventPage() {
       <div className="flex items-center justify-center min-h-[400px]">
         <div className="text-center">
           <Loader2 className="w-8 h-8 animate-spin mx-auto text-[#09724a]" />
-          <p className="text-[14px] text-[#666d80] mt-2">Etkinlik yükleniyor...</p>
+          <p className="body-md text-on-surface-variant mt-2">Etkinlik yükleniyor...</p>
         </div>
       </div>
     );
@@ -39,7 +39,7 @@ export default function EditEventPage() {
     return (
       <div className="flex items-center justify-center min-h-[400px]">
         <div className="text-center">
-          <p className="text-[14px] text-[#df1c41]">{error || "Etkinlik bulunamadı"}</p>
+          <p className="body-md text-[#df1c41]">{error || "Etkinlik bulunamadı"}</p>
           <Button
             variant="outline"
             className="mt-4"
@@ -65,8 +65,8 @@ export default function EditEventPage() {
           <ArrowLeft className="w-5 h-5" />
         </Button>
         <div>
-          <h1 className="text-[24px] font-semibold text-[#0d0d12]">Etkinliği Düzenle</h1>
-          <p className="text-[14px] text-[#666d80] mt-1">
+          <h1 className="headline-lg font-semibold text-on-surface">Etkinliği Düzenle</h1>
+          <p className="body-md text-on-surface-variant mt-1">
             {event.title}
           </p>
         </div>

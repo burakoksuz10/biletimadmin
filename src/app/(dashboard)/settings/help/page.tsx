@@ -13,10 +13,10 @@ export default function HelpSettingsPage() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-[24px] font-semibold text-[#0d0d12]">
+          <h1 className="headline-lg font-semibold text-on-surface">
             Yardım & Destek
           </h1>
-          <p className="text-[14px] text-[#666d80] mt-1">
+          <p className="body-md text-on-surface-variant mt-1">
             Biletim ile ilgili yardım alın
           </p>
         </div>
@@ -25,7 +25,7 @@ export default function HelpSettingsPage() {
       {/* Quick Help */}
       <Card className="border-[#e5e7eb]">
         <CardHeader>
-          <CardTitle className="text-[16px] font-semibold text-[#0d0d12]">
+          <CardTitle className="title-lg font-semibold text-on-surface">
             Hızlı Yardım
           </CardTitle>
         </CardHeader>
@@ -33,37 +33,37 @@ export default function HelpSettingsPage() {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div className="p-4 rounded-xl border border-[#e5e7eb] hover:border-[#09724a] transition-colors cursor-pointer">
               <Book className="w-8 h-8 text-[#09724a] mb-3" />
-              <h3 className="text-[14px] font-semibold text-[#0d0d12] mb-1">
+              <h3 className="body-md font-semibold text-on-surface mb-1">
                 Dokümantasyon
               </h3>
-              <p className="text-[12px] text-[#666d80]">
+              <p className="label-md text-on-surface-variant">
                 Kapsamlı kılavuzlarımızı ve öğreticilerimizi inceleyin
               </p>
             </div>
             <div className="p-4 rounded-xl border border-[#e5e7eb] hover:border-[#09724a] transition-colors cursor-pointer">
               <Video className="w-8 h-8 text-[#0177fb] mb-3" />
-              <h3 className="text-[14px] font-semibold text-[#0d0d12] mb-1">
+              <h3 className="body-md font-semibold text-on-surface mb-1">
                 Video Öğreticiler
               </h3>
-              <p className="text-[12px] text-[#666d80]">
+              <p className="label-md text-on-surface-variant">
                 Adım adım video rehberleri izleyin
               </p>
             </div>
             <div className="p-4 rounded-xl border border-[#e5e7eb] hover:border-[#09724a] transition-colors cursor-pointer">
               <MessageCircle className="w-8 h-8 text-[#d39c3d] mb-3" />
-              <h3 className="text-[14px] font-semibold text-[#0d0d12] mb-1">
+              <h3 className="body-md font-semibold text-on-surface mb-1">
                 Topluluk Forumu
               </h3>
-              <p className="text-[12px] text-[#666d80]">
+              <p className="label-md text-on-surface-variant">
                 Diğer Biletim kullanıcılarıyla bağlantı kurun
               </p>
             </div>
             <div className="p-4 rounded-xl border border-[#e5e7eb] hover:border-[#09724a] transition-colors cursor-pointer">
               <HeadphonesIcon className="w-8 h-8 text-[#8b5cf6] mb-3" />
-              <h3 className="text-[14px] font-semibold text-[#0d0d12] mb-1">
+              <h3 className="body-md font-semibold text-on-surface mb-1">
                 Canlı Sohbet
               </h3>
-              <p className="text-[12px] text-[#666d80]">
+              <p className="label-md text-on-surface-variant">
                 Destek ekibimizle sohbet edin
               </p>
             </div>
@@ -74,7 +74,7 @@ export default function HelpSettingsPage() {
       {/* Contact Support */}
       <Card className="border-[#e5e7eb]">
         <CardHeader>
-          <CardTitle className="text-[16px] font-semibold text-[#0d0d12]">
+          <CardTitle className="title-lg font-semibold text-on-surface">
             Destek İle İletişime Geçin
           </CardTitle>
         </CardHeader>
@@ -124,7 +124,7 @@ export default function HelpSettingsPage() {
       {/* FAQ */}
       <Card className="border-[#e5e7eb]">
         <CardHeader>
-          <CardTitle className="text-[16px] font-semibold text-[#0d0d12]">
+          <CardTitle className="title-lg font-semibold text-on-surface">
             Sıkça Sorulan Sorular
           </CardTitle>
         </CardHeader>
@@ -152,11 +152,11 @@ export default function HelpSettingsPage() {
                 key={i}
                 className="group p-4 rounded-xl border border-[#e5e7eb] cursor-pointer"
               >
-                <summary className="flex items-center justify-between text-[14px] font-medium text-[#0d0d12]">
+                <summary className="flex items-center justify-between body-md font-medium text-on-surface">
                   {faq.q}
-                  <HelpCircle className="w-5 h-5 text-[#818898] group-open:text-[#09724a]" />
+                  <HelpCircle className="w-5 h-5 text-on-surface-variant group-open:text-[#09724a]" />
                 </summary>
-                <p className="text-[12px] text-[#666d80] mt-2">{faq.a}</p>
+                <p className="label-md text-on-surface-variant mt-2">{faq.a}</p>
               </details>
             ))}
           </div>

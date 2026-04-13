@@ -78,10 +78,10 @@ export default function StageSeatingPlanPage() {
           </Button>
         </Link>
         <div>
-          <h1 className="text-[24px] font-semibold text-[#0d0d12]">
+          <h1 className="headline-lg font-semibold text-on-surface">
             {stage.name} - Oturma Planı
           </h1>
-          <p className="text-[14px] text-[#666d80]">
+          <p className="body-md text-on-surface-variant">
             Kapasite: {stage.capacity.toLocaleString()} | Koltuk Sayısı: {stage.seats_count?.toLocaleString() || 0}
           </p>
         </div>

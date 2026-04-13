@@ -1,5 +1,5 @@
-// Checkbox Component - Figma Design Tokens
-// Based on Figma: 4px radius, 16x16px size
+// Checkbox Component - "The Ethereal Stage" Design System
+// Rounded checkbox with violet accent
 
 import * as React from "react";
 import * as CheckboxPrimitive from "@radix-ui/react-checkbox";
@@ -13,7 +13,7 @@ const Checkbox = React.forwardRef<
   <CheckboxPrimitive.Root
     ref={ref}
     className={cn(
-      "peer h-4 w-4 shrink-0 rounded-[4.8px] border border-[#dfe1e7] ring-offset-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#09724a] focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 data-[state=checked]:bg-[#09724a] data-[state=checked]:border-[#09724a]",
+      "peer h-4 w-4 shrink-0 rounded border border-outline/40 ring-offset-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/50 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 data-[state=checked]:bg-gradient-primary data-[state=checked]:border-transparent transition-colors",
       className
     )}
     {...props}

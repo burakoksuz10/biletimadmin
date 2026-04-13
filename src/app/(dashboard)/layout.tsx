@@ -32,12 +32,12 @@ export default function DashboardLayout({
   if (!mounted || isLoading) {
     console.log("⏳ [DASHBOARD LAYOUT] Loading gösteriliyor...");
     return (
-      <div className="flex items-center justify-center h-screen bg-white dark:bg-[#111827]">
+      <div className="flex items-center justify-center h-screen bg-surface">
         <div className="flex flex-col items-center gap-4">
-          <div className="w-12 h-12 rounded-[9.85px] bg-[#09724a] dark:bg-[#00fb90] flex items-center justify-center animate-pulse">
-            <div className="w-8 h-8 rounded-full bg-[#e1eee3] dark:bg-[#111827] border border-[#09724a] dark:border-[#00fb90]" />
+          <div className="w-12 h-12 rounded-xl bg-gradient-primary flex items-center justify-center animate-pulse shadow-glow">
+            <div className="w-6 h-6 rounded-full bg-white/90" />
           </div>
-          <p className="text-[14px] text-[#666d80] dark:text-[#9ca3af]">Loading...</p>
+          <p className="body-md text-on-surface-variant">Loading...</p>
         </div>
       </div>
     );
@@ -51,15 +51,15 @@ export default function DashboardLayout({
   console.log("✅ [DASHBOARD LAYOUT] Dashboard render ediliyor, user:", user.name);
 
   return (
-    <div className="min-h-screen bg-[#f7f7f7] dark:bg-[#0f1613]">
+    <div className="min-h-screen">
       <Sidebar
         isCollapsed={isSidebarCollapsed}
         onToggle={() => setIsSidebarCollapsed(!isSidebarCollapsed)}
       />
       <Header sidebarCollapsed={isSidebarCollapsed} />
       <main
-        className={`pt-[72px] transition-all duration-300 ${
-          isSidebarCollapsed ? "ml-[80px]" : "ml-[300px]"
+        className={`pt-header transition-all duration-300 ${
+          isSidebarCollapsed ? "ml-[80px]" : "ml-sidebar"
         }`}
       >
         <div className="p-6">{children}</div>

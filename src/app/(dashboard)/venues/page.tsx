@@ -9,12 +9,14 @@ import {
   Trash2,
   MapPin,
   CheckCircle,
-  TrendingUp,
+  XCircle,
   DoorOpen,
+  Loader2,
+  Building2,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Card, CardContent } from "@/components/ui/card";
+import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import {
   Dialog,
@@ -41,9 +43,7 @@ export default function VenuesPage() {
   const [venues, setVenues] = useState<Venue[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
-  const [statusFilter, setStatusFilter] = useState<
-    "all" | "active" | "inactive"
-  >("all");
+  const [statusFilter, setStatusFilter] = useState<"all" | "active" | "inactive">("all");
 
   // Dialog states
   const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false);
@@ -184,7 +184,7 @@ export default function VenuesPage() {
     try {
       setIsDeleting(true);
       const response = await venuesService.delete(deletingVenue.id);
-      
+
       if (response.success) {
         setVenues((prev) => prev.filter((v) => v.id !== deletingVenue.id));
         setDeletingVenue(null);
@@ -192,10 +192,20 @@ export default function VenuesPage() {
     } catch (error: any) {
       console.error("Failed to delete venue:", error);
       const errorMessage = error?.response?.data?.message || "Mekan silinirken bir hata oluştu";
-      alert(errorMessage); // Temporary until toast is implemented
+      alert(errorMessage);
     } finally {
       setIsDeleting(false);
     }
+  };
+
+  const statusVariantMap = {
+    active: "success" as const,
+    inactive: "warning" as const,
+  };
+
+  const statusLabels = {
+    active: "Aktif",
+    inactive: "Pasif",
   };
 
   return (
@@ -203,15 +213,15 @@ export default function VenuesPage() {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-[24px] font-semibold text-[#0d0d12]">
+          <h1 className="headline-lg text-on-surface">
             Mekanlar
           </h1>
-          <p className="text-[14px] text-[#666d80] mt-1">
+          <p className="body-md text-on-surface-variant mt-1">
             Etkinlik mekanlarını yönetin ve görüntüleyin
           </p>
         </div>
         <Button
-          className="bg-[#09724a] hover:bg-[#0d8a52] text-white"
+          variant="primary"
           onClick={() => setIsCreateDialogOpen(true)}
         >
           <Plus className="w-4 h-4 mr-2" />
@@ -220,198 +230,182 @@ export default function VenuesPage() {
       </div>
 
       {/* Stats Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <Card className="border-[#e5e7eb]">
-          <CardContent className="p-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-[14px] text-[#666d80] dark:text-[#9ca3af]">Toplam</p>
-                <p className="text-[28px] font-semibold text-[#0d0d12] dark:text-[#f9fafb] mt-1">
-                  {venues.length}
-                </p>
-              </div>
-              <div className="w-12 h-12 rounded-full bg-[#e1eee3] dark:bg-[#1a2e1f] flex items-center justify-center">
-                <MapPin className="w-6 h-6 text-[#09724a] dark:text-[#00fb90]" />
-              </div>
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
+        <Card variant="stats" padding="md">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="label-sm text-on-surface-variant mb-3 uppercase tracking-wide font-semibold">Toplam</p>
+              <p className="display-lg text-on-surface leading-none">
+                {venues.length}
+              </p>
             </div>
-          </CardContent>
+            <div className="w-14 h-14 rounded-2xl bg-primary/10 flex items-center justify-center shadow-sm">
+              <Building2 className="w-7 h-7 text-primary" />
+            </div>
+          </div>
         </Card>
 
-        <Card className="border-[#e5e7eb]">
-          <CardContent className="p-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-[14px] text-[#666d80] dark:text-[#9ca3af]">Aktif</p>
-                <p className="text-[28px] font-semibold text-[#0d0d12] dark:text-[#f9fafb] mt-1">
-                  {venues.filter((v) => v.is_active).length}
-                </p>
-              </div>
-              <div className="w-12 h-12 rounded-full bg-[#ecfdf3] dark:bg-[#1a2e1f] flex items-center justify-center">
-                <CheckCircle className="w-6 h-6 text-[#10b981] dark:text-[#00fb90]" />
-              </div>
+        <Card variant="stats" padding="md">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="label-sm text-on-surface-variant mb-3 uppercase tracking-wide font-semibold">Aktif</p>
+              <p className="display-lg text-on-surface leading-none">
+                {venues.filter((v) => v.is_active).length}
+              </p>
             </div>
-          </CardContent>
+            <div className="w-14 h-14 rounded-2xl bg-success/10 flex items-center justify-center shadow-sm">
+              <CheckCircle className="w-7 h-7 text-success" />
+            </div>
+          </div>
         </Card>
 
-        <Card className="border-[#e5e7eb]">
-          <CardContent className="p-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-[14px] text-[#666d80] dark:text-[#9ca3af]">Pasif</p>
-                <p className="text-[28px] font-semibold text-[#0d0d12] dark:text-[#f9fafb] mt-1">
-                  {venues.filter((v) => !v.is_active).length}
-                </p>
-              </div>
-              <div className="w-12 h-12 rounded-full bg-[#fffbeb] dark:bg-[#2e2a1a] flex items-center justify-center">
-                <TrendingUp className="w-6 h-6 text-[#f59e0b] dark:text-[#fbbf24]" />
-              </div>
+        <Card variant="stats" padding="md">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="label-sm text-on-surface-variant mb-3 uppercase tracking-wide font-semibold">Pasif</p>
+              <p className="display-lg text-on-surface leading-none">
+                {venues.filter((v) => !v.is_active).length}
+              </p>
             </div>
-          </CardContent>
+            <div className="w-14 h-14 rounded-2xl bg-warning/10 flex items-center justify-center shadow-sm">
+              <XCircle className="w-7 h-7 text-warning" />
+            </div>
+          </div>
         </Card>
       </div>
 
       {/* Filters */}
       <div className="flex items-center gap-4">
         <div className="relative flex-1 max-w-sm">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#666d80] dark:text-[#9ca3af]" />
+          <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-on-surface-variant" />
           <Input
             placeholder="Mekan ara..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="pl-10 h-10 border-[#e5e7eb] dark:border-[#374151] dark:bg-[#1f2937] dark:text-[#f9fafb] dark:placeholder:text-[#6b7280]"
+            className="pl-11"
           />
         </div>
 
         <div className="flex gap-2">
-          {(["all", "active", "inactive"] as const).map(
-            (status) => (
-              <Button
-                key={status}
-                variant={statusFilter === status ? "primary" : "secondary"}
-                onClick={() => setStatusFilter(status)}
-                className={
-                  statusFilter === status
-                    ? "bg-[#09724a] text-white dark:bg-[#00fb90] dark:text-[#0d0d12]"
-                    : "bg-white border-[#e5e7eb] text-[#666d80] hover:bg-[#f7f7f7] dark:bg-[#1f2937] dark:border-[#374151] dark:text-[#9ca3af] dark:hover:bg-[#374151]"
-                }
-              >
-                {status === "all" && "Tümü"}
-                {status === "active" && "Aktif"}
-                {status === "inactive" && "Pasif"}
-              </Button>
-            )
-          )}
+          {(["all", "active", "inactive"] as const).map((status) => (
+            <Button
+              key={status}
+              variant={statusFilter === status ? "primary" : "secondary"}
+              size="small"
+              onClick={() => setStatusFilter(status)}
+            >
+              {status === "all" && "Tümü"}
+              {status === "active" && "Aktif"}
+              {status === "inactive" && "Pasif"}
+            </Button>
+          ))}
         </div>
       </div>
 
       {/* Venues Table */}
-      <Card className="border-[#e5e7eb]">
-        <CardContent className="p-0">
-          <div className="overflow-x-auto">
-            <table className="w-full">
-              <thead>
-                <tr className="border-b border-[#e5e7eb] dark:border-[#374151] bg-[#f7f7f7] dark:bg-[#1f2937]">
-                  <th className="text-left py-3 px-4 text-[14px] font-medium text-[#0d0d12] dark:text-[#f9fafb]">
-                    Mekan
-                  </th>
-                  <th className="text-left py-3 px-4 text-[14px] font-medium text-[#0d0d12] dark:text-[#f9fafb]">
-                    Konum
-                  </th>
-                  <th className="text-left py-3 px-4 text-[14px] font-medium text-[#0d0d12] dark:text-[#f9fafb]">
-                    Durum
-                  </th>
-                  <th className="text-right py-3 px-4 text-[14px] font-medium text-[#0d0d12] dark:text-[#f9fafb]">
-                    İşlemler
-                  </th>
+      <Card variant="default" padding="none">
+        <div className="overflow-x-auto">
+          <table className="w-full">
+            <thead>
+              <tr className="border-b border-outline/30 bg-surface-low/50">
+                <th className="text-left py-4 px-6 body-md font-semibold text-on-surface-variant">
+                  Mekan
+                </th>
+                <th className="text-left py-4 px-6 body-md font-semibold text-on-surface-variant">
+                  Konum
+                </th>
+                <th className="text-left py-4 px-6 body-md font-semibold text-on-surface-variant">
+                  Durum
+                </th>
+                <th className="text-right py-4 px-6 body-md font-semibold text-on-surface-variant">
+                  İşlemler
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              {isLoading ? (
+                <tr>
+                  <td colSpan={4} className="py-12 text-center">
+                    <div className="flex flex-col items-center justify-center gap-3">
+                      <Loader2 className="w-6 h-6 animate-spin text-primary" />
+                      <p className="body-md text-on-surface-variant">Yükleniyor...</p>
+                    </div>
+                  </td>
                 </tr>
-              </thead>
-              <tbody>
-                {isLoading ? (
-                  <tr>
-                    <td
-                      colSpan={4}
-                      className="py-8 text-center text-[#666d80] dark:text-[#9ca3af]"
-                    >
-                      Yükleniyor...
-                    </td>
-                  </tr>
-                ) : filteredVenues.length === 0 ? (
-                  <tr>
-                    <td
-                      colSpan={4}
-                      className="py-8 text-center text-[#666d80] dark:text-[#9ca3af]"
-                    >
-                      Mekan bulunamadı
-                    </td>
-                  </tr>
-                ) : (
-                  filteredVenues.map((venue) => (
-                    <tr
-                      key={venue.id}
-                      className="border-b border-[#e5e7eb] dark:border-[#374151] hover:bg-[#f7f7f7] dark:hover:bg-[#1f2937] transition-colors"
-                    >
-                      <td className="py-3 px-4">
-                        <div>
-                          <p className="text-[14px] font-medium text-[#0d0d12] dark:text-[#f9fafb]">
-                            {venue.name}
+              ) : filteredVenues.length === 0 ? (
+                <tr>
+                  <td colSpan={4} className="py-12 text-center">
+                    <div className="flex flex-col items-center justify-center gap-3">
+                      <MapPin className="w-12 h-12 text-on-surface-variant" />
+                      <p className="body-md text-on-surface-variant">Mekan bulunamadı</p>
+                    </div>
+                  </td>
+                </tr>
+              ) : (
+                filteredVenues.map((venue) => (
+                  <tr
+                    key={venue.id}
+                    className="border-b border-outline/30 last:border-0 hover:bg-surface-low/30 transition-colors"
+                  >
+                    <td className="py-4 px-6">
+                      <div>
+                        <p className="body-md font-medium text-on-surface">
+                          {venue.name}
+                        </p>
+                        {venue.description && (
+                          <p className="body-sm text-on-surface-variant mt-1 line-clamp-1 max-w-md">
+                            {venue.description}
                           </p>
-                          {venue.description && (
-                            <p className="text-[12px] text-[#666d80] dark:text-[#9ca3af] mt-0.5 truncate max-w-xs">
-                              {venue.description}
-                            </p>
-                          )}
-                        </div>
-                      </td>
-                      <td className="py-3 px-4">
-                        <p className="text-[14px] text-[#0d0d12] dark:text-[#f9fafb]">
-                          {venue.city}, {venue.district}
-                        </p>
-                        <p className="text-[12px] text-[#666d80] dark:text-[#9ca3af] mt-0.5 truncate max-w-xs">
-                          {venue.address}
-                        </p>
-                      </td>
-                      <td className="py-3 px-4">
-                        <Badge variant={venue.is_active ? "success" : "warning"}>
-                          {venue.is_active ? "Aktif" : "Pasif"}
-                        </Badge>
-                      </td>
-                      <td className="py-3 px-4">
-                        <div className="flex items-center justify-end gap-2">
-                          <Link href={`/venues/${venue.id}/stages`}>
-                            <Button
-                              variant="primary"
-                              size="small"
-                              className="h-9 px-4 bg-[#09724a] hover:bg-[#0d8a52] text-white font-medium transition-colors"
-                            >
-                              <DoorOpen className="w-4 h-4 mr-1.5" />
-                              Salonlar
-                            </Button>
-                          </Link>
-                          <Button
-                            variant="ghost"
-                            size="small"
-                            className="h-8 w-8 p-0 text-[#666d80] dark:text-[#9ca3af] hover:text-[#09724a] dark:hover:text-[#00fb90]"
-                            onClick={() => setEditingVenue(venue)}
-                          >
-                            <Edit className="w-4 h-4" />
+                        )}
+                      </div>
+                    </td>
+                    <td className="py-4 px-6">
+                      <p className="body-md text-on-surface">
+                        {venue.city && venue.district
+                          ? `${venue.district}, ${venue.city}`
+                          : venue.city || venue.district || "-"}
+                      </p>
+                      <p className="body-sm text-on-surface-variant mt-1 line-clamp-1 max-w-md">
+                        {venue.address}
+                      </p>
+                    </td>
+                    <td className="py-4 px-6">
+                      <Badge variant={statusVariantMap[venue.is_active ? "active" : "inactive"]}>
+                        {statusLabels[venue.is_active ? "active" : "inactive"]}
+                      </Badge>
+                    </td>
+                    <td className="py-4 px-6">
+                      <div className="flex items-center justify-end gap-2">
+                        <Link href={`/venues/${venue.id}/stages`}>
+                          <Button variant="secondary" size="small" className="h-9 px-4">
+                            <DoorOpen className="w-4 h-4 mr-1.5" />
+                            Salonlar
                           </Button>
-                          <Button
-                            variant="ghost"
-                            size="small"
-                            className="h-8 w-8 p-0 text-[#666d80] dark:text-[#9ca3af] hover:text-[#df1c41] dark:hover:text-[#ff6b8a]"
-                            onClick={() => setDeletingVenue(venue)}
-                          >
-                            <Trash2 className="w-4 h-4" />
-                          </Button>
-                        </div>
-                      </td>
-                    </tr>
-                  ))
-                )}
-              </tbody>
-            </table>
-          </div>
-        </CardContent>
+                        </Link>
+                        <Button
+                          variant="ghost"
+                          size="small"
+                          className="h-8 w-8 p-0"
+                          onClick={() => setEditingVenue(venue)}
+                        >
+                          <Edit className="w-4 h-4" />
+                        </Button>
+                        <Button
+                          variant="ghost"
+                          size="small"
+                          className="h-8 w-8 p-0 text-danger hover:text-danger"
+                          onClick={() => setDeletingVenue(venue)}
+                        >
+                          <Trash2 className="w-4 h-4" />
+                        </Button>
+                      </div>
+                    </td>
+                  </tr>
+                ))
+              )}
+            </tbody>
+          </table>
+        </div>
       </Card>
 
       {/* Create Venue Dialog */}
@@ -469,7 +463,7 @@ export default function VenuesPage() {
           <AlertDialogFooter>
             <AlertDialogCancel disabled={isDeleting}>İptal</AlertDialogCancel>
             <AlertDialogAction
-              className="bg-[#df1c41] hover:bg-[#c4183a]"
+              className="bg-danger text-white hover:bg-danger/90"
               onClick={handleDelete}
               disabled={isDeleting}
             >

@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 
-const BACKEND_API_URL = process.env.BACKEND_API_URL || "https://biletim.simgesoft.com";
+const BACKEND_API_URL = process.env.BACKEND_API_URL || "https://www.simgesoft.com";
 
 async function handleProxy(
   request: NextRequest,

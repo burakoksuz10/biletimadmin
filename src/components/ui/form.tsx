@@ -1,5 +1,5 @@
 // Form Component - React Hook Form integration
-// Provides form components with validation and error handling
+// "The Ethereal Stage" Design System
 
 import * as React from "react";
 import {
@@ -116,7 +116,7 @@ const FormLabel = React.forwardRef<
   return (
     <Label
       ref={ref}
-      className={cn(error && "text-[#df1c41]", className)}
+      className={cn(error && "text-danger", className)}
       htmlFor={formItemId}
       {...props}
     />
@@ -156,7 +156,7 @@ const FormDescription = React.forwardRef<
     <p
       ref={ref}
       id={formDescriptionId}
-      className={cn("text-sm text-[#666d80]", className)}
+      className={cn("body-sm text-on-surface-variant", className)}
       {...props}
     />
   );
@@ -178,7 +178,7 @@ const FormMessage = React.forwardRef<
     <p
       ref={ref}
       id={formMessageId}
-      className={cn("text-sm font-medium text-[#df1c41]", className)}
+      className={cn("body-sm text-danger", className)}
       {...props}
     >
       {body}

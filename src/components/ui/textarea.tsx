@@ -1,5 +1,5 @@
-// Textarea Component - Multi-line text input
-// Based on Figma design tokens
+// Textarea Component - "The Ethereal Stage" Design System
+// Features: Clean, readable, matches Input
 
 import * as React from "react";
 import { cn } from "@/lib/utils";
@@ -14,8 +14,13 @@ const Textarea = React.forwardRef<HTMLTextAreaElement, TextareaProps>(
     return (
       <textarea
         className={cn(
-          "flex min-h-[80px] w-full rounded-xl border border-[#e5e7eb] bg-white px-3 py-2 text-sm text-[#0d0d12] placeholder:text-[#666d80] focus:outline-none focus:ring-2 focus:ring-[#09724a] focus:ring-offset-2 focus:ring-offset-white disabled:cursor-not-allowed disabled:opacity-50 resize-y",
-          error && "border-[#df1c41] ring-[#df1c41]",
+          // Base styles
+          "flex w-full rounded-lg bg-white dark:bg-surface-higher text-on-surface dark:text-on-surface placeholder:text-on-surface-variant/30 px-4 py-2.5 body-md resize-y",
+          "transition-all duration-200",
+          "border border-outline/40 dark:border-outline/30",
+          "focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary/50 focus:bg-white dark:focus:bg-surface-highest",
+          "disabled:cursor-not-allowed disabled:opacity-50",
+          error && "focus:ring-danger/30 focus:border-danger/50",
           className
         )}
         ref={ref}

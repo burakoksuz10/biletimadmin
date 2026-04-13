@@ -73,19 +73,19 @@ export function ToastProvider({ children }: { children: React.ReactNode }) {
   );
 
   const variantStyles = {
-    default: "bg-white border-[#e5e7eb] text-[#0d0d12]",
-    success: "bg-[#ecfdf3] border-[#10b981] text-[#065f46]",
-    error: "bg-[#fef2f2] border-[#ef4444] text-[#991b1b]",
-    warning: "bg-[#fffbeb] border-[#f59e0b] text-[#92400e]",
-    info: "bg-[#eff6ff] border-[#3b82f6] text-[#1e40af]",
+    default: "glass-card text-on-surface",
+    success: "glass-card text-success border-success/20",
+    error: "glass-card text-danger border-danger/20",
+    warning: "glass-card text-warning border-warning/20",
+    info: "glass-card text-info border-info/20",
   };
 
   const variantIcons = {
     default: null,
-    success: <CheckCircle className="w-5 h-5 text-[#10b981]" />,
-    error: <AlertCircle className="w-5 h-5 text-[#ef4444]" />,
-    warning: <AlertTriangle className="w-5 h-5 text-[#f59e0b]" />,
-    info: <Info className="w-5 h-5 text-[#3b82f6]" />,
+    success: <CheckCircle className="w-5 h-5 text-success" />,
+    error: <AlertCircle className="w-5 h-5 text-danger" />,
+    warning: <AlertTriangle className="w-5 h-5 text-warning" />,
+    info: <Info className="w-5 h-5 text-info" />,
   };
 
   return (
@@ -95,18 +95,18 @@ export function ToastProvider({ children }: { children: React.ReactNode }) {
         {toasts.map((t) => (
           <div
             key={t.id}
-            className={`${variantStyles[t.variant]} border rounded-lg shadow-lg p-4 flex items-start gap-3 animate-in slide-in-from-right`}
+            className={`${variantStyles[t.variant]} rounded-xl shadow-glow p-4 flex items-start gap-3 animate-slide-in-top`}
           >
             {variantIcons[t.variant]}
             <div className="flex-1 min-w-0">
               <p className="font-medium text-sm">{t.title}</p>
               {t.description && (
-                <p className="text-sm mt-1 opacity-90">{t.description}</p>
+                <p className="body-sm mt-1 text-on-surface-variant">{t.description}</p>
               )}
             </div>
             <button
               onClick={() => removeToast(t.id)}
-              className="flex-shrink-0 opacity-70 hover:opacity-100 transition-opacity"
+              className="flex-shrink-0 opacity-70 hover:opacity-100 transition-opacity text-on-surface-variant"
             >
               <X className="w-4 h-4" />
             </button>

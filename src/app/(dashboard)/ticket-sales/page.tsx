@@ -29,6 +29,7 @@ import {
   CheckCircle,
   XCircle,
   Clock,
+  Receipt,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -204,7 +205,7 @@ export default function TicketSalesPage() {
         accessorKey: "ticketId",
         header: ({ column }) => (
           <button
-            className="flex items-center gap-1 text-[12px] font-medium text-[#818898] uppercase tracking-wider"
+            className="flex items-center gap-1 label-sm font-semibold text-on-surface-variant uppercase tracking-wide"
             onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
           >
             Bilet ID
@@ -213,8 +214,8 @@ export default function TicketSalesPage() {
         ),
         cell: ({ row }) => (
           <div className="flex items-center gap-2">
-            <Ticket className="w-4 h-4 text-[#818898]" />
-            <p className="text-[14px] font-medium text-[#0d0d12]">
+            <Ticket className="w-4 h-4 text-on-surface-variant" />
+            <p className="body-md font-medium text-on-surface">
               {row.original.ticketId}
             </p>
           </div>
@@ -224,7 +225,7 @@ export default function TicketSalesPage() {
         accessorKey: "eventName",
         header: ({ column }) => (
           <button
-            className="flex items-center gap-1 text-[12px] font-medium text-[#818898] uppercase tracking-wider"
+            className="flex items-center gap-1 label-sm font-semibold text-on-surface-variant uppercase tracking-wide"
             onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
           >
             Etkinlik
@@ -233,10 +234,10 @@ export default function TicketSalesPage() {
         ),
         cell: ({ row }) => (
           <div>
-            <p className="text-[14px] font-medium text-[#0d0d12]">
+            <p className="body-md font-medium text-on-surface">
               {row.original.eventName}
             </p>
-            <div className="flex items-center gap-1 text-[12px] text-[#666d80]">
+            <div className="flex items-center gap-1 body-sm text-on-surface-variant">
               <Calendar className="w-3 h-3" />
               {formatDate(row.original.eventDate)}
             </div>
@@ -247,7 +248,7 @@ export default function TicketSalesPage() {
         accessorKey: "buyerName",
         header: ({ column }) => (
           <button
-            className="flex items-center gap-1 text-[12px] font-medium text-[#818898] uppercase tracking-wider"
+            className="flex items-center gap-1 label-sm font-semibold text-on-surface-variant uppercase tracking-wide"
             onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
           >
             Alıcı
@@ -257,12 +258,12 @@ export default function TicketSalesPage() {
         cell: ({ row }) => (
           <div>
             <div className="flex items-center gap-2">
-              <User className="w-4 h-4 text-[#818898]" />
-              <p className="text-[14px] font-medium text-[#0d0d12]">
+              <User className="w-4 h-4 text-on-surface-variant" />
+              <p className="body-md font-medium text-on-surface">
                 {row.original.buyerName}
               </p>
             </div>
-            <p className="text-[12px] text-[#666d80]">
+            <p className="body-sm text-on-surface-variant">
               {row.original.buyerEmail}
             </p>
           </div>
@@ -271,12 +272,12 @@ export default function TicketSalesPage() {
       {
         accessorKey: "ticketType",
         header: () => (
-          <span className="text-[12px] font-medium text-[#818898] uppercase tracking-wider">
+          <span className="label-sm font-semibold text-on-surface-variant uppercase tracking-wide">
             Bilet Türü
           </span>
         ),
         cell: ({ row }) => (
-          <p className="text-[14px] text-[#666d80]">
+          <p className="body-md text-on-surface-variant">
             {row.original.ticketType}
           </p>
         ),
@@ -285,7 +286,7 @@ export default function TicketSalesPage() {
         accessorKey: "quantity",
         header: ({ column }) => (
           <button
-            className="flex items-center gap-1 text-[12px] font-medium text-[#818898] uppercase tracking-wider"
+            className="flex items-center gap-1 label-sm font-semibold text-on-surface-variant uppercase tracking-wide"
             onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
           >
             Qty
@@ -293,7 +294,7 @@ export default function TicketSalesPage() {
           </button>
         ),
         cell: ({ row }) => (
-          <p className="text-[14px] font-medium text-[#0d0d12]">
+          <p className="body-md font-medium text-on-surface">
             {row.original.quantity}
           </p>
         ),
@@ -302,7 +303,7 @@ export default function TicketSalesPage() {
         accessorKey: "totalAmount",
         header: ({ column }) => (
           <button
-            className="flex items-center gap-1 text-[12px] font-medium text-[#818898] uppercase tracking-wider"
+            className="flex items-center gap-1 label-sm font-semibold text-on-surface-variant uppercase tracking-wide"
             onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
           >
             Tutar
@@ -310,7 +311,7 @@ export default function TicketSalesPage() {
           </button>
         ),
         cell: ({ row }) => (
-          <p className="text-[14px] font-semibold text-[#0d0d12]">
+          <p className="body-md font-semibold text-on-surface">
             {formatCurrency(row.original.totalAmount)}
           </p>
         ),
@@ -319,7 +320,7 @@ export default function TicketSalesPage() {
         accessorKey: "purchaseDate",
         header: ({ column }) => (
           <button
-            className="flex items-center gap-1 text-[12px] font-medium text-[#818898] uppercase tracking-wider"
+            className="flex items-center gap-1 label-sm font-semibold text-on-surface-variant uppercase tracking-wide"
             onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
           >
             Satın Alma Tarihi
@@ -327,7 +328,7 @@ export default function TicketSalesPage() {
           </button>
         ),
         cell: ({ row }) => (
-          <p className="text-[14px] text-[#666d80]">
+          <p className="body-md text-on-surface-variant">
             {formatDate(row.original.purchaseDate)}
           </p>
         ),
@@ -336,7 +337,7 @@ export default function TicketSalesPage() {
         accessorKey: "status",
         header: ({ column }) => (
           <button
-            className="flex items-center gap-1 text-[12px] font-medium text-[#818898] uppercase tracking-wider"
+            className="flex items-center gap-1 label-sm font-semibold text-on-surface-variant uppercase tracking-wide"
             onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
           >
             Durum
@@ -352,7 +353,7 @@ export default function TicketSalesPage() {
       {
         id: "actions",
         header: () => (
-          <span className="text-[12px] font-medium text-[#818898] uppercase tracking-wider">
+          <span className="label-sm font-semibold text-on-surface-variant uppercase tracking-wide">
             İşlemler
           </span>
         ),
@@ -364,23 +365,23 @@ export default function TicketSalesPage() {
                   showActionsId === row.original.id ? null : row.original.id
                 )
               }
-              className="w-8 h-8 rounded-lg flex items-center justify-center hover:bg-[#f7f7f7] transition-colors"
+              className="w-8 h-8 rounded-lg flex items-center justify-center hover:bg-surface-low transition-colors"
             >
-              <MoreHorizontal className="w-4 h-4 text-[#666d80]" />
+              <MoreHorizontal className="w-4 h-4 text-on-surface-variant" />
             </button>
 
             {showActionsId === row.original.id && (
-              <div className="absolute right-0 top-full mt-1 w-40 bg-white rounded-lg border border-[#e5e7eb] shadow-lg py-1 z-10">
+              <div className="absolute right-0 top-full mt-1 w-48 bg-white dark:bg-surface-higher rounded-xl border border-outline/30 shadow-glow py-1 z-10">
                 <button
                   onClick={() => setShowActionsId(null)}
-                  className="flex items-center gap-2 w-full px-3 py-2 text-[14px] text-[#0d0d12] hover:bg-[#f7f7f7]"
+                  className="flex items-center gap-2 w-full px-3 py-2 body-md text-on-surface hover:bg-surface-low transition-colors"
                 >
                   <Eye className="w-4 h-4" />
                   Detayları Görüntüle
                 </button>
                 <button
                   onClick={() => setShowActionsId(null)}
-                  className="flex items-center gap-2 w-full px-3 py-2 text-[14px] text-[#0d0d12] hover:bg-[#f7f7f7]"
+                  className="flex items-center gap-2 w-full px-3 py-2 body-md text-on-surface hover:bg-surface-low transition-colors"
                 >
                   <Download className="w-4 h-4" />
                   Bileti İndir
@@ -445,85 +446,80 @@ export default function TicketSalesPage() {
       {/* Page Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-[24px] font-semibold text-[#0d0d12]">
+          <h1 className="headline-lg text-on-surface">
             Bilet Satışları
           </h1>
-          <p className="text-[14px] text-[#666d80] mt-1">
+          <p className="body-md text-on-surface-variant mt-1">
             Tüm bilet satışlarını ve işlemleri yönetin
           </p>
         </div>
-        <Button>
+        <Button variant="primary">
           <Download className="w-4 h-4 mr-2" />
           Satışları Dışa Aktar
         </Button>
       </div>
 
       {/* Stats Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-        <Card className="border-[#e5e7eb]">
-          <CardContent className="p-6">
-            <div className="flex items-center gap-4">
-              <div className="w-12 h-12 rounded-xl bg-[#e1eee3] flex items-center justify-center">
-                <CreditCard className="w-6 h-6 text-[#09724a]" />
-              </div>
-              <div>
-                <p className="text-[12px] text-[#666d80]">Toplam Gelir</p>
-                <p className="text-[20px] font-semibold text-[#0d0d12]">
-                  {formatCurrency(totalRevenue)}
-                </p>
-              </div>
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-5">
+        <Card variant="stats" padding="md">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="label-sm text-on-surface-variant mb-3 uppercase tracking-wide font-semibold">Toplam Gelir</p>
+              <p className="display-lg text-on-surface leading-none">
+                {formatCurrency(totalRevenue)}
+              </p>
             </div>
-          </CardContent>
+            <div className="w-14 h-14 rounded-2xl bg-success/10 flex items-center justify-center shadow-sm">
+              <Receipt className="w-7 h-7 text-success" />
+            </div>
+          </div>
         </Card>
-        <Card className="border-[#e5e7eb]">
-          <CardContent className="p-6">
-            <div className="flex items-center gap-4">
-              <div className="w-12 h-12 rounded-xl bg-[#effefa] flex items-center justify-center">
-                <Ticket className="w-6 h-6 text-[#09724a]" />
-              </div>
-              <div>
-                <p className="text-[12px] text-[#666d80]">Satılan Biletler</p>
-                <p className="text-[20px] font-semibold text-[#0d0d12]">
-                  {totalTickets}
-                </p>
-              </div>
+
+        <Card variant="stats" padding="md">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="label-sm text-on-surface-variant mb-3 uppercase tracking-wide font-semibold">Satılan Biletler</p>
+              <p className="display-lg text-on-surface leading-none">
+                {totalTickets}
+              </p>
             </div>
-          </CardContent>
+            <div className="w-14 h-14 rounded-2xl bg-primary/10 flex items-center justify-center shadow-sm">
+              <Ticket className="w-7 h-7 text-primary" />
+            </div>
+          </div>
         </Card>
-        <Card className="border-[#e5e7eb]">
-          <CardContent className="p-6">
-            <div className="flex items-center gap-4">
-              <div className="w-12 h-12 rounded-xl bg-[#fff8f0] flex items-center justify-center">
-                <Clock className="w-6 h-6 text-[#d39c3d]" />
-              </div>
-              <div>
-                <p className="text-[12px] text-[#666d80]">Beklemede</p>
-                <p className="text-[20px] font-semibold text-[#0d0d12]">
-                  {statusCounts.pending}
-                </p>
-              </div>
+
+        <Card variant="stats" padding="md">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="label-sm text-on-surface-variant mb-3 uppercase tracking-wide font-semibold">Beklemede</p>
+              <p className="display-lg text-on-surface leading-none">
+                {statusCounts.pending}
+              </p>
             </div>
-          </CardContent>
+            <div className="w-14 h-14 rounded-2xl bg-warning/10 flex items-center justify-center shadow-sm">
+              <Clock className="w-7 h-7 text-warning" />
+            </div>
+          </div>
         </Card>
-        <Card className="border-[#e5e7eb]">
-          <CardContent className="p-6">
-            <div className="flex items-center gap-4">
-              <div className="w-12 h-12 rounded-xl bg-[#fff0f3] flex items-center justify-center">
-                <XCircle className="w-6 h-6 text-[#df1c41]" />
-              </div>
-              <div>
-                <p className="text-[12px] text-[#666d80]">İade Edilen</p>
-                <p className="text-[20px] font-semibold text-[#0d0d12]">
-                  {statusCounts.refunded}
-                </p>
-              </div>
+
+        <Card variant="stats" padding="md">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="label-sm text-on-surface-variant mb-3 uppercase tracking-wide font-semibold">İade Edilen</p>
+              <p className="display-lg text-on-surface leading-none">
+                {statusCounts.refunded}
+              </p>
             </div>
-          </CardContent>
+            <div className="w-14 h-14 rounded-2xl bg-danger/10 flex items-center justify-center shadow-sm">
+              <XCircle className="w-7 h-7 text-danger" />
+            </div>
+          </div>
         </Card>
       </div>
 
       {/* Status Tabs */}
-      <div className="flex items-center gap-2 border-b border-[#e5e7eb]">
+      <div className="flex items-center gap-2 border-b border-outline/30">
         {([
           "all",
           "confirmed",
@@ -534,14 +530,14 @@ export default function TicketSalesPage() {
           <button
             key={status}
             onClick={() => setStatusFilter(status)}
-            className={`px-4 py-3 text-[14px] font-medium border-b-2 transition-colors ${
+            className={`px-4 py-3 body-md font-medium border-b-2 transition-colors ${
               statusFilter === status
-                ? "border-[#09724a] text-[#09724a]"
-                : "border-transparent text-[#666d80] hover:text-[#0d0d12]"
+                ? "border-primary text-primary"
+                : "border-transparent text-on-surface-variant hover:text-on-surface hover:border-outline/50"
             }`}
           >
-            {status.charAt(0).toUpperCase() + status.slice(1)}
-            <span className="ml-2 text-[12px] text-[#818898]">
+            {status === "all" ? "Tümü" : status === "confirmed" ? "Onaylanan" : status === "pending" ? "Beklemede" : status === "cancelled" ? "İptal" : "İade"}
+            <span className="ml-2 body-sm text-on-surface-variant">
               ({statusCounts[status]})
             </span>
           </button>
@@ -551,31 +547,37 @@ export default function TicketSalesPage() {
       {/* Search & Filters */}
       <div className="flex items-center gap-4">
         <div className="relative flex-1 max-w-sm">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-[#818898]" />
+          <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-on-surface-variant" />
           <Input
             type="search"
             placeholder="Satış ara..."
             value={globalFilter}
             onChange={(e) => setGlobalFilter(e.target.value)}
-            className="pl-10 h-10 rounded-lg bg-[#f7f7f7] border-[#e5e7eb]"
+            className="pl-11"
           />
         </div>
-        <Button variant="secondary" className="h-10">
+        <Button variant="secondary" size="medium">
           <Filter className="w-4 h-4 mr-2" />
           Filtreler
         </Button>
       </div>
 
       {/* Table */}
-      <Card className="border-[#e5e7eb]">
+      <Card variant="default" padding="none">
         <CardContent className="p-0">
           <div className="overflow-x-auto">
             <table className="w-full">
               <thead>
                 {table.getHeaderGroups().map((headerGroup) => (
-                  <tr key={headerGroup.id} className="border-b border-[#e5e7eb]">
+                  <tr
+                    key={headerGroup.id}
+                    className="border-b border-outline/30 bg-surface-low/50"
+                  >
                     {headerGroup.headers.map((header) => (
-                      <th key={header.id} className="text-left py-3 px-4">
+                      <th
+                        key={header.id}
+                        className="text-left py-4 px-6"
+                      >
                         {header.isPlaceholder
                           ? null
                           : flexRender(
@@ -592,7 +594,7 @@ export default function TicketSalesPage() {
                   <tr>
                     <td
                       colSpan={columns.length}
-                      className="text-center py-12 text-[14px] text-[#666d80]"
+                      className="text-center py-12 body-md text-on-surface-variant"
                     >
                       Bilet satışı bulunamadı.
                     </td>
@@ -601,10 +603,10 @@ export default function TicketSalesPage() {
                   table.getRowModel().rows.map((row) => (
                     <tr
                       key={row.id}
-                      className="border-b border-[#e5e7eb] hover:bg-[#f7f7f7] transition-colors"
+                      className="border-b border-outline/30 last:border-0 hover:bg-surface-low/30 transition-colors"
                     >
                       {row.getVisibleCells().map((cell) => (
-                        <td key={cell.id} className="py-3 px-4">
+                        <td key={cell.id} className="py-4 px-6">
                           {flexRender(
                             cell.column.columnDef.cell,
                             cell.getContext()
@@ -619,8 +621,8 @@ export default function TicketSalesPage() {
           </div>
 
           {/* Pagination */}
-          <div className="flex items-center justify-between p-4 border-t border-[#e5e7eb]">
-            <p className="text-[14px] text-[#666d80]">
+          <div className="flex items-center justify-between p-4 border-t border-outline/30">
+            <p className="body-md text-on-surface-variant">
               {table.getFilteredRowModel().rows.length} sonuçtan{" "}
               {table.getState().pagination.pageIndex *
                 table.getState().pagination.pageSize +
@@ -647,10 +649,10 @@ export default function TicketSalesPage() {
                 <button
                   key={i}
                   onClick={() => table.setPageIndex(i)}
-                  className={`w-8 h-8 rounded-lg text-[14px] font-medium transition-colors ${
+                  className={`w-8 h-8 rounded-lg body-md font-medium transition-colors ${
                     table.getState().pagination.pageIndex === i
-                      ? "bg-[#09724a] text-white"
-                      : "text-[#666d80] hover:bg-[#f7f7f7]"
+                      ? "bg-gradient-primary text-white shadow-glow"
+                      : "text-on-surface-variant hover:bg-surface-low"
                   }`}
                 >
                   {i + 1}

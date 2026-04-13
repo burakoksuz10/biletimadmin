@@ -1,29 +1,32 @@
-// Badge Component - Status badges from Figma
-// Published (green), Pending (yellow), Cancelled (red)
+// Badge Component - "The Ethereal Stage" Design System
+// Features: Soft pastel backgrounds with violet-tinted palette
 
 import * as React from "react";
 import { cva, type VariantProps } from "class-variance-authority";
 import { cn } from "@/lib/utils";
 
 const badgeVariants = cva(
-  "inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-medium",
+  "inline-flex items-center gap-1.5 rounded-full px-3 py-1 label-md",
   {
     variants: {
       variant: {
-        // Published / Active / Approved - Green
-        success: "bg-[#effefa] text-[#09724a]",
-        
+        // Published / Active / Approved - Green with violet tint
+        success: "bg-success-container/80 text-success dark:bg-success/20 dark:text-success",
+
         // Pending / Draft - Yellow/Orange
-        warning: "bg-[#fff8f0] text-[#d39c3d]",
-        
+        warning: "bg-warning-container/80 text-warning dark:bg-warning/20 dark:text-warning",
+
         // Cancelled / Rejected / Banned - Red
-        danger: "bg-[#fff0f3] text-[#df1c41]",
-        
-        // Info / Default - Blue
-        info: "bg-[#f0fbff] text-[#0f71d4]",
-        
+        danger: "bg-danger-container/80 text-danger dark:bg-danger/20 dark:text-danger",
+
+        // Info / Default - Blue with violet tint
+        info: "bg-info-container/80 text-info dark:bg-info/20 dark:text-info",
+
+        // Primary - Violet
+        primary: "bg-primary/10 text-primary dark:bg-primary/20 dark:text-primary-light",
+
         // Neutral - Gray
-        neutral: "bg-[#f7f7f7] text-[#666d80]",
+        neutral: "bg-surface-high text-on-surface-variant",
       },
     },
     defaultVariants: {
@@ -44,11 +47,12 @@ function Badge({ className, variant, dot = true, children, ...props }: BadgeProp
       {dot && (
         <span
           className={cn("h-1.5 w-1.5 rounded-full", {
-            "bg-[#09724a]": variant === "success",
-            "bg-[#d39c3d]": variant === "warning",
-            "bg-[#df1c41]": variant === "danger",
-            "bg-[#0f71d4]": variant === "info",
-            "bg-[#666d80]": variant === "neutral" || !variant,
+            "bg-success": variant === "success",
+            "bg-warning": variant === "warning",
+            "bg-danger": variant === "danger",
+            "bg-info": variant === "info",
+            "bg-primary": variant === "primary",
+            "bg-on-surface-variant": variant === "neutral" || !variant,
           })}
         />
       )}

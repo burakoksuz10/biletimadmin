@@ -31,6 +31,7 @@ import {
   TrendingUp,
   Clock,
   XCircle,
+  Wallet,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -70,7 +71,7 @@ export default function PayoutsPage() {
         accessorKey: "organizer",
         header: ({ column }) => (
           <button
-            className="flex items-center gap-1 text-[12px] font-medium text-[#818898] uppercase tracking-wider"
+            className="flex items-center gap-1 label-sm font-semibold text-on-surface-variant uppercase tracking-wide"
             onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
           >
             Organizatör
@@ -79,10 +80,10 @@ export default function PayoutsPage() {
         ),
         cell: ({ row }) => (
           <div>
-            <p className="text-[14px] font-medium text-[#0d0d12]">
+            <p className="body-md font-medium text-on-surface">
               {row.original.organizer}
             </p>
-            <div className="flex items-center gap-1 text-[12px] text-[#666d80]">
+            <div className="flex items-center gap-1 body-sm text-on-surface-variant">
               <Mail className="w-3 h-3" />
               {row.original.email}
             </div>
@@ -93,7 +94,7 @@ export default function PayoutsPage() {
         accessorKey: "amount",
         header: ({ column }) => (
           <button
-            className="flex items-center gap-1 text-[12px] font-medium text-[#818898] uppercase tracking-wider"
+            className="flex items-center gap-1 label-sm font-semibold text-on-surface-variant uppercase tracking-wide"
             onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
           >
             Tutar
@@ -101,7 +102,7 @@ export default function PayoutsPage() {
           </button>
         ),
         cell: ({ row }) => (
-          <p className="text-[14px] font-semibold text-[#0d0d12]">
+          <p className="body-md font-semibold text-on-surface">
             {formatCurrency(row.original.amount)}
           </p>
         ),
@@ -109,14 +110,14 @@ export default function PayoutsPage() {
       {
         accessorKey: "contact",
         header: () => (
-          <span className="text-[12px] font-medium text-[#818898] uppercase tracking-wider">
+          <span className="label-sm font-semibold text-on-surface-variant uppercase tracking-wide">
             İletişim
           </span>
         ),
         cell: ({ row }) => (
           <div className="flex items-center gap-2">
-            <Phone className="w-4 h-4 text-[#818898]" />
-            <p className="text-[14px] text-[#666d80]">{row.original.contact}</p>
+            <Phone className="w-4 h-4 text-on-surface-variant" />
+            <p className="body-md text-on-surface-variant">{row.original.contact}</p>
           </div>
         ),
       },
@@ -124,7 +125,7 @@ export default function PayoutsPage() {
         accessorKey: "requestedOn",
         header: ({ column }) => (
           <button
-            className="flex items-center gap-1 text-[12px] font-medium text-[#818898] uppercase tracking-wider"
+            className="flex items-center gap-1 label-sm font-semibold text-on-surface-variant uppercase tracking-wide"
             onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
           >
             Talep Tarihi
@@ -133,8 +134,8 @@ export default function PayoutsPage() {
         ),
         cell: ({ row }) => (
           <div className="flex items-center gap-2">
-            <Calendar className="w-4 h-4 text-[#818898]" />
-            <p className="text-[14px] text-[#666d80]">
+            <Calendar className="w-4 h-4 text-on-surface-variant" />
+            <p className="body-md text-on-surface-variant">
               {formatDate(row.original.requestedOn)}
             </p>
           </div>
@@ -143,12 +144,12 @@ export default function PayoutsPage() {
       {
         accessorKey: "processedOn",
         header: () => (
-          <span className="text-[12px] font-medium text-[#818898] uppercase tracking-wider">
+          <span className="label-sm font-semibold text-on-surface-variant uppercase tracking-wide">
             İşlenme Tarihi
           </span>
         ),
         cell: ({ row }) => (
-          <p className="text-[14px] text-[#666d80]">
+          <p className="body-md text-on-surface-variant">
             {row.original.processedOn
               ? formatDate(row.original.processedOn)
               : "-"}
@@ -159,7 +160,7 @@ export default function PayoutsPage() {
         accessorKey: "status",
         header: ({ column }) => (
           <button
-            className="flex items-center gap-1 text-[12px] font-medium text-[#818898] uppercase tracking-wider"
+            className="flex items-center gap-1 label-sm font-semibold text-on-surface-variant uppercase tracking-wide"
             onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
           >
             Durum
@@ -175,7 +176,7 @@ export default function PayoutsPage() {
       {
         id: "actions",
         header: () => (
-          <span className="text-[12px] font-medium text-[#818898] uppercase tracking-wider">
+          <span className="label-sm font-semibold text-on-surface-variant uppercase tracking-wide">
             İşlemler
           </span>
         ),
@@ -187,16 +188,16 @@ export default function PayoutsPage() {
                   showActionsId === row.original.id ? null : row.original.id
                 )
               }
-              className="w-8 h-8 rounded-lg flex items-center justify-center hover:bg-[#f7f7f7] transition-colors"
+              className="w-8 h-8 rounded-lg flex items-center justify-center hover:bg-surface-low transition-colors"
             >
-              <MoreHorizontal className="w-4 h-4 text-[#666d80]" />
+              <MoreHorizontal className="w-4 h-4 text-on-surface-variant" />
             </button>
 
             {showActionsId === row.original.id && (
-              <div className="absolute right-0 top-full mt-1 w-40 bg-white rounded-lg border border-[#e5e7eb] shadow-lg py-1 z-10">
+              <div className="absolute right-0 top-full mt-1 w-48 bg-white dark:bg-surface-higher rounded-xl border border-outline/30 shadow-glow py-1 z-10">
                 <button
                   onClick={() => setShowActionsId(null)}
-                  className="flex items-center gap-2 w-full px-3 py-2 text-[14px] text-[#0d0d12] hover:bg-[#f7f7f7]"
+                  className="flex items-center gap-2 w-full px-3 py-2 body-md text-on-surface hover:bg-surface-low transition-colors"
                 >
                   <Eye className="w-4 h-4" />
                   Detayları Görüntüle
@@ -205,14 +206,14 @@ export default function PayoutsPage() {
                   <>
                     <button
                       onClick={() => setShowActionsId(null)}
-                      className="flex items-center gap-2 w-full px-3 py-2 text-[14px] text-[#09724a] hover:bg-[#e1eee3]"
+                      className="flex items-center gap-2 w-full px-3 py-2 body-md text-success hover:bg-success/10 transition-colors"
                     >
                       <Check className="w-4 h-4" />
                       Onayla
                     </button>
                     <button
                       onClick={() => setShowActionsId(null)}
-                      className="flex items-center gap-2 w-full px-3 py-2 text-[14px] text-[#df1c41] hover:bg-[#fff0f3]"
+                      className="flex items-center gap-2 w-full px-3 py-2 body-md text-danger hover:bg-danger/10 transition-colors"
                     >
                       <X className="w-4 h-4" />
                       Reddet
@@ -271,95 +272,92 @@ export default function PayoutsPage() {
       {/* Page Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-[24px] font-semibold text-[#0d0d12]">Ödemeler</h1>
-          <p className="text-[14px] text-[#666d80] mt-1">
+          <h1 className="headline-lg text-on-surface">
+            Ödemeler
+          </h1>
+          <p className="body-md text-on-surface-variant mt-1">
             Organizatör ödeme taleplerini yönetin
           </p>
         </div>
-        <Button>
+        <Button variant="primary">
           <CreditCard className="w-4 h-4 mr-2" />
           Ödemeleri İşle
         </Button>
       </div>
 
       {/* Stats Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-        <Card className="border-[#e5e7eb]">
-          <CardContent className="p-6">
-            <div className="flex items-center gap-4">
-              <div className="w-12 h-12 rounded-xl bg-[#e1eee3] flex items-center justify-center">
-                <DollarSign className="w-6 h-6 text-[#09724a]" />
-              </div>
-              <div>
-                <p className="text-[12px] text-[#666d80]">Toplam Tutar</p>
-                <p className="text-[20px] font-semibold text-[#0d0d12]">
-                  {formatCurrency(totalAmount)}
-                </p>
-              </div>
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-5">
+        <Card variant="stats" padding="md">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="label-sm text-on-surface-variant mb-3 uppercase tracking-wide font-semibold">Toplam Tutar</p>
+              <p className="display-lg text-on-surface leading-none">
+                {formatCurrency(totalAmount)}
+              </p>
             </div>
-          </CardContent>
+            <div className="w-14 h-14 rounded-2xl bg-primary/10 flex items-center justify-center shadow-sm">
+              <Wallet className="w-7 h-7 text-primary" />
+            </div>
+          </div>
         </Card>
-        <Card className="border-[#e5e7eb]">
-          <CardContent className="p-6">
-            <div className="flex items-center gap-4">
-              <div className="w-12 h-12 rounded-xl bg-[#fff8f0] flex items-center justify-center">
-                <Clock className="w-6 h-6 text-[#d39c3d]" />
-              </div>
-              <div>
-                <p className="text-[12px] text-[#666d80]">Beklemede</p>
-                <p className="text-[20px] font-semibold text-[#0d0d12]">
-                  {formatCurrency(pendingAmount)}
-                </p>
-              </div>
+
+        <Card variant="stats" padding="md">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="label-sm text-on-surface-variant mb-3 uppercase tracking-wide font-semibold">Beklemede</p>
+              <p className="display-lg text-on-surface leading-none">
+                {formatCurrency(pendingAmount)}
+              </p>
             </div>
-          </CardContent>
+            <div className="w-14 h-14 rounded-2xl bg-warning/10 flex items-center justify-center shadow-sm">
+              <Clock className="w-7 h-7 text-warning" />
+            </div>
+          </div>
         </Card>
-        <Card className="border-[#e5e7eb]">
-          <CardContent className="p-6">
-            <div className="flex items-center gap-4">
-              <div className="w-12 h-12 rounded-xl bg-[#effefa] flex items-center justify-center">
-                <Check className="w-6 h-6 text-[#09724a]" />
-              </div>
-              <div>
-                <p className="text-[12px] text-[#666d80]">Onaylanan</p>
-                <p className="text-[20px] font-semibold text-[#0d0d12]">
-                  {statusCounts.approved}
-                </p>
-              </div>
+
+        <Card variant="stats" padding="md">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="label-sm text-on-surface-variant mb-3 uppercase tracking-wide font-semibold">Onaylanan</p>
+              <p className="display-lg text-on-surface leading-none">
+                {statusCounts.approved}
+              </p>
             </div>
-          </CardContent>
+            <div className="w-14 h-14 rounded-2xl bg-success/10 flex items-center justify-center shadow-sm">
+              <Check className="w-7 h-7 text-success" />
+            </div>
+          </div>
         </Card>
-        <Card className="border-[#e5e7eb]">
-          <CardContent className="p-6">
-            <div className="flex items-center gap-4">
-              <div className="w-12 h-12 rounded-xl bg-[#fff0f3] flex items-center justify-center">
-                <XCircle className="w-6 h-6 text-[#df1c41]" />
-              </div>
-              <div>
-                <p className="text-[12px] text-[#666d80]">Reddedilen</p>
-                <p className="text-[20px] font-semibold text-[#0d0d12]">
-                  {statusCounts.rejected}
-                </p>
-              </div>
+
+        <Card variant="stats" padding="md">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="label-sm text-on-surface-variant mb-3 uppercase tracking-wide font-semibold">Reddedilen</p>
+              <p className="display-lg text-on-surface leading-none">
+                {statusCounts.rejected}
+              </p>
             </div>
-          </CardContent>
+            <div className="w-14 h-14 rounded-2xl bg-danger/10 flex items-center justify-center shadow-sm">
+              <XCircle className="w-7 h-7 text-danger" />
+            </div>
+          </div>
         </Card>
       </div>
 
       {/* Status Tabs */}
-      <div className="flex items-center gap-2 border-b border-[#e5e7eb]">
+      <div className="flex items-center gap-2 border-b border-outline/30">
         {(["all", "pending", "approved", "rejected"] as const).map((status) => (
           <button
             key={status}
             onClick={() => setStatusFilter(status)}
-            className={`px-4 py-3 text-[14px] font-medium border-b-2 transition-colors ${
+            className={`px-4 py-3 body-md font-medium border-b-2 transition-colors ${
               statusFilter === status
-                ? "border-[#09724a] text-[#09724a]"
-                : "border-transparent text-[#666d80] hover:text-[#0d0d12]"
+                ? "border-primary text-primary"
+                : "border-transparent text-on-surface-variant hover:text-on-surface hover:border-outline/50"
             }`}
           >
-            {status.charAt(0).toUpperCase() + status.slice(1)}
-            <span className="ml-2 text-[12px] text-[#818898]">
+            {status === "all" ? "Tümü" : status === "pending" ? "Beklemede" : status === "approved" ? "Onaylanan" : "Reddedilen"}
+            <span className="ml-2 body-sm text-on-surface-variant">
               ({statusCounts[status]})
             </span>
           </button>
@@ -369,23 +367,23 @@ export default function PayoutsPage() {
       {/* Search & Filters */}
       <div className="flex items-center gap-4">
         <div className="relative flex-1 max-w-sm">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-[#818898]" />
+          <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-on-surface-variant" />
           <Input
             type="search"
             placeholder="Ödeme ara..."
             value={globalFilter}
             onChange={(e) => setGlobalFilter(e.target.value)}
-            className="pl-10 h-10 rounded-lg bg-[#f7f7f7] border-[#e5e7eb]"
+            className="pl-11"
           />
         </div>
-        <Button variant="secondary" className="h-10">
+        <Button variant="secondary" size="medium">
           <Filter className="w-4 h-4 mr-2" />
           Filtreler
         </Button>
       </div>
 
       {/* Table */}
-      <Card className="border-[#e5e7eb]">
+      <Card variant="default" padding="none">
         <CardContent className="p-0">
           <div className="overflow-x-auto">
             <table className="w-full">
@@ -393,12 +391,12 @@ export default function PayoutsPage() {
                 {table.getHeaderGroups().map((headerGroup) => (
                   <tr
                     key={headerGroup.id}
-                    className="border-b border-[#e5e7eb]"
+                    className="border-b border-outline/30 bg-surface-low/50"
                   >
                     {headerGroup.headers.map((header) => (
                       <th
                         key={header.id}
-                        className="text-left py-3 px-4"
+                        className="text-left py-4 px-6"
                       >
                         {header.isPlaceholder
                           ? null
@@ -416,7 +414,7 @@ export default function PayoutsPage() {
                   <tr>
                     <td
                       colSpan={columns.length}
-                      className="text-center py-12 text-[14px] text-[#666d80]"
+                      className="text-center py-12 body-md text-on-surface-variant"
                     >
                       Ödeme bulunamadı.
                     </td>
@@ -425,10 +423,10 @@ export default function PayoutsPage() {
                   table.getRowModel().rows.map((row) => (
                     <tr
                       key={row.id}
-                      className="border-b border-[#e5e7eb] hover:bg-[#f7f7f7] transition-colors"
+                      className="border-b border-outline/30 last:border-0 hover:bg-surface-low/30 transition-colors"
                     >
                       {row.getVisibleCells().map((cell) => (
-                        <td key={cell.id} className="py-3 px-4">
+                        <td key={cell.id} className="py-4 px-6">
                           {flexRender(
                             cell.column.columnDef.cell,
                             cell.getContext()
@@ -443,8 +441,8 @@ export default function PayoutsPage() {
           </div>
 
           {/* Pagination */}
-          <div className="flex items-center justify-between p-4 border-t border-[#e5e7eb]">
-            <p className="text-[14px] text-[#666d80]">
+          <div className="flex items-center justify-between p-4 border-t border-outline/30">
+            <p className="body-md text-on-surface-variant">
               {table.getFilteredRowModel().rows.length} sonuçtan{" "}
               {table.getState().pagination.pageIndex *
                 table.getState().pagination.pageSize +
@@ -471,10 +469,10 @@ export default function PayoutsPage() {
                 <button
                   key={i}
                   onClick={() => table.setPageIndex(i)}
-                  className={`w-8 h-8 rounded-lg text-[14px] font-medium transition-colors ${
+                  className={`w-8 h-8 rounded-lg body-md font-medium transition-colors ${
                     table.getState().pagination.pageIndex === i
-                      ? "bg-[#09724a] text-white"
-                      : "text-[#666d80] hover:bg-[#f7f7f7]"
+                      ? "bg-gradient-primary text-white shadow-glow"
+                      : "text-on-surface-variant hover:bg-surface-low"
                   }`}
                 >
                   {i + 1}
