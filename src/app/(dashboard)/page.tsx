@@ -161,32 +161,32 @@ const RecentPayouts = memo(function RecentPayouts({
   );
 });
 
-// Mock data - frozen to prevent mutations
-const MOCK_SALES_DATA = Object.freeze([
+// Mock data - typed for component props
+const MOCK_SALES_DATA: SalesDataPoint[] = [
   { month: "Oca", income: 20000 },
   { month: "Şub", income: 45000 },
   { month: "Mar", income: 30000 },
   { month: "Nis", income: 55000 },
   { month: "May", income: 40000 },
   { month: "Haz", income: 65000 },
-] as const);
+];
 
-const MOCK_BEST_VISITED = Object.freeze([
+const MOCK_BEST_VISITED: BestVisitedLocation[] = [
   { country: "İstanbul, Türkiye", amount: 32580, percentage: 34 },
   { country: "Antalya, Türkiye", amount: 24890, percentage: 26 },
   { country: "Ankara, Türkiye", amount: 18756, percentage: 20 },
   { country: "İzmir, Türkiye", amount: 12340, percentage: 13 },
   { country: "Bursa, Türkiye", amount: 6780, percentage: 7 },
-] as const);
+];
 
-const MOCK_RECENT_PAYOUTS = Object.freeze([
+const MOCK_RECENT_PAYOUTS: RecentPayout[] = [
   {
     id: "pay-001",
     organizer: "Ahmet Yılmaz",
     amount: 25000,
     contact: "+905321234567",
     requestedOn: "2025-01-15",
-    status: "pending" as const,
+    status: "pending",
   },
   {
     id: "pay-002",
@@ -194,10 +194,10 @@ const MOCK_RECENT_PAYOUTS = Object.freeze([
     amount: 15000,
     contact: "+905321234568",
     requestedOn: "2025-01-14",
-    status: "approved" as const,
+    status: "approved",
     processedOn: "2025-01-15",
   },
-] as const);
+];
 
 // Simple formatter functions
 const formatCurrency = (value: number) => {

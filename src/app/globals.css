@@ -57,6 +57,58 @@
   /* Spacing */
   --spacing-sidebar: 300px;
   --spacing-header: 72px;
+
+  /* Animation glow colors */
+  --glow-color: rgba(107, 56, 212, 0.15);
+  --glow-color-active: rgba(107, 56, 212, 0.25);
+}
+
+/* ============================================
+   DARK MODE - Complete Token System
+   ============================================ */
+
+.dark {
+  /* Primary Colors - Enhanced for dark mode */
+  --color-primary: #8a4ee8;
+  --color-primary-light: #a876ff;
+  --color-primary-dark: #6b38d4;
+
+  /* Secondary Colors - Enhanced for dark mode */
+  --color-secondary: #d9177f;
+  --color-secondary-light: #ff3d93;
+  --color-secondary-dark: #b4136d;
+
+  /* Dark Surface Hierarchy - Deeper, richer tones */
+  --color-surface: #1a1625;
+  --color-surface-low: #251f33;
+  --color-surface-lower: #2d2538;
+  --color-surface-high: #382e45;
+  --color-surface-higher: #433850;
+  --color-surface-highest: #4e445a;
+
+  /* Dark Text Hierarchy - Improved contrast */
+  --color-on-surface: #f8f1fe;
+  --color-on-surface-variant: #cbc3d7;
+  --color-on-primary: #ffffff;
+  --color-on-secondary: #ffffff;
+
+  /* Dark Outline Colors - More subtle */
+  --color-outline: #938da4;
+  --color-outline-variant: #938da4;
+
+  /* Status Colors - Dark mode variants */
+  --color-success: #66ff91;
+  --color-success-container: #1a4d2e;
+  --color-warning: #ffb74d;
+  --color-warning-container: #4d2e0a;
+  --color-danger: #ff6b6b;
+  --color-danger-container: #4d0a0a;
+  --color-info: #4fc3f7;
+  --color-info-container: #0a2e4d;
+
+  /* Animation glow colors - Dark mode enhanced */
+  --glow-color: rgba(138, 78, 232, 0.25);
+  --glow-color-active: rgba(138, 78, 232, 0.4);
 }
 
 /* ============================================
@@ -65,6 +117,23 @@
 
 * {
   border-color: var(--color-outline);
+}
+
+/* Smooth transitions for theme switching */
+*,
+*::before,
+*::after {
+  transition-property: background-color, border-color, color, fill, stroke, box-shadow;
+  transition-duration: 200ms;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Skip transitions for theme toggle itself */
+.no-transition,
+.no-transition *,
+.no-transition *::before,
+.no-transition *::after {
+  transition: none !important;
 }
 
 body {
@@ -82,23 +151,13 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
-/* Dark Mode */
+/* Dark Mode Body - Enhanced mesh gradient */
 .dark body {
-  --color-surface: #1a1625;
-  --color-surface-low: #251f33;
-  --color-surface-lower: #2d2538;
-  --color-surface-high: #382e45;
-  --color-surface-higher: #433850;
-  --color-surface-highest: #4e445a;
-
-  --color-on-surface: #f8f1fe;
-  --color-on-surface-variant: #cbc3d7;
-
   background:
-    radial-gradient(at 0% 0%, rgba(107, 56, 212, 0.15) 0px, transparent 50%),
-    radial-gradient(at 100% 0%, rgba(180, 19, 109, 0.15) 0px, transparent 50%),
-    radial-gradient(at 100% 100%, rgba(107, 56, 212, 0.1) 0px, transparent 50%),
-    radial-gradient(at 0% 100%, rgba(180, 19, 109, 0.1) 0px, transparent 50%),
+    radial-gradient(at 0% 0%, rgba(138, 78, 232, 0.15) 0px, transparent 50%),
+    radial-gradient(at 100% 0%, rgba(217, 23, 127, 0.15) 0px, transparent 50%),
+    radial-gradient(at 100% 100%, rgba(107, 56, 212, 0.12) 0px, transparent 50%),
+    radial-gradient(at 0% 100%, rgba(180, 19, 109, 0.12) 0px, transparent 50%),
     #1a1625;
 }
 
@@ -113,10 +172,8 @@ body {
   -webkit-backdrop-filter: blur(20px);
 }
 
-.glass-dark {
-  background-color: rgba(26, 22, 37, 0.6);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
+.dark .glass {
+  background-color: rgba(45, 37, 56, 0.7);
 }
 
 /* Glass navigation - for floating elements */
@@ -128,8 +185,8 @@ body {
 }
 
 .dark .glass-nav {
-  background-color: rgba(26, 22, 37, 0.4);
-  border-bottom: 1px solid rgba(203, 195, 215, 0.1);
+  background-color: rgba(26, 22, 37, 0.5);
+  border-bottom: 1px solid rgba(147, 141, 164, 0.15);
 }
 
 /* Glass card - elevated content */
@@ -147,10 +204,10 @@ body {
 .dark .glass-card {
   background-color: rgba(45, 37, 56, 0.85);
   box-shadow:
-    0 4px 24px rgba(107, 56, 212, 0.2),
-    0 1px 3px rgba(0, 0, 0, 0.2),
-    inset 0 0 0 1px rgba(255, 255, 255, 0.08);
-  border: 1px solid rgba(203, 195, 215, 0.15);
+    0 4px 24px rgba(107, 56, 212, 0.25),
+    0 1px 3px rgba(0, 0, 0, 0.3),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(147, 141, 164, 0.2);
 }
 
 /* Stats card - floating with soft gradient shadow */
@@ -184,22 +241,67 @@ body {
 .dark .stats-card {
   background: linear-gradient(135deg, rgba(45, 37, 56, 0.98) 0%, rgba(38, 30, 45, 0.95) 100%);
   box-shadow:
-    0 4px 8px rgba(0, 0, 0, 0.3),
-    0 8px 16px rgba(107, 56, 212, 0.12),
-    0 16px 32px rgba(107, 56, 212, 0.08),
-    0 32px 64px rgba(107, 56, 212, 0.06),
+    0 4px 8px rgba(0, 0, 0, 0.4),
+    0 8px 16px rgba(138, 78, 232, 0.15),
+    0 16px 32px rgba(138, 78, 232, 0.1),
+    0 32px 64px rgba(138, 78, 232, 0.08),
     inset 0 0 0 1px rgba(255, 255, 255, 0.12);
-  transform: translateY(0);
 }
 
 .dark .stats-card:hover {
   transform: translateY(-4px);
   box-shadow:
-    0 8px 16px rgba(0, 0, 0, 0.4),
-    0 20px 40px rgba(107, 56, 212, 0.18),
-    0 40px 80px rgba(107, 56, 212, 0.15),
-    0 80px 120px rgba(107, 56, 212, 0.12),
-    inset 0 0 0 1px rgba(255, 255, 255, 0.15);
+    0 8px 16px rgba(0, 0, 0, 0.5),
+    0 20px 40px rgba(138, 78, 232, 0.25),
+    0 40px 80px rgba(138, 78, 232, 0.2),
+    0 80px 120px rgba(138, 78, 232, 0.15),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.18);
+}
+
+/* ============================================
+   GRADIENTS
+   ============================================ */
+
+.gradient-primary {
+  background: linear-gradient(135deg, #6b38d4 0%, #b4136d 100%);
+}
+
+.dark .gradient-primary {
+  background: linear-gradient(135deg, #8a4ee8 0%, #d9177f 100%);
+}
+
+.gradient-primary-hover {
+  background: linear-gradient(135deg, #5828b3 0%, #8f0e56 100%);
+}
+
+.dark .gradient-primary-hover {
+  background: linear-gradient(135deg, #6b38d4 0%, #b4136d 100%);
+}
+
+/* Shadow Glow - Light mode */
+.shadow-glow {
+  box-shadow: 0 10px 30px -5px rgba(107, 56, 212, 0.15);
+}
+
+.shadow-glow-lg {
+  box-shadow: 0 15px 40px -5px rgba(107, 56, 212, 0.2);
+}
+
+.shadow-glow-sm {
+  box-shadow: 0 5px 20px -3px rgba(107, 56, 212, 0.1);
+}
+
+/* Shadow Glow - Dark mode (enhanced) */
+.dark .shadow-glow {
+  box-shadow: 0 10px 30px -5px rgba(138, 78, 232, 0.3);
+}
+
+.dark .shadow-glow-lg {
+  box-shadow: 0 15px 40px -5px rgba(138, 78, 232, 0.4);
+}
+
+.dark .shadow-glow-sm {
+  box-shadow: 0 5px 20px -3px rgba(138, 78, 232, 0.2);
 }
 
 /* ============================================
@@ -227,6 +329,14 @@ body {
   -webkit-mask-composite: xor;
   mask-composite: exclude;
   pointer-events: none;
+}
+
+.dark .ghost-border::before {
+  background: linear-gradient(
+    to bottom,
+    rgba(147, 141, 164, 0.25),
+    rgba(147, 141, 164, 0.1)
+  );
 }
 
 /* ============================================
@@ -267,11 +377,17 @@ body {
 
 @keyframes pulse-glow {
   0%, 100% {
-    box-shadow: 0 10px 30px -5px rgba(107, 56, 212, 0.15);
+    box-shadow: 0 10px 30px -5px var(--glow-color, rgba(107, 56, 212, 0.15));
   }
   50% {
-    box-shadow: 0 10px 40px -5px rgba(107, 56, 212, 0.25);
+    box-shadow: 0 10px 40px -5px var(--glow-color-active, rgba(107, 56, 212, 0.25));
   }
+}
+
+/* Dark mode uses different glow colors via CSS variables */
+.dark {
+  --glow-color: rgba(138, 78, 232, 0.25);
+  --glow-color-active: rgba(138, 78, 232, 0.4);
 }
 
 @keyframes mesh-shift {
@@ -326,10 +442,33 @@ body {
   background: rgba(203, 195, 215, 0.5);
 }
 
+.dark ::-webkit-scrollbar-thumb {
+  background: rgba(147, 141, 164, 0.3);
+}
+
+.dark ::-webkit-scrollbar-thumb:hover {
+  background: rgba(147, 141, 164, 0.5);
+}
+
 /* Focus visible - for accessibility */
 *:focus-visible {
   outline: 2px solid var(--color-primary);
   outline-offset: 2px;
+}
+
+.dark *:focus-visible {
+  outline-color: var(--color-primary-light);
+}
+
+/* Selection styling */
+::selection {
+  background-color: var(--color-primary);
+  color: white;
+}
+
+.dark ::selection {
+  background-color: var(--color-primary-light);
+  color: #1a1625;
 }
 
 /* ============================================
@@ -368,4 +507,179 @@ body {
   text-transform: uppercase;
   letter-spacing: 0.05em;
   font-weight: 600;
+}
+
+/* ============================================
+   INPUT & FORM ENHANCEMENTS
+   ============================================ */
+
+/* Dark mode input focus enhancement */
+.dark input:focus,
+.dark textarea:focus,
+.dark select:focus {
+  background-color: var(--color-surface-highest);
+  box-shadow: 0 0 0 3px rgba(138, 78, 232, 0.2);
+}
+
+/* Dark mode placeholder */
+.dark ::placeholder {
+  color: rgba(203, 195, 215, 0.4);
+}
+
+/* ============================================
+   SIDEBAR DARK MODE
+   ============================================ */
+
+.dark .sidebar-link {
+  color: var(--color-on-surface-variant);
+}
+
+.dark .sidebar-link:hover {
+  background-color: rgba(138, 78, 232, 0.1);
+  color: var(--color-on-surface);
+}
+
+.dark .sidebar-link.active {
+  background: linear-gradient(135deg, rgba(138, 78, 232, 0.2) 0%, rgba(217, 23, 127, 0.2) 100%);
+  color: var(--color-primary-light);
+}
+
+/* ============================================
+   TABLE DARK MODE
+   ============================================ */
+
+.dark table {
+  color: var(--color-on-surface);
+}
+
+.dark th {
+  background-color: rgba(45, 37, 56, 0.8);
+  color: var(--color-on-surface);
+}
+
+.dark tr:hover {
+  background-color: rgba(138, 78, 232, 0.05);
+}
+
+/* ============================================
+   BADGE DARK MODE
+   ============================================ */
+
+.dark .badge-success {
+  background-color: rgba(102, 255, 145, 0.15);
+  color: #66ff91;
+  border: 1px solid rgba(102, 255, 145, 0.3);
+}
+
+.dark .badge-warning {
+  background-color: rgba(255, 183, 77, 0.15);
+  color: #ffb74d;
+  border: 1px solid rgba(255, 183, 77, 0.3);
+}
+
+.dark .badge-danger {
+  background-color: rgba(255, 107, 107, 0.15);
+  color: #ff6b6b;
+  border: 1px solid rgba(255, 107, 107, 0.3);
+}
+
+.dark .badge-info {
+  background-color: rgba(79, 195, 247, 0.15);
+  color: #4fc3f7;
+  border: 1px solid rgba(79, 195, 247, 0.3);
+}
+
+.dark .badge-neutral {
+  background-color: rgba(147, 141, 164, 0.15);
+  color: #cbc3d7;
+  border: 1px solid rgba(147, 141, 164, 0.3);
+}
+
+/* ============================================
+   DROPDOWN / MENU DARK MODE
+   ============================================ */
+
+.dark .dropdown-menu {
+  background-color: rgba(45, 37, 56, 0.95);
+  border: 1px solid rgba(147, 141, 164, 0.2);
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.4);
+}
+
+.dark .dropdown-item:hover {
+  background-color: rgba(138, 78, 232, 0.15);
+}
+
+/* ============================================
+   TOAST NOTIFICATIONS DARK MODE
+   ============================================ */
+
+.dark .toast {
+  background-color: rgba(45, 37, 56, 0.95);
+  border: 1px solid rgba(147, 141, 164, 0.2);
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.4);
+}
+
+.dark .toast-success {
+  border-left: 3px solid #66ff91;
+}
+
+.dark .toast-error {
+  border-left: 3px solid #ff6b6b;
+}
+
+.dark .toast-warning {
+  border-left: 3px solid #ffb74d;
+}
+
+.dark .toast-info {
+  border-left: 3px solid #4fc3f7;
+}
+
+/* ============================================
+   RECHARTS DARK MODE
+   ============================================ */
+
+/* Chart text colors */
+.dark .recharts-cartesian-axis-tick-value {
+  fill: var(--color-on-surface-variant, #cbc3d7) !important;
+}
+
+/* Chart tooltip dark mode */
+.dark .recharts-default-tooltip {
+  background-color: rgba(45, 37, 56, 0.95) !important;
+  border: 1px solid rgba(147, 141, 164, 0.2) !important;
+  color: var(--color-on-surface, #f8f1fe) !important;
+}
+
+/* Light mode chart tooltip */
+.recharts-default-tooltip {
+  background-color: rgba(255, 255, 255, 0.95) !important;
+  border: 1px solid rgba(203, 195, 215, 0.3) !important;
+  color: var(--color-on-surface, #1d1a23) !important;
+}
+
+/* ============================================
+   CARD BACKGROUND DARK MODE
+   For elements with bg-white/90 class
+   ============================================ */
+
+.dark .bg-white\/90 {
+  background-color: rgba(45, 37, 56, 0.9) !important;
+}
+
+/* ============================================
+   BUTTON TEXT DARK MODE FIX
+   For glass buttons - use lighter text color
+   ============================================ */
+
+/* Target buttons with backdrop-blur in dark mode */
+.dark button[class*="backdrop-blur"][class*="text-primary"],
+.dark button[class*="bg-white"][class*="text-primary"] {
+  color: #f8f1fe !important;
+}
+
+.dark button[class*="backdrop-blur"][class*="text-primary"] svg,
+.dark button[class*="bg-white"][class*="text-primary"] svg {
+  color: #f8f1fe !important;
+  stroke: #f8f1fe !important;
 }

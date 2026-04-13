@@ -2,7 +2,7 @@
 
 import { AreaChart, Area, ResponsiveContainer, XAxis, YAxis, Tooltip } from "recharts";
 
-interface SalesDataPoint {
+export interface SalesDataPoint {
   month: string;
   income: number;
 }
@@ -24,34 +24,35 @@ export function RevenueChart({ data }: { data: readonly SalesDataPoint[] }) {
       <AreaChart data={data}>
         <defs>
           <linearGradient id={GRADIENT_ID} x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0%" stopColor="#6b38d4" stopOpacity={0.3} />
-            <stop offset="100%" stopColor="#6b38d4" stopOpacity={0} />
+            <stop offset="0%" stopColor="var(--color-primary, #6b38d4)" stopOpacity={0.3} />
+            <stop offset="100%" stopColor="var(--color-primary, #6b38d4)" stopOpacity={0} />
           </linearGradient>
         </defs>
         <XAxis
           dataKey="month"
-          tick={{ fill: "#494454", fontSize: 12 }}
+          tick={{ fill: "var(--color-on-surface-variant, #494454)", fontSize: 12 }}
           axisLine={false}
           tickLine={false}
         />
         <YAxis
-          tick={{ fill: "#494454", fontSize: 12 }}
+          tick={{ fill: "var(--color-on-surface-variant, #494454)", fontSize: 12 }}
           axisLine={false}
           tickLine={false}
           tickFormatter={(value) => `$${(value / 1000).toFixed(0)}k`}
         />
         <Tooltip
           contentStyle={{
-            backgroundColor: "rgba(255, 255, 255, 0.95)",
-            border: "1px solid rgba(107, 56, 212, 0.2)",
+            backgroundColor: "var(--color-surface-lower, rgba(255, 255, 255, 0.95))",
+            border: "1px solid var(--color-outline, rgba(203, 195, 215, 0.3))",
             borderRadius: "8px",
+            color: "var(--color-on-surface, #1d1a23)",
           }}
           formatter={(value) => formatCurrency(Number(value))}
         />
         <Area
           type="monotone"
           dataKey="income"
-          stroke="#6b38d4"
+          stroke="var(--color-primary, #6b38d4)"
           strokeWidth={2}
           fill={`url(#${GRADIENT_ID})`}
           animationBegin={0}

@@ -9,59 +9,59 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        // Primary Colors - Violet/Pink palette
+        // Primary Colors - Violet/Pink palette (using CSS variables for dark mode)
         primary: {
-          DEFAULT: '#6b38d4',
-          light: '#8a4ee8',
-          dark: '#5828b3',
+          DEFAULT: 'var(--color-primary, #6b38d4)',
+          light: 'var(--color-primary-light, #8a4ee8)',
+          dark: 'var(--color-primary-dark, #5828b3)',
         },
         secondary: {
-          DEFAULT: '#b4136d',
-          light: '#d9177f',
-          dark: '#8f0e56',
+          DEFAULT: 'var(--color-secondary, #b4136d)',
+          light: 'var(--color-secondary-light, #d9177f)',
+          dark: 'var(--color-secondary-dark, #8f0e56)',
         },
 
-        // Surface Hierarchy - Glassmorphism layers
+        // Surface Hierarchy - Glassmorphism layers (using CSS variables for dark mode)
         surface: {
-          DEFAULT: '#fef7ff',
-          low: '#f8f1fe',
-          lower: '#ffffff',
-          high: '#ede5f3',
-          higher: '#e5dcf0',
-          highest: '#ddd3eb',
+          DEFAULT: 'var(--color-surface, #fef7ff)',
+          low: 'var(--color-surface-low, #f8f1fe)',
+          lower: 'var(--color-surface-lower, #ffffff)',
+          high: 'var(--color-surface-high, #ede5f3)',
+          higher: 'var(--color-surface-higher, #e5dcf0)',
+          highest: 'var(--color-surface-highest, #ddd3eb)',
         },
 
-        // On Surface Colors - Text hierarchy
-        'on-surface': '#1d1a23',
-        'on-surface-variant': '#494454',
-        'on-primary': '#ffffff',
-        'on-secondary': '#ffffff',
+        // On Surface Colors - Text hierarchy (using CSS variables for dark mode support)
+        'on-surface': 'var(--color-on-surface, #1d1a23)',
+        'on-surface-variant': 'var(--color-on-surface-variant, #494454)',
+        'on-primary': 'var(--color-on-primary, #ffffff)',
+        'on-secondary': 'var(--color-on-secondary, #ffffff)',
 
-        // Outline Colors
+        // Outline Colors (using CSS variables for dark mode)
         outline: {
-          DEFAULT: '#cbc3d7',
-          variant: '#cbc3d7',
+          DEFAULT: 'var(--color-outline, #cbc3d7)',
+          variant: 'var(--color-outline-variant, #cbc3d7)',
         },
 
-        // Status Colors with violet tint
+        // Status Colors with violet tint (using CSS variables for dark mode)
         success: {
-          DEFAULT: '#00c853',
-          container: '#e8f5e9',
+          DEFAULT: 'var(--color-success, #00c853)',
+          container: 'var(--color-success-container, #e8f5e9)',
           on: '#ffffff',
         },
         warning: {
-          DEFAULT: '#ffa726',
-          container: '#fff3e0',
+          DEFAULT: 'var(--color-warning, #ffa726)',
+          container: 'var(--color-warning-container, #fff3e0)',
           on: '#ffffff',
         },
         danger: {
-          DEFAULT: '#ef5350',
-          container: '#ffebee',
+          DEFAULT: 'var(--color-danger, #ef5350)',
+          container: 'var(--color-danger-container, #ffebee)',
           on: '#ffffff',
         },
         info: {
-          DEFAULT: '#42a5f5',
-          container: '#e3f2fd',
+          DEFAULT: 'var(--color-info, #42a5f5)',
+          container: 'var(--color-info-container, #e3f2fd)',
           on: '#ffffff',
         },
       },
@@ -118,9 +118,9 @@ module.exports = {
       },
 
       backgroundImage: {
-        // Signature gradient for CTAs
-        'gradient-primary': 'linear-gradient(135deg, #6b38d4 0%, #b4136d 100%)',
-        'gradient-primary-hover': 'linear-gradient(135deg, #5828b3 0%, #8f0e56 100%)',
+        // Signature gradient for CTAs (using CSS variables for dark mode)
+        'gradient-primary': 'linear-gradient(135deg, var(--color-primary, #6b38d4) 0%, var(--color-secondary, #b4136d) 100%)',
+        'gradient-primary-hover': 'linear-gradient(135deg, var(--color-primary-dark, #5828b3) 0%, var(--color-secondary-dark, #8f0e56) 100%)',
 
         // Mesh gradient backgrounds
         'mesh-gradient': 'radial-gradient(at 0% 0%, rgba(107, 56, 212, 0.15) 0px, transparent 50%), radial-gradient(at 100% 0%, rgba(180, 19, 109, 0.15) 0px, transparent 50%), radial-gradient(at 100% 100%, rgba(107, 56, 212, 0.1) 0px, transparent 50%), radial-gradient(at 0% 100%, rgba(180, 19, 109, 0.1) 0px, transparent 50%)',

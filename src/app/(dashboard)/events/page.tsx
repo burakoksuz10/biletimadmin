@@ -409,7 +409,7 @@ export default function EventsPage() {
               }`}
             >
               {Icon && <Icon className="w-4 h-4" />}
-              {status === "all" ? "Tümü" : config.label}
+              {status === "all" ? "Tümü" : config?.label}
               <span className="label-sm text-on-surface-variant">
                 ({statusCounts[status]})
               </span>
