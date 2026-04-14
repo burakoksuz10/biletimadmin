@@ -44,8 +44,9 @@ export interface Organization {
   is_active: boolean;
   operator_id?: number | null;
   settings?: unknown | null;
-  created_at: string;
-  updated_at: string;
+  user?: BackendUser | null; // Organizatör yöneticisi (detay endpoint'inden gelir)
+  created_at?: string;
+  updated_at?: string;
 }
 
 export interface CreateOrganizationRequest {

@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Calendar, Loader2, MapPin, Building, Tag } from "lucide-react";
+import { Calendar, Loader2, MapPin, Building, Tag, AlertCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -47,9 +47,9 @@ export function EventForm({ event, onSuccess, onCancel }: EventFormProps) {
   const [error, setError] = useState<string | null>(null);
   const [organizations, setOrganizations] = useState<Organization[]>([]);
   const [venues, setVenues] = useState<Venue[]>([]);
-  
+
   const { categories, loading: categoriesLoading } = useEventCategories();
-  
+
   const isEditing = !!event;
 
   const form = useForm<EventFormValues>({
@@ -72,7 +72,6 @@ export function EventForm({ event, onSuccess, onCancel }: EventFormProps) {
     },
   });
 
-  // Fetch organizations and venues on mount
   useEffect(() => {
     const fetchOptions = async () => {
       try {
@@ -80,14 +79,13 @@ export function EventForm({ event, onSuccess, onCancel }: EventFormProps) {
           organizationsService.getAll(),
           venuesService.getAll(),
         ]);
-        // Services return { data: [...] } format
         setOrganizations(orgsData.data || []);
         setVenues(venuesData.data || []);
       } catch (err) {
         console.error("Failed to fetch form options:", err);
       }
     };
-    
+
     fetchOptions();
   }, []);
 
@@ -96,7 +94,6 @@ export function EventForm({ event, onSuccess, onCancel }: EventFormProps) {
       setIsLoading(true);
       setError(null);
 
-      // Prepare the request data
       const requestData: CreateEventRequest | UpdateEventRequest = {
         title: values.title,
         description: values.description || undefined,
@@ -125,21 +122,20 @@ export function EventForm({ event, onSuccess, onCancel }: EventFormProps) {
       onSuccess?.(result);
     } catch (err: any) {
       console.error("Failed to save event:", err);
-      
-      // Handle validation errors from API
+
       if (err?.errors) {
         Object.keys(err.errors).forEach((field) => {
           if (field in form.getValues()) {
             form.setError(field as keyof EventFormValues, {
               type: "server",
-              message: Array.isArray(err.errors[field]) 
-                ? err.errors[field][0] 
+              message: Array.isArray(err.errors[field])
+                ? err.errors[field][0]
                 : err.errors[field],
             });
           }
         });
       }
-      
+
       const errorMessage = err?.message || "Bir hata oluştu";
       setError(errorMessage);
     } finally {
@@ -149,88 +145,93 @@ export function EventForm({ event, onSuccess, onCancel }: EventFormProps) {
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-        {/* Error message */}
+      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+        {/* Error message - Glassmorphism style */}
         {error && (
-          <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 text-red-700 dark:text-red-400 px-4 py-3 rounded-lg text-sm">
-            {error}
+          <div className="flex items-start gap-3 px-5 py-4 rounded-xl bg-danger/10 backdrop-blur-glass animate-fade-in">
+            <AlertCircle className="w-5 h-5 text-danger flex-shrink-0 mt-0.5" />
+            <p className="body-md text-danger">{error}</p>
           </div>
         )}
 
-        {/* Basic Info Section */}
-        <div className="space-y-4">
-          <h3 className="text-lg font-medium text-[#0d0d12]">Temel Bilgiler</h3>
-          
-          {/* Title */}
-          <FormField
-            control={form.control}
-            name="title"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Etkinlik Adı *</FormLabel>
-                <FormControl>
-                  <Input
-                    placeholder="Örn: İstanbul Caz Festivali"
-                    error={!!form.formState.errors.title}
-                    {...field}
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
+        {/* Basic Info Section - Surface layering */}
+        <div className="space-y-5">
+          <div className="flex items-center gap-3">
+            <div className="w-1 h-6 rounded-full bg-gradient-to-b from-primary to-secondary" />
+            <h3 className="headline-sm text-on-surface">Temel Bilgiler</h3>
+          </div>
 
-          {/* Short Description */}
-          <FormField
-            control={form.control}
-            name="short_description"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Kısa Açıklama</FormLabel>
-                <FormControl>
-                  <Input
-                    placeholder="Etkinlik hakkında kısa açıklama (max 255 karakter)"
-                    error={!!form.formState.errors.short_description}
-                    {...field}
-                    value={field.value ?? ""}
-                  />
-                </FormControl>
-                <FormDescription>
-                  {(field.value?.length || 0)}/255 karakter
-                </FormDescription>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
+          <div className="grid gap-5 pl-4">
+            <FormField
+              control={form.control}
+              name="title"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Etkinlik Adı *</FormLabel>
+                  <FormControl>
+                    <Input
+                      placeholder="Örn: İstanbul Caz Festivali"
+                      error={!!form.formState.errors.title}
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
 
-          {/* Description */}
-          <FormField
-            control={form.control}
-            name="description"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Açıklama</FormLabel>
-                <FormControl>
-                  <Textarea
-                    placeholder="Etkinlik hakkında detaylı açıklama"
-                    className="min-h-[120px]"
-                    error={!!form.formState.errors.description}
-                    {...field}
-                    value={field.value ?? ""}
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
+            <FormField
+              control={form.control}
+              name="short_description"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Kısa Açıklama</FormLabel>
+                  <FormControl>
+                    <Input
+                      placeholder="Etkinlik hakkında kısa açıklama (max 255 karakter)"
+                      error={!!form.formState.errors.short_description}
+                      {...field}
+                      value={field.value ?? ""}
+                    />
+                  </FormControl>
+                  <FormDescription>
+                    {(field.value?.length || 0)}/255 karakter
+                  </FormDescription>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="description"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Açıklama</FormLabel>
+                  <FormControl>
+                    <Textarea
+                      placeholder="Etkinlik hakkında detaylı açıklama"
+                      className="min-h-[120px]"
+                      error={!!form.formState.errors.description}
+                      {...field}
+                      value={field.value ?? ""}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </div>
         </div>
 
         {/* Organization, Venue, Category Section */}
-        <div className="space-y-4">
-          <h3 className="text-lg font-medium text-[#0d0d12]">Konum ve Organizasyon</h3>
-          
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            {/* Organization */}
+        <div className="space-y-5">
+          <div className="flex items-center gap-3">
+            <div className="w-1 h-6 rounded-full bg-gradient-to-b from-secondary to-primary" />
+            <h3 className="headline-sm text-on-surface">Konum ve Organizasyon</h3>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-5 pl-4">
             <FormField
               control={form.control}
               name="organization_id"
@@ -263,7 +264,6 @@ export function EventForm({ event, onSuccess, onCancel }: EventFormProps) {
               )}
             />
 
-            {/* Venue */}
             <FormField
               control={form.control}
               name="venue_id"
@@ -296,7 +296,6 @@ export function EventForm({ event, onSuccess, onCancel }: EventFormProps) {
               )}
             />
 
-            {/* Category */}
             <FormField
               control={form.control}
               name="category_id"
@@ -333,11 +332,13 @@ export function EventForm({ event, onSuccess, onCancel }: EventFormProps) {
         </div>
 
         {/* Date Section */}
-        <div className="space-y-4">
-          <h3 className="text-lg font-medium text-[#0d0d12]">Tarih ve Saat</h3>
-          
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {/* Start Date */}
+        <div className="space-y-5">
+          <div className="flex items-center gap-3">
+            <div className="w-1 h-6 rounded-full bg-gradient-to-b from-primary to-secondary" />
+            <h3 className="headline-sm text-on-surface">Tarih ve Saat</h3>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-5 pl-4">
             <FormField
               control={form.control}
               name="start_date"
@@ -356,7 +357,6 @@ export function EventForm({ event, onSuccess, onCancel }: EventFormProps) {
               )}
             />
 
-            {/* End Date */}
             <FormField
               control={form.control}
               name="end_date"
@@ -378,11 +378,13 @@ export function EventForm({ event, onSuccess, onCancel }: EventFormProps) {
         </div>
 
         {/* Ticket Section */}
-        <div className="space-y-4">
-          <h3 className="text-lg font-medium text-[#0d0d12]">Bilet Bilgileri</h3>
-          
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-            {/* Ticket Price */}
+        <div className="space-y-5">
+          <div className="flex items-center gap-3">
+            <div className="w-1 h-6 rounded-full bg-gradient-to-b from-secondary to-primary" />
+            <h3 className="headline-sm text-on-surface">Bilet Bilgileri</h3>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5 pl-4">
             <FormField
               control={form.control}
               name="ticket_price"
@@ -406,7 +408,6 @@ export function EventForm({ event, onSuccess, onCancel }: EventFormProps) {
               )}
             />
 
-            {/* Total Tickets */}
             <FormField
               control={form.control}
               name="total_tickets"
@@ -429,7 +430,6 @@ export function EventForm({ event, onSuccess, onCancel }: EventFormProps) {
               )}
             />
 
-            {/* Min Tickets per Order */}
             <FormField
               control={form.control}
               name="min_tickets_per_order"
@@ -452,7 +452,6 @@ export function EventForm({ event, onSuccess, onCancel }: EventFormProps) {
               )}
             />
 
-            {/* Max Tickets per Order */}
             <FormField
               control={form.control}
               name="max_tickets_per_order"
@@ -478,62 +477,65 @@ export function EventForm({ event, onSuccess, onCancel }: EventFormProps) {
         </div>
 
         {/* Media & Settings Section */}
-        <div className="space-y-4">
-          <h3 className="text-lg font-medium text-[#0d0d12]">Medya ve Ayarlar</h3>
-          
-          {/* Featured Image */}
-          <FormField
-            control={form.control}
-            name="featured_image"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Kapak Görseli URL</FormLabel>
-                <FormControl>
-                  <Input
-                    type="url"
-                    placeholder="https://example.com/image.jpg"
-                    error={!!form.formState.errors.featured_image}
-                    {...field}
-                    value={field.value ?? ""}
-                  />
-                </FormControl>
-                <FormDescription>
-                  Etkinlik kapak görseli için bir URL girin
-                </FormDescription>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
+        <div className="space-y-5">
+          <div className="flex items-center gap-3">
+            <div className="w-1 h-6 rounded-full bg-gradient-to-b from-primary to-secondary" />
+            <h3 className="headline-sm text-on-surface">Medya ve Ayarlar</h3>
+          </div>
 
-          {/* Is Featured */}
-          <FormField
-            control={form.control}
-            name="is_featured"
-            render={({ field }) => (
-              <FormItem className="flex flex-row items-start space-x-3 space-y-0">
-                <FormControl>
-                  <Checkbox
-                    checked={field.value}
-                    onCheckedChange={field.onChange}
-                  />
-                </FormControl>
-                <div className="space-y-1 leading-none">
-                  <FormLabel>Öne Çıkan Etkinlik</FormLabel>
+          <div className="grid gap-5 pl-4">
+            <FormField
+              control={form.control}
+              name="featured_image"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Kapak Görseli URL</FormLabel>
+                  <FormControl>
+                    <Input
+                      type="url"
+                      placeholder="https://example.com/image.jpg"
+                      error={!!form.formState.errors.featured_image}
+                      {...field}
+                      value={field.value ?? ""}
+                    />
+                  </FormControl>
                   <FormDescription>
-                    Bu etkinlik ana sayfada öne çıkarılacak
+                    Etkinlik kapak görseli için bir URL girin
                   </FormDescription>
-                </div>
-              </FormItem>
-            )}
-          />
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="is_featured"
+              render={({ field }) => (
+                <FormItem className="flex flex-row items-start space-x-3 space-y-0">
+                  <FormControl>
+                    <Checkbox
+                      checked={field.value}
+                      onCheckedChange={field.onChange}
+                    />
+                  </FormControl>
+                  <div className="space-y-1 leading-none">
+                    <FormLabel>Öne Çıkan Etkinlik</FormLabel>
+                    <FormDescription>
+                      Bu etkinlik ana sayfada öne çıkarılacak
+                    </FormDescription>
+                  </div>
+                </FormItem>
+              )}
+            />
+          </div>
         </div>
 
-        {/* Actions */}
-        <div className="flex justify-end gap-3 pt-4 border-t border-[#e5e7eb]">
+        {/* Actions - No border, surface separation */}
+        <div className="flex justify-end gap-4 pt-8">
           {onCancel && (
             <Button
               type="button"
-              variant="secondary"
+              variant="outline"
               onClick={onCancel}
               disabled={isLoading}
             >
@@ -542,7 +544,7 @@ export function EventForm({ event, onSuccess, onCancel }: EventFormProps) {
           )}
           <Button
             type="submit"
-            className="bg-[#09724a] hover:bg-[#066d41]"
+            variant="primary"
             disabled={isLoading}
           >
             {isLoading ? (

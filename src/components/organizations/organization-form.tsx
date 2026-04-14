@@ -54,12 +54,12 @@ export function OrganizationForm({
 
   // Operator selection states
   const [operatorType, setOperatorType] = useState<OperatorSelectionType>(
-    organization?.operator_id ? "existing" : "none"
+    organization?.user ? "existing" : "none"
   );
   const [operators, setOperators] = useState<BackendUser[]>([]);
   const [isLoadingOperators, setIsLoadingOperators] = useState(false);
   const [selectedOperatorId, setSelectedOperatorId] = useState<number | null>(
-    organization?.operator_id || null
+    organization?.user?.id || null
   );
 
   const isEditing = !!organization;

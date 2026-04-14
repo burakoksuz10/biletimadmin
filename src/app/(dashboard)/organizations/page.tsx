@@ -48,6 +48,7 @@ export default function OrganizationsPage() {
   // Dialog states
   const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false);
   const [editingOrganization, setEditingOrganization] = useState<Organization | null>(null);
+  const [isLoadingDetail, setIsLoadingDetail] = useState(false);
   const [deletingOrganization, setDeletingOrganization] = useState<Organization | null>(null);
   const [isDeleting, setIsDeleting] = useState(false);
 
@@ -110,6 +111,21 @@ export default function OrganizationsPage() {
       )
     );
     setEditingOrganization(null);
+  };
+
+  // Handle edit button click - fetch organization detail first
+  const handleEditClick = async (org: Organization) => {
+    try {
+      setIsLoadingDetail(true);
+      const detail = await organizationsService.getById(org.id);
+      setEditingOrganization(detail);
+    } catch (error) {
+      console.error("Organizatör detayı yüklenirken hata:", error);
+      // Fallback to using the list data
+      setEditingOrganization(org);
+    } finally {
+      setIsLoadingDetail(false);
+    }
   };
 
   // Handle organization delete
@@ -331,7 +347,8 @@ export default function OrganizationsPage() {
                             variant="ghost"
                             size="small"
                             className="h-8 w-8 p-0"
-                            onClick={() => setEditingOrganization(org)}
+                            onClick={() => handleEditClick(org)}
+                            disabled={isLoadingDetail}
                           >
                             <Edit className="w-4 h-4" />
                           </Button>
