@@ -48,6 +48,7 @@ export default function VenuesPage() {
   // Dialog states
   const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false);
   const [editingVenue, setEditingVenue] = useState<Venue | null>(null);
+  const [isLoadingDetail, setIsLoadingDetail] = useState(false);
   const [deletingVenue, setDeletingVenue] = useState<Venue | null>(null);
   const [isDeleting, setIsDeleting] = useState(false);
 
@@ -175,6 +176,21 @@ export default function VenuesPage() {
       prev.map((v) => (v.id === updatedVenue.id ? updatedVenue : v))
     );
     setEditingVenue(null);
+  };
+
+  // Handle edit button click - fetch venue detail first
+  const handleEditClick = async (venue: Venue) => {
+    try {
+      setIsLoadingDetail(true);
+      const detail = await venuesService.getById(venue.id);
+      setEditingVenue(detail);
+    } catch (error) {
+      console.error("Mekan detayı yüklenirken hata:", error);
+      // Fallback to using the list data
+      setEditingVenue(venue);
+    } finally {
+      setIsLoadingDetail(false);
+    }
   };
 
   // Handle venue delete
@@ -386,7 +402,8 @@ export default function VenuesPage() {
                           variant="ghost"
                           size="small"
                           className="h-8 w-8 p-0"
-                          onClick={() => setEditingVenue(venue)}
+                          onClick={() => handleEditClick(venue)}
+                          disabled={isLoadingDetail}
                         >
                           <Edit className="w-4 h-4" />
                         </Button>

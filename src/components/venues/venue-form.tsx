@@ -1,9 +1,9 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { MapPin, Loader2 } from "lucide-react";
+import { MapPin, Loader2, UserPlus, Users } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -15,10 +15,17 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { venueSchema } from "@/lib/validations/venue.schema";
 import type { VenueFormValues } from "@/lib/validations/venue.schema";
-import { venuesService } from "@/lib/api/services";
-import type { Venue, CreateVenueRequest, UpdateVenueRequest } from "@/lib/api/types/biletleme.types";
+import { venuesService, usersService } from "@/lib/api/services";
+import type { Venue, CreateVenueRequest, UpdateVenueRequest, BackendUser } from "@/lib/api/types/biletleme.types";
 
 interface VenueFormProps {
   venue?: Venue;
@@ -26,9 +33,21 @@ interface VenueFormProps {
   onCancel?: () => void;
 }
 
+type OperatorSelectionType = "none" | "existing" | "new";
+
 export function VenueForm({ venue, onSuccess, onCancel }: VenueFormProps) {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  // Operator selection states
+  const [operatorType, setOperatorType] = useState<OperatorSelectionType>(
+    venue?.user ? "existing" : "none"
+  );
+  const [operators, setOperators] = useState<BackendUser[]>([]);
+  const [isLoadingOperators, setIsLoadingOperators] = useState(false);
+  const [selectedOperatorId, setSelectedOperatorId] = useState<number | null>(
+    venue?.user?.id || null
+  );
 
   const isEditing = !!venue;
 
@@ -45,10 +64,45 @@ export function VenueForm({ venue, onSuccess, onCancel }: VenueFormProps) {
     },
   });
 
+  // New operator form state
+  const [newOperator, setNewOperator] = useState({
+    name: "",
+    email: "",
+    password: "",
+  });
+
+  // Load operators when switching to "existing" mode or when editing
+  useEffect(() => {
+    if (operatorType === "existing" && operators.length === 0) {
+      const loadOperators = async () => {
+        try {
+          setIsLoadingOperators(true);
+          const data = await usersService.getByRole("operators");
+          setOperators(data);
+        } catch (error) {
+          console.error("Failed to load operators:", error);
+        } finally {
+          setIsLoadingOperators(false);
+        }
+      };
+
+      loadOperators();
+    }
+  }, [operatorType, operators.length]);
+
   const onSubmit = async (values: any) => {
     try {
       setIsLoading(true);
       setError(null);
+
+      // Validate new operator fields if creating new operator
+      if (operatorType === "new") {
+        if (!newOperator.name || !newOperator.email || !newOperator.password) {
+          setError("Yeni mekan yöneticisi için tüm alanları doldurun");
+          setIsLoading(false);
+          return;
+        }
+      }
 
       const cleanedValues: CreateVenueRequest | UpdateVenueRequest = {
         name: values.name,
@@ -59,6 +113,16 @@ export function VenueForm({ venue, onSuccess, onCancel }: VenueFormProps) {
         description: values.description || null,
         is_active: values.is_active ?? true,
       };
+
+      // Handle operator selection
+      if (operatorType === "existing" && selectedOperatorId) {
+        (cleanedValues as any).operator_id = selectedOperatorId;
+      } else if (operatorType === "new") {
+        // Send admin fields directly with venue creation
+        (cleanedValues as any).admin_name = newOperator.name;
+        (cleanedValues as any).admin_email = newOperator.email;
+        (cleanedValues as any).admin_password = newOperator.password;
+      }
 
       let result: Venue;
 
@@ -105,7 +169,7 @@ export function VenueForm({ venue, onSuccess, onCancel }: VenueFormProps) {
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
         {/* Error message */}
         {error && (
-          <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 text-red-700 dark:text-red-400 px-4 py-3 rounded-lg text-sm">
+          <div className="bg-danger/10 border border-danger/20 text-danger px-4 py-3 rounded-xl body-md">
             {error}
           </div>
         )}
@@ -128,6 +192,121 @@ export function VenueForm({ venue, onSuccess, onCancel }: VenueFormProps) {
             </FormItem>
           )}
         />
+
+        {/* Operator Selection */}
+        <div className="space-y-3">
+          <label className="label-md text-on-surface">
+            Mekan Yöneticisi
+          </label>
+
+          <div className="flex gap-2">
+            <Button
+              type="button"
+              variant={operatorType === "none" ? "primary" : "secondary"}
+              size="small"
+              onClick={() => setOperatorType("none")}
+            >
+              Seçim Yok
+            </Button>
+            <Button
+              type="button"
+              variant={operatorType === "existing" ? "primary" : "secondary"}
+              size="small"
+              onClick={() => setOperatorType("existing")}
+            >
+              <Users className="w-4 h-4 mr-1.5" />
+              Kayıtlı Seç
+            </Button>
+            <Button
+              type="button"
+              variant={operatorType === "new" ? "primary" : "secondary"}
+              size="small"
+              onClick={() => setOperatorType("new")}
+            >
+              <UserPlus className="w-4 h-4 mr-1.5" />
+              Yeni Ekle
+            </Button>
+          </div>
+
+          {/* Existing Operator Selection */}
+          {operatorType === "existing" && (
+            <div className="space-y-2">
+              {isLoadingOperators ? (
+                <div className="flex items-center gap-2 body-md text-on-surface-variant">
+                  <Loader2 className="w-4 h-4 animate-spin" />
+                  Mekan yöneticileri yükleniyor...
+                </div>
+              ) : operators.length > 0 ? (
+                <Select
+                  value={selectedOperatorId?.toString() || ""}
+                  onValueChange={(value) => setSelectedOperatorId(Number(value))}
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder="Mekan yöneticisi seçin" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {operators.map((op) => (
+                      <SelectItem key={op.id} value={op.id.toString()}>
+                        {op.name} ({op.email})
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              ) : (
+                <p className="body-md text-on-surface-variant">
+                  Kayıtlı mekan yöneticisi bulunamadı
+                </p>
+              )}
+            </div>
+          )}
+
+          {/* New Operator Form */}
+          {operatorType === "new" && (
+            <div className="space-y-3 p-4 border border-outline/30 rounded-xl bg-surface-high">
+              <h4 className="body-md font-semibold text-on-surface">
+                Yeni Mekan Yöneticisi Bilgileri
+              </h4>
+              <div className="space-y-3">
+                <div>
+                  <label className="label-sm text-on-surface-variant">
+                    Ad Soyad *
+                  </label>
+                  <Input
+                    type="text"
+                    placeholder="Ad Soyad"
+                    value={newOperator.name}
+                    onChange={(e) => setNewOperator({ ...newOperator, name: e.target.value })}
+                  />
+                </div>
+                <div>
+                  <label className="label-sm text-on-surface-variant">
+                    E-posta *
+                  </label>
+                  <Input
+                    type="email"
+                    placeholder="ornek@email.com"
+                    value={newOperator.email}
+                    onChange={(e) => setNewOperator({ ...newOperator, email: e.target.value })}
+                  />
+                </div>
+                <div>
+                  <label className="label-sm text-on-surface-variant">
+                    Şifre *
+                  </label>
+                  <Input
+                    type="password"
+                    placeholder="•••••••••"
+                    value={newOperator.password}
+                    onChange={(e) => setNewOperator({ ...newOperator, password: e.target.value })}
+                  />
+                </div>
+                <p className="body-sm text-on-surface-variant">
+                  Rol: Operator (sabit)
+                </p>
+              </div>
+            </div>
+          )}
+        </div>
 
         {/* İl ve İlçe */}
         <div className="grid grid-cols-2 gap-4">
@@ -235,7 +414,7 @@ export function VenueForm({ venue, onSuccess, onCancel }: VenueFormProps) {
           control={form.control}
           name="is_active"
           render={({ field }) => (
-            <FormItem className="flex items-center justify-between rounded-lg border border-[#e5e7eb] dark:border-[#374151] p-4">
+            <FormItem className="flex items-center justify-between rounded-lg border border-outline/30 p-4">
               <div className="space-y-0.5">
                 <FormLabel className="text-base">Durum</FormLabel>
               </div>
@@ -246,7 +425,7 @@ export function VenueForm({ venue, onSuccess, onCancel }: VenueFormProps) {
                   aria-checked={field.value}
                   onClick={() => field.onChange(!field.value)}
                   className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
-                    field.value ? "bg-[#09724a]" : "bg-[#d1d5db] dark:bg-[#4b5563]"
+                    field.value ? "bg-primary" : "bg-outline"
                   }`}
                 >
                   <span
@@ -274,7 +453,7 @@ export function VenueForm({ venue, onSuccess, onCancel }: VenueFormProps) {
           )}
           <Button
             type="submit"
-            className="bg-[#09724a] hover:bg-[#066d41]"
+            variant="primary"
             disabled={isLoading}
           >
             {isLoading ? (

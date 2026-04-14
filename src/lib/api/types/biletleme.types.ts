@@ -84,8 +84,9 @@ export interface Venue {
   description?: string | null;
   image?: string | null;
   is_active: boolean;
-  created_at: string;
-  updated_at: string;
+  user?: BackendUser | null; // Mekan yöneticisi (detay endpoint'inden gelir)
+  created_at?: string;
+  updated_at?: string;
 }
 
 export interface CreateVenueRequest {
