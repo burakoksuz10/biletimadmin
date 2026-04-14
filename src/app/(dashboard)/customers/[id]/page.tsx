@@ -48,21 +48,31 @@ export default function CustomerDetailPage() {
       try {
         setIsLoading(true);
         const customerId = parseInt(params.id as string);
-        
-        // Paralel olarak müşteri verilerini çek
-        const [customerData, ordersData, activityData, statsData] = await Promise.all([
-          customersService.getById(customerId),
+
+        // Önce müşteri detayını çek (zorunlu)
+        const customerData = await customersService.getById(customerId);
+        setCustomer(customerData);
+
+        // Diğer verileri paralel olarak çek, hata olursa sessizce geç
+        const [ordersData, activityData, statsData] = await Promise.allSettled([
           customersService.getOrders(customerId),
           customersService.getActivity(customerId),
           customersService.getStats(customerId)
         ]);
-        
-        setCustomer(customerData);
-        setOrders(ordersData.data);
-        setActivity(activityData.data);
-        setStats(statsData);
+
+        // Başarılı olan verileri set et
+        if (ordersData.status === 'fulfilled') {
+          setOrders(ordersData.value.data || []);
+        }
+        if (activityData.status === 'fulfilled') {
+          setActivity(activityData.value.data || []);
+        }
+        if (statsData.status === 'fulfilled') {
+          setStats(statsData.value);
+        }
       } catch (error) {
         console.error("Müşteri yüklenirken hata:", error);
+        // Hata olsa bile müşteri detayını göster
       } finally {
         setIsLoading(false);
       }
