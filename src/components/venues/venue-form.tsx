@@ -145,16 +145,25 @@ export function VenueForm({ venue, onSuccess, onCancel }: VenueFormProps) {
 
       if (err?.errors) {
         const apiErrors = err.errors;
+        const errorMessages: string[] = [];
         Object.keys(apiErrors).forEach((field) => {
+          const msg = Array.isArray(apiErrors[field])
+            ? apiErrors[field][0]
+            : apiErrors[field];
           if (field in form.getValues()) {
             form.setError(field as keyof VenueFormValues, {
               type: "server",
-              message: Array.isArray(apiErrors[field])
-                ? apiErrors[field][0]
-                : apiErrors[field],
+              message: msg,
             });
+          } else {
+            errorMessages.push(`${field}: ${msg}`);
           }
         });
+        if (errorMessages.length > 0) {
+          setError(errorMessages.join(", "));
+          setIsLoading(false);
+          return;
+        }
       }
 
       const errorMessage = err?.message || "Bir hata oluştu";
