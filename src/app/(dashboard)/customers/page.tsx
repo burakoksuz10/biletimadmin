@@ -60,7 +60,6 @@ export default function CustomersPage() {
   const [segmentFilter, setSegmentFilter] = useState<CustomerSegment | "all">("all");
   const [sortBy, setSortBy] = useState<"name" | "created_at" | "total_spent" | "last_order">("created_at");
   const [sortOrder, setSortOrder] = useState<"asc" | "desc">("desc");
-  const [showActionsId, setShowActionsId] = useState<number | null>(null);
   const [selectedIds, setSelectedIds] = useState<number[]>([]);
 
   // Load customers
@@ -538,59 +537,41 @@ export default function CustomersPage() {
                       </Badge>
                     </td>
                     <td className="py-4 px-6">
-                      <div className="relative">
-                        <button
-                          onClick={() =>
-                            setShowActionsId(
-                              showActionsId === customer.id ? null : customer.id
-                            )
-                          }
-                          className="w-8 h-8 rounded-lg flex items-center justify-center hover:bg-surface-low transition-colors"
+                      <div className="flex items-center justify-end gap-1">
+                        <Link
+                          href={`/customers/${customer.id}`}
+                          className="w-8 h-8 rounded-lg flex items-center justify-center hover:bg-primary/10 text-on-surface-variant hover:text-primary transition-colors"
+                          title="Görüntüle"
                         >
-                          <ArrowUpDown className="w-4 h-4 text-on-surface-variant" />
-                        </button>
-
-                        {showActionsId === customer.id && (
-                          <div className="absolute right-0 top-full mt-1 w-48 bg-white dark:bg-surface-higher rounded-xl border border-outline/30 shadow-glow py-1 z-10">
-                            <Link
-                              href={`/customers/${customer.id}`}
-                              className="flex items-center gap-2 px-3 py-2 body-md text-on-surface hover:bg-surface-low transition-colors"
-                              onClick={() => setShowActionsId(null)}
-                            >
-                              <Eye className="w-4 h-4" />
-                              Detayları Görüntüle
-                            </Link>
-                            <Link
-                              href={`/customers/${customer.id}/edit`}
-                              className="flex items-center gap-2 px-3 py-2 body-md text-on-surface hover:bg-surface-low transition-colors"
-                              onClick={() => setShowActionsId(null)}
-                            >
-                              <Edit className="w-4 h-4" />
-                              Düzenle
-                            </Link>
-                            {customer.status === "active" && (
-                              <button
-                                onClick={() => {
-                                  setShowActionsId(null);
-                                }}
-                                className="flex items-center gap-2 w-full px-3 py-2 body-md text-warning hover:bg-warning/10 transition-colors"
-                              >
-                                <Ban className="w-4 h-4" />
-                                Askıya Al
-                              </button>
-                            )}
-                            {customer.status !== "active" && (
-                              <button
-                                onClick={() => {
-                                  setShowActionsId(null);
-                                }}
-                                className="flex items-center gap-2 w-full px-3 py-2 body-md text-success hover:bg-success/10 transition-colors"
-                              >
-                                <Shield className="w-4 h-4" />
-                                Etkinleştir
-                              </button>
-                            )}
-                          </div>
+                          <Eye className="w-4 h-4" />
+                        </Link>
+                        <Link
+                          href={`/customers/${customer.id}/edit`}
+                          className="w-8 h-8 rounded-lg flex items-center justify-center hover:bg-secondary/10 text-on-surface-variant hover:text-secondary transition-colors"
+                          title="Düzenle"
+                        >
+                          <Edit className="w-4 h-4" />
+                        </Link>
+                        {customer.status === "active" ? (
+                          <button
+                            onClick={() => {
+                              console.log("Askıya al:", customer.id);
+                            }}
+                            className="w-8 h-8 rounded-lg flex items-center justify-center hover:bg-warning/10 text-on-surface-variant hover:text-warning transition-colors"
+                            title="Askıya Al"
+                          >
+                            <Ban className="w-4 h-4" />
+                          </button>
+                        ) : (
+                          <button
+                            onClick={() => {
+                              console.log("Etkinleştir:", customer.id);
+                            }}
+                            className="w-8 h-8 rounded-lg flex items-center justify-center hover:bg-success/10 text-on-surface-variant hover:text-success transition-colors"
+                            title="Etkinleştir"
+                          >
+                            <Shield className="w-4 h-4" />
+                          </button>
                         )}
                       </div>
                     </td>
